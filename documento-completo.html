@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISIS2007 - Diseño de Productos e Innovación en TI - Documento Completo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-member {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-2px);
+        }
+
+        .member-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .member-name {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .member-email {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .linkedin-link {
+            display: inline-flex;
+            align-items: center;
+            background: #0077b5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 119, 181, 0.3);
+        }
+
+        .linkedin-link:hover {
+            background: #005885;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 119, 181, 0.4);
+        }
+
+        .linkedin-icon {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .info-item p {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .objective-item {
+            background: #f0f7fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .objective-number {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .objective-item p {
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .ai-note {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+            font-style: italic;
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        .schedule-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .schedule-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.8rem;
+        }
+
+        .schedule-table th {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #667eea;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .schedule-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .week-number {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .recess-week {
+            background: #fff3cd;
+        }
+
+        .recess-week .week-number {
+            background: #ffc107;
+            color: #333;
+        }
+
+        /* Print styles for perfect PDF rendering */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .page {
+                background: white !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 20px !important;
+                border: 1px solid #ddd !important;
+                page-break-after: always;
+                break-after: page;
+            }
+            
+            .page:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+            
+            .section {
+                background: white !important;
+                box-shadow: none !important;
+                border: 1px solid #eee !important;
+                margin-bottom: 15px !important;
+            }
+            
+                                .team-member, .info-item, .objective-item {
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        background: #f8f9fa !important;
+                        border: 1px solid #e9ecef !important;
+                        padding: 25px !important;
+                        border-radius: 15px !important;
+                        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+                    }
+                    
+                    .member-photo {
+                        width: 150px !important;
+                        height: 150px !important;
+                        border: 4px solid #667eea !important;
+                        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3) !important;
+                    }
+                    
+                    .member-name {
+                        font-size: 1.4rem !important;
+                        margin-bottom: 10px !important;
+                    }
+                    
+                    .role-badge {
+                        padding: 8px 16px !important;
+                        border-radius: 20px !important;
+                        font-size: 0.9rem !important;
+                        margin-bottom: 15px !important;
+                        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+                    }
+                    
+                    .member-email {
+                        font-size: 1rem !important;
+                        margin-bottom: 15px !important;
+                    }
+                    
+                    .linkedin-link {
+                        padding: 10px 20px !important;
+                        border-radius: 20px !important;
+                        font-size: 0.9rem !important;
+                        margin-top: 10px !important;
+                        box-shadow: 0 2px 8px rgba(0, 119, 181, 0.3) !important;
+                    }
+            
+            .role-badge {
+                background: #667eea !important;
+                color: white !important;
+            }
+            
+            .linkedin-link {
+                background: #0077b5 !important;
+                color: white !important;
+            }
+            
+            .objective-number {
+                background: #667eea !important;
+                color: white !important;
+            }
+            
+            .week-number {
+                background: #667eea !important;
+                color: white !important;
+            }
+            
+            .recess-week {
+                background: #fff3cd !important;
+            }
+            
+            .recess-week .week-number {
+                background: #ffc107 !important;
+                color: #333 !important;
+            }
+            
+            .schedule-table {
+                font-size: 0.75rem !important;
+                border-collapse: collapse !important;
+            }
+            
+            .schedule-table th {
+                background: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+                padding: 8px !important;
+            }
+            
+            .schedule-table td {
+                border: 1px solid #dee2e6 !important;
+                padding: 8px !important;
+            }
+            
+            .header h1 {
+                color: #2c3e50 !important;
+            }
+            
+            .header h2 {
+                color: #7f8c8d !important;
+            }
+            
+            .section h3 {
+                color: #2c3e50 !important;
+            }
+            
+            .member-name {
+                color: #2c3e50 !important;
+            }
+            
+            .member-email {
+                color: #7f8c8d !important;
+            }
+            
+            .info-item h4 {
+                color: #2c3e50 !important;
+            }
+            
+            .info-item p {
+                color: #555 !important;
+            }
+            
+            .objective-item p {
+                color: #333 !important;
+            }
+            
+            .footer p {
+                color: #7f8c8d !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Página Principal -->
+    <div class="page">
+        <div class="header">
+            <h1>🚀 ISIS2007</h1>
+            <h2>Diseño de Productos e Innovación en Tecnologías de Información</h2>
+            <p style="color: #7f8c8d; font-size: 1.1rem;">Semestre 2025-2 - Universidad de los Andes</p>
+        </div>
+
+        <div class="section">
+            <h3>🎯 ¿Qué aprenderás en este curso?</h3>
+            <p>
+                Este curso se encuentra situado en la línea de formación en proyectos e innovación en el programa de Ingeniería en la Universidad de los Andes. 
+                Después de la experiencia en primer semestre para el desarrollo de proyectos con ExpoAndes, durante un semestre los estudiantes van a trabajar 
+                en la definición y desarrollo de proyectos de innovación con tecnología informática. Estos proyectos tienen la ambición de ser sostenibles 
+                en el tiempo y competitivos a nivel internacional.
+            </p>
+            <p>
+                <strong>Nos orientamos mucho en aplicar la metodología Lean Startup</strong>, que nos permite desarrollar productos de manera iterativa y 
+                basada en evidencia, validando hipótesis con usuarios reales desde las primeras etapas del desarrollo. Esta metodología nos ayuda a 
+                minimizar el riesgo y maximizar las posibilidades de éxito de nuestros proyectos.
+            </p>
+            <p>
+                <strong>Los proyectos tienen que usar Generative AI sí o sí</strong>, ya que consideramos que la inteligencia artificial generativa es 
+                una herramienta fundamental para la innovación en la actualidad. Los estudiantes aprenderán a integrar estas tecnologías de manera 
+                ética y efectiva en sus proyectos, explorando nuevas posibilidades de creación de valor.
+            </p>
+            <p>
+                Esta dinámica debe verse reforzada con los conocimientos y competencias que se adquieren en la segunda mitad de la formación del ingeniero. 
+                Las actividades de los estudiantes en el proyecto de grado, que tiene una vocación de síntesis, pueden ser un factor de éxito para que algunos 
+                de estos proyectos iniciados en este curso encuentren un espacio en el mundo empresarial y/o académico.
+            </p>
+            
+            <div style="margin-top: 25px;">
+                <h4>🎯 Objetivos del Curso</h4>
+                <div class="objectives-grid">
+                    <div class="objective-item">
+                        <span class="objective-number">1</span>
+                        <p>Desarrollar capacidades en la conformación y organización de equipos de trabajo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">2</span>
+                        <p>Desarrollar competencias en el desarrollo de proyectos de innovación</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">3</span>
+                        <p>Desarrollar competencias de comunicación oral y escrita alrededor del desarrollo de proyectos</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">4</span>
+                        <p>Reforzar los procesos de aprendizaje autónomo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">5</span>
+                        <p>Buscar una exposición nacional e internacional de los resultados</p>
+                    </div>
+                </div>
+                <p class="ai-note">
+                    <strong>🤖 Con un enfoque innovador apoyado de la inteligencia artificial</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📚 Información del Curso</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>📅 Horario</h4>
+                    <p>Miércoles - 15 semanas</p>
+                    <p>Inicio: 6 de agosto de 2025</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎓 Créditos</h4>
+                    <p>3 créditos</p>
+                    <p>Modalidad: Presencial</p>
+                </div>
+                <div class="info-item">
+                    <h4>👥 Sección</h4>
+                    <p>Sección 2</p>
+                    <p>Departamento de Ingeniería de Sistemas</p>
+                </div>
+                <div class="info-item">
+                    <h4>📊 Evaluación</h4>
+                    <p>Proyectos: 60%</p>
+                    <p>Actividades: 40%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+        </div>
+    </div>
+
+    <!-- Página del Equipo -->
+    <div class="page page-break">
+        <div class="header">
+            <h1>👥 Equipo Docente</h1>
+            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        </div>
+
+        <div class="section">
+            <h3>🎓 Nuestro Equipo</h3>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="FotoArturo.jpeg" alt="Arturo Henao Chaparro" class="member-photo">
+                    <div class="member-name">Arturo Henao Chaparro</div>
+                    <div class="role-badge">Profesor Principal</div>
+                    <div class="member-email">📧 a.henao59@uniandes.edu.co</div>
+                    <a href="https://www.linkedin.com/in/arturohenaochaparro/" target="_blank" class="linkedin-link">
+                        <span class="linkedin-icon">🔗</span>
+                        LinkedIn
+                    </a>
+                </div>
+
+                <div class="team-member">
+                    <img src="FotoJuanes.jpeg" alt="Juan Esteban Jiménez Benavides" class="member-photo">
+                    <div class="member-name">Juan Esteban Jiménez Benavides</div>
+                    <div class="role-badge">Monitor</div>
+                    <div class="member-email">📧 j.jimenezb@uniandes.edu.co</div>
+                    <a href="https://www.linkedin.com/in/juan-esteban-jimenez-benavides-526b29191" target="_blank" class="linkedin-link">
+                        <span class="linkedin-icon">🔗</span>
+                        LinkedIn
+                    </a>
+                </div>
+
+                <div class="team-member">
+                    <img src="FotoCatalina.jpeg" alt="Catalina Álvarez Latorre" class="member-photo">
+                    <div class="member-name">Catalina Álvarez Latorre</div>
+                    <div class="role-badge">Monitor</div>
+                    <div class="member-email">📧 c.alvarezl2@uniandes.edu.co</div>
+                    <a href="https://www.linkedin.com/in/catalina-alvarez-bb06a0350/" target="_blank" class="linkedin-link">
+                        <span class="linkedin-icon">🔗</span>
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+        </div>
+    </div>
+
+    <!-- Página del Cronograma -->
+    <div class="page page-break">
+        <div class="header">
+            <h1>📅 Cronograma del Curso</h1>
+            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        </div>
+
+        <div class="section">
+            <h3>📅 Información del Semestre</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>📚 Materia</h4>
+                    <p>ISIS2007 - Diseño de Productos e Innovación en TI</p>
+                </div>
+                <div class="info-item">
+                    <h4>👥 Sección</h4>
+                    <p>Sección 2</p>
+                </div>
+                <div class="info-item">
+                    <h4>⏰ Horario</h4>
+                    <p>Miércoles</p>
+                </div>
+                <div class="info-item">
+                    <h4>📅 Inicio</h4>
+                    <p>6 de agosto de 2025</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📊 Sistema de Evaluación</h3>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    <span class="objective-number">30%</span>
+                    <p><strong>Primera Entrega del Proyecto + Calificación Jurados</strong><br>
+                    Primera entrega completa del proyecto con evaluación de jurados</p>
+                </div>
+                <div class="objective-item">
+                    <span class="objective-number">30%</span>
+                    <p><strong>Segunda Entrega del Proyecto + Calificación Jurados</strong><br>
+                    Entrega final del proyecto con evaluación de jurados</p>
+                </div>
+                <div class="objective-item">
+                    <span class="objective-number">10%</span>
+                    <p><strong>Presentación de Pitch de Problema a Solucionar</strong><br>
+                    Presentación del pitch del problema a solucionar</p>
+                </div>
+                <div class="objective-item">
+                    <span class="objective-number">10%</span>
+                    <p><strong>Lean Canvas - Análisis de Ejemplos</strong><br>
+                    Análisis de ejemplos en empresas de tecnología, Running Lean Part 1</p>
+                </div>
+                <div class="objective-item">
+                    <span class="objective-number">10%</span>
+                    <p><strong>Trabajo Grupal en Proyectos</strong><br>
+                    Trabajo grupal en proyectos y entrega landing page</p>
+                </div>
+                <div class="objective-item">
+                    <span class="objective-number">10%</span>
+                    <p><strong>Semana de Innovación</strong><br>
+                    Actividades especiales durante la semana de innovación</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📋 Cronograma Detallado</h3>
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0; color: #856404;">
+                <strong>⚠️ Nota Importante:</strong> Todas las clases se realizan los miércoles a partir del 6 de agosto de 2025. 
+                Este cronograma está organizado semanalmente para facilitar el seguimiento del curso.
+            </div>
+            
+            <div class="schedule-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Semana</th>
+                            <th>Fecha</th>
+                            <th>Tema/Actividad</th>
+                            <th>Descripción</th>
+                            <th>Evaluación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="week-number">1</span></td>
+                            <td>6 de agosto, 2025</td>
+                            <td>Presentación del curso, canvas, modelo de negocio y tips para ideas de producto</td>
+                            <td>Introducción al curso, metodologías de innovación y conformación de grupos</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">2</span></td>
+                            <td>13 de agosto, 2025</td>
+                            <td>Lean canvas, Generative AI 101, conformación de grupos</td>
+                            <td>Fundamentos de lean canvas, introducción a IA generativa y formación de equipos</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">3</span></td>
+                            <td>20 de agosto, 2025</td>
+                            <td>Modelos de monetización, análisis de ejemplos de empresas de tecnología y mesa redonda discusión de ideas de proyecto</td>
+                            <td>Estrategias de monetización, casos de estudio y discusión de proyectos</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">4</span></td>
+                            <td>27 de agosto, 2025</td>
+                            <td>Presentación de pitch de problema a solucionar</td>
+                            <td>Presentación del pitch del problema a solucionar</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">10%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">5</span></td>
+                            <td>3 de septiembre, 2025</td>
+                            <td>Lean canvas - análisis de ejemplos en empresas de tecnología, Running Lean Part 1</td>
+                            <td>Análisis de ejemplos en empresas de tecnología, Running Lean Part 1</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">10%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">6</span></td>
+                            <td>10 de septiembre, 2025</td>
+                            <td>MVP and UI/UX, Agentic design</td>
+                            <td>Desarrollo de MVP, diseño de interfaz de usuario y diseño agéntico</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">7</span></td>
+                            <td>17 de septiembre, 2025</td>
+                            <td>Presentaciones de prueba</td>
+                            <td>Pruebas de presentación y feedback</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">8</span></td>
+                            <td>24 de septiembre, 2025</td>
+                            <td>Primera entrega del proyecto + Calificación jurados</td>
+                            <td>Presentación lean canvas, primera validación con expertos, entrevistas del problema, MVP semi funcional</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">30%</td>
+                        </tr>
+                        <tr class="recess-week">
+                            <td><span class="week-number">R</span></td>
+                            <td>29 de septiembre - 4 de octubre, 2025</td>
+                            <td>Semana de Receso</td>
+                            <td>Semana Santa - No hay clases</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">9</span></td>
+                            <td>8 de octubre, 2025</td>
+                            <td>Buenas prácticas para un gran pitch y VC funding vs bootstrapping</td>
+                            <td>Técnicas de presentación, financiamiento y estrategias de crecimiento</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">10</span></td>
+                            <td>15 de octubre, 2025</td>
+                            <td>Propiedad intelectual, registro de software</td>
+                            <td>Protección de propiedad intelectual y registro de software</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">11</span></td>
+                            <td>22 de octubre, 2025</td>
+                            <td>Landing pages y tracción + trabajo en landing pages</td>
+                            <td>Desarrollo de landing pages y estrategias de tracción</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">12</span></td>
+                            <td>29 de octubre, 2025</td>
+                            <td>SEO, SEM y funeles de conversión</td>
+                            <td>Optimización para motores de búsqueda, marketing digital y conversión</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">13</span></td>
+                            <td>5 de noviembre, 2025</td>
+                            <td>Trabajo grupal en proyectos y entrega landing page</td>
+                            <td>Trabajo grupal en proyectos y entrega landing page</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">10%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">14</span></td>
+                            <td>12 de noviembre, 2025</td>
+                            <td>Herramientas de análisis e indicadores + análisis feedback a la fecha</td>
+                            <td>Análisis de datos, métricas y feedback de usuarios</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">-</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">15</span></td>
+                            <td>19 de noviembre, 2025</td>
+                            <td>Semana de innovación</td>
+                            <td>Presentación en la semana de innovación: Landing page, recolección de datos de interés, MVP funcional, video del MVP</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">10%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">16</span></td>
+                            <td>26 de noviembre, 2025</td>
+                            <td>Segunda Entrega Proyecto + Calificación jurados</td>
+                            <td>Pitch final, MVP funcional, resultados recolección de datos y feedback de usuarios</td>
+                            <td style="text-align: center; font-weight: bold; color: #667eea;">30%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+        </div>
+    </div>
+</body>
+</html> 

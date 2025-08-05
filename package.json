@@ -1,0 +1,14 @@
+{
+  "name": "isis2007-pdf-converter",
+  "version": "1.0.0",
+  "description": "Convert HTML pages to PDF for ISIS2007 course",
+  "main": "convert-to-pdf.js",
+  "scripts": {
+    "convert": "node convert-to-pdf.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "keywords": ["pdf", "html", "conversion"],
+  "author": "ISIS2007 Team"
+} 
