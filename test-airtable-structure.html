@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Test Airtable Structure</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .test-section { background: rgba(255,255,255,0.1); padding: 20px; margin: 20px 0; border-radius: 10px; }
+        .btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #218838; }
+        .btn.warning { background: #ffc107; color: black; }
+        .btn.warning:hover { background: #e0a800; }
+        .result { background: rgba(0,0,0,0.3); padding: 15px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 12px; }
+        .error { background: rgba(220,53,69,0.3); }
+        .success { background: rgba(40,167,69,0.3); }
+        .info { background: rgba(23,162,184,0.3); }
+        .warning { background: rgba(255,193,7,0.3); }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Airtable Structure</h1>
+    
+    <div class="test-section">
+        <h3>1. Verificar Estructura de la Tabla</h3>
+        <button class="btn" onclick="checkTableStructure()">Verificar Estructura</button>
+        <div id="structure-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test con Campos Reales</h3>
+        <button class="btn" onclick="testWithRealFields()">Test con Campos Reales</button>
+        <div id="real-fields-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test de Registro Simple</h3>
+        <button class="btn" onclick="testSimpleRecord()">Test Registro Simple</button>
+        <div id="simple-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Generar Configuración Corregida</h3>
+        <button class="btn warning" onclick="generateCorrectConfig()">Generar Configuración</button>
+        <div id="config-result" class="result"></div>
+    </div>
+
+    <script src="airtable-config.js"></script>
+    
+    <script>
+        function addResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
+            element.className = `result ${type}`;
+        }
+
+        async function checkTableStructure() {
+            try {
+                addResult('structure-result', '🔄 Verificando estructura de la tabla...', 'info');
+                
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.records && data.records.length > 0) {
+                        const record = data.records[0];
+                        const fields = Object.keys(record.fields);
+                        
+                        let result = '✅ Estructura de la tabla encontrada:\n\n';
+                        result += 'Campos disponibles:\n';
+                        fields.forEach(field => {
+                            result += `- "${field}": ${typeof record.fields[field]}\n`;
+                        });
+                        
+                        result += '\nEjemplo de registro:\n';
+                        result += JSON.stringify(record.fields, null, 2);
+                        
+                        addResult('structure-result', result, 'success');
+                    } else {
+                        addResult('structure-result', 'ℹ️ La tabla está vacía, pero la conexión funciona', 'info');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    addResult('structure-result', `❌ Error ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('structure-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testWithRealFields() {
+            try {
+                addResult('real-fields-result', '🔄 Probando con campos reales...', 'info');
+                
+                // Primero obtener la estructura
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const fields = data.records && data.records.length > 0 ? Object.keys(data.records[0].fields) : [];
+                    
+                    // Crear un registro con solo los campos que existen
+                    const testRecord = {
+                        fields: {}
+                    };
+                    
+                    // Solo incluir campos que realmente existen
+                    if (fields.includes('Nombre')) testRecord.fields['Nombre'] = 'Test Student';
+                    if (fields.includes('Fecha')) testRecord.fields['Fecha'] = new Date().toISOString().split('T')[0];
+                    if (fields.includes('Estado')) testRecord.fields['Estado'] = 'present';
+                    if (fields.includes('Usuario Registro')) testRecord.fields['Usuario Registro'] = 'test-user';
+                    if (fields.includes('Rol Usuario')) testRecord.fields['Rol Usuario'] = 'test-role';
+                    if (fields.includes('Timestamp')) testRecord.fields['Timestamp'] = new Date().toISOString();
+                    if (fields.includes('Curso')) testRecord.fields['Curso'] = 'ISIS2007 - Diseño de Productos e Innovación en TI';
+                    
+                    // Intentar crear el registro
+                    const createResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            records: [testRecord]
+                        })
+                    });
+                    
+                    if (createResponse.ok) {
+                        const result = await createResponse.json();
+                        addResult('real-fields-result', `✅ Registro creado exitosamente:\n${JSON.stringify(testRecord, null, 2)}`, 'success');
+                    } else {
+                        const errorText = await createResponse.text();
+                        addResult('real-fields-result', `❌ Error ${createResponse.status}: ${errorText}\n\nRegistro intentado:\n${JSON.stringify(testRecord, null, 2)}`, 'error');
+                    }
+                } else {
+                    addResult('real-fields-result', '❌ No se pudo obtener la estructura de la tabla', 'error');
+                }
+            } catch (error) {
+                addResult('real-fields-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSimpleRecord() {
+            try {
+                addResult('simple-result', '🔄 Probando registro simple...', 'info');
+                
+                // Crear el registro más simple posible
+                const simpleRecord = {
+                    fields: {
+                        'Nombre': 'Test Simple',
+                        'Fecha': '2025-01-15'
+                    }
+                };
+                
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        records: [simpleRecord]
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('simple-result', `✅ Registro simple creado exitosamente:\n${JSON.stringify(simpleRecord, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('simple-result', `❌ Error ${response.status}: ${errorText}\n\nRegistro intentado:\n${JSON.stringify(simpleRecord, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                addResult('simple-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function generateCorrectConfig() {
+            try {
+                addResult('config-result', '🔄 Generando configuración corregida...', 'info');
+                
+                // Obtener la estructura real
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const fields = data.records && data.records.length > 0 ? Object.keys(data.records[0].fields) : [];
+                    
+                    let config = '// Configuración corregida basada en la estructura real de Airtable\n\n';
+                    config += 'const AIRTABLE_CONFIG = {\n';
+                    config += `    API_KEY: '${AIRTABLE_CONFIG.API_KEY}',\n`;
+                    config += `    BASE_ID: '${AIRTABLE_CONFIG.BASE_ID}',\n`;
+                    config += `    TABLE_NAME: '${AIRTABLE_CONFIG.TABLE_NAME}',\n`;
+                    config += `    BASE_URL: '${AIRTABLE_CONFIG.BASE_URL}',\n`;
+                    config += '    FIELDS: {\n';
+                    
+                    // Mapear campos basado en lo que realmente existe
+                    if (fields.includes('Nombre')) config += '        NOMBRE: "Nombre",\n';
+                    if (fields.includes('Fecha')) config += '        FECHA: "Fecha",\n';
+                    if (fields.includes('Estado')) config += '        ESTADO: "Estado",\n';
+                    if (fields.includes('Usuario Registro')) config += '        USUARIO_REGISTRO: "Usuario Registro",\n';
+                    if (fields.includes('Rol Usuario')) config += '        ROL_USUARIO: "Rol Usuario",\n';
+                    if (fields.includes('Timestamp')) config += '        TIMESTAMP: "Timestamp",\n';
+                    if (fields.includes('Curso')) config += '        CURSO: "Curso",\n';
+                    
+                    config += '    }\n';
+                    config += '};\n\n';
+                    config += '// Campos disponibles en tu tabla:\n';
+                    fields.forEach(field => {
+                        config += `// - "${field}"\n`;
+                    });
+                    
+                    addResult('config-result', config, 'success');
+                } else {
+                    addResult('config-result', '❌ No se pudo obtener la estructura de la tabla', 'error');
+                }
+            } catch (error) {
+                addResult('config-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-ejecutar al cargar
+        window.onload = function() {
+            checkTableStructure();
+        };
+    </script>
+</body>
+</html> 
