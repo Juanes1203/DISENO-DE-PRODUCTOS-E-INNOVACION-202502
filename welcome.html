@@ -173,6 +173,53 @@
             font-weight: bold;
         }
 
+        .objectives-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .objective-item {
+            background: #f0f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .objective-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .objective-item p {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        .ai-note {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-style: italic;
+            color: #555;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -209,15 +256,45 @@
         <div class="welcome-message">
             <h3>🎯 ¿Qué aprenderás en este curso?</h3>
             <p>
-                En este curso exploraremos las metodologías más innovadoras para el diseño de productos digitales, 
-                desde la investigación de usuarios hasta el lanzamiento de soluciones tecnológicas. 
-                Aprenderás a aplicar <span class="highlight">Design Thinking</span>, <span class="highlight">Lean UX</span> 
-                y metodologías ágiles para crear productos que resuelvan problemas reales.
+                Este curso se encuentra situado en la línea de formación en proyectos e innovación en el programa de Ingeniería en la Universidad de los Andes. 
+                Después de la experiencia en primer semestre para el desarrollo de proyectos con ExpoAndes, durante un semestre los estudiantes van a trabajar 
+                en la definición y desarrollo de proyectos de innovación con tecnología informática. Estos proyectos tienen la ambición de ser sostenibles 
+                en el tiempo y competitivos a nivel internacional.
             </p>
             <p>
-                Trabajarás en proyectos reales, desarrollando habilidades prácticas en investigación, 
-                prototipado, testing y presentación de soluciones innovadoras.
+                Esta dinámica debe verse reforzada con los conocimientos y competencias que se adquieren en la segunda mitad de la formación del ingeniero. 
+                Las actividades de los estudiantes en el proyecto de grado, que tiene una vocación de síntesis, pueden ser un factor de éxito para que algunos 
+                de estos proyectos iniciados en este curso encuentren un espacio en el mundo empresarial y/o académico.
             </p>
+            
+            <div class="objectives-section">
+                <h4>🎯 Objetivos del Curso</h4>
+                <div class="objectives-grid">
+                    <div class="objective-item">
+                        <span class="objective-number">1</span>
+                        <p>Desarrollar capacidades en la conformación y organización de equipos de trabajo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">2</span>
+                        <p>Desarrollar competencias en el desarrollo de proyectos de innovación</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">3</span>
+                        <p>Desarrollar competencias de comunicación oral y escrita alrededor del desarrollo de proyectos</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">4</span>
+                        <p>Reforzar los procesos de aprendizaje autónomo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">5</span>
+                        <p>Buscar una exposición nacional e internacional de los resultados</p>
+                    </div>
+                </div>
+                <p class="ai-note">
+                    <strong>🤖 Con un enfoque innovador apoyado de la inteligencia artificial</strong>
+                </p>
+            </div>
         </div>
 
         <div class="course-info">
