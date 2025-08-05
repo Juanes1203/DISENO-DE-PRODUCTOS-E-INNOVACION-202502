@@ -4,7 +4,10 @@
 class StraicoService {
     constructor() {
         this.API_KEY = 'Cf-Pv8Guv2e04tpPbfPWDZ9779KKfjkRMEhQQbkYw7gIo1Dhtb7';
+        // Probando diferentes URLs de STRAICO
         this.BASE_URL = 'https://api.straico.com/v1/chat/completions';
+        this.ALTERNATIVE_URL = 'https://api.straico.com/chat/completions';
+        this.OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
         
         // Cronograma del curso ISIS2007 por semana
         this.COURSE_SCHEDULE = {
@@ -199,66 +202,72 @@ RESPONDE SOLO CON JSON VÁLIDO:
         return await this.callStraicoAPI(prompt);
     }
 
-    // Llamada a la API de STRAICO mejorada
+    // Llamada a la API de STRAICO mejorada con múltiples URLs
     async callStraicoAPI(prompt) {
-        try {
-            console.log('🔍 Debug: Llamando a STRAICO API...');
+        const urls = [
+            this.BASE_URL,
+            this.ALTERNATIVE_URL,
+            this.OPENAI_URL
+        ];
+
+        for (let i = 0; i < urls.length; i++) {
+            const url = urls[i];
+            console.log(`🔍 Debug: Probando URL ${i + 1}: ${url}`);
             
-            const response = await fetch(this.BASE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.API_KEY}`,
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido.'
-                        },
-                        {
-                            role: 'user',
-                            content: prompt
-                        }
-                    ],
-                    max_tokens: 3000,
-                    temperature: 0.8
-                })
-            });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido.'
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        max_tokens: 3000,
+                        temperature: 0.8
+                    })
+                });
 
-            console.log('🔍 Debug: Status de respuesta:', response.status);
+                console.log(`🔍 Debug: Status de respuesta para ${url}:`, response.status);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('🔍 Debug: Respuesta de API:', data);
-            
-            if (data.choices && data.choices[0] && data.choices[0].message) {
-                const content = data.choices[0].message.content;
-                console.log('🔍 Debug: Contenido de respuesta:', content);
-                
-                try {
-                    // Intentar parsear como JSON
-                    const parsed = JSON.parse(content);
-                    console.log('🔍 Debug: JSON parseado exitosamente:', parsed);
-                    return parsed;
-                } catch (parseError) {
-                    console.error('🔍 Debug: Error al parsear JSON:', parseError);
-                    console.log('🔍 Debug: Contenido que falló:', content);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`🔍 Debug: Respuesta exitosa de ${url}:`, data);
                     
-                    // Crear preguntas dinámicas por defecto basadas en el contexto
-                    return this.createDynamicFallbackQuestions();
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        const content = data.choices[0].message.content;
+                        console.log(`🔍 Debug: Contenido de respuesta de ${url}:`, content);
+                        
+                        try {
+                            const parsed = JSON.parse(content);
+                            console.log(`🔍 Debug: JSON parseado exitosamente de ${url}:`, parsed);
+                            return parsed;
+                        } catch (parseError) {
+                            console.error(`🔍 Debug: Error al parsear JSON de ${url}:`, parseError);
+                            console.log(`🔍 Debug: Contenido que falló de ${url}:`, content);
+                        }
+                    }
+                } else {
+                    console.log(`🔍 Debug: Error ${response.status} para ${url}: ${response.statusText}`);
                 }
-            } else {
-                throw new Error('Respuesta inválida de la API');
+            } catch (error) {
+                console.error(`🔍 Debug: Error en ${url}:`, error.message);
             }
-        } catch (error) {
-            console.error('🔍 Debug: Error en STRAICO API:', error);
-            return this.createDynamicFallbackQuestions();
         }
+
+        // Si todas las URLs fallan, usar preguntas por defecto
+        console.log('🔍 Debug: Todas las URLs fallaron, usando preguntas por defecto');
+        return this.createDynamicFallbackQuestions();
     }
 
     // Crear preguntas dinámicas por defecto
