@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma ISIS2007 - Diseño de Productos e Innovación en TI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .semester-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .semester-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .semester-info p {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .schedule-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .table-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+            transition: background 0.3s ease;
+        }
+
+        .week-number {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 10px;
+            display: inline-block;
+        }
+
+        .topic {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .activities {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .important-note strong {
+            color: #d63031;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header h2 {
+                font-size: 1.1rem;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+
+            .table-container {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Cronograma de Clases</h1>
+            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        </div>
+
+        <div class="semester-info">
+            <h3>📅 Información del Semestre</h3>
+            <p><strong>Materia:</strong> ISIS2007 - Diseño de Productos e Innovación en TI</p>
+            <p><strong>Sección:</strong> 1</p>
+            <p><strong>Horario:</strong> Miércoles</p>
+            <p><strong>Inicio:</strong> 6 de agosto de 2025</p>
+        </div>
+
+        <div class="important-note">
+            <strong>⚠️ Nota Importante:</strong> Todas las clases se realizan los miércoles a partir del 6 de agosto de 2025. 
+            Este cronograma está organizado semanalmente para facilitar el seguimiento del curso.
+        </div>
+
+        <div class="schedule-table">
+            <div class="table-header">
+                <h3>📋 Cronograma Detallado</h3>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Semana</th>
+                            <th>Fecha</th>
+                            <th>Tema/Actividad</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="week-number">1</span></td>
+                            <td class="date">6 de agosto, 2025</td>
+                            <td class="topic">Introducción al curso</td>
+                            <td class="activities">Presentación del syllabus, objetivos del curso, metodología de evaluación</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">2</span></td>
+                            <td class="date">13 de agosto, 2025</td>
+                            <td class="topic">Fundamentos del Diseño de Productos</td>
+                            <td class="activities">Conceptos básicos, principios de diseño, metodologías</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">3</span></td>
+                            <td class="date">20 de agosto, 2025</td>
+                            <td class="topic">Innovación en Tecnologías de Información</td>
+                            <td class="activities">Tendencias tecnológicas, casos de estudio, análisis de innovación</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">4</span></td>
+                            <td class="date">27 de agosto, 2025</td>
+                            <td class="topic">Metodologías de Diseño</td>
+                            <td class="activities">Design Thinking, Lean UX, Agile methodologies</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">5</span></td>
+                            <td class="date">3 de septiembre, 2025</td>
+                            <td class="topic">Investigación de Usuarios</td>
+                            <td class="activities">Técnicas de investigación, entrevistas, encuestas, análisis de datos</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">6</span></td>
+                            <td class="date">10 de septiembre, 2025</td>
+                            <td class="topic">Definición de Problemas</td>
+                            <td class="activities">Identificación de oportunidades, definición de problemas, statement de diseño</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">7</span></td>
+                            <td class="date">17 de septiembre, 2025</td>
+                            <td class="topic">Generación de Ideas</td>
+                            <td class="activities">Brainstorming, técnicas de creatividad, divergencia y convergencia</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">8</span></td>
+                            <td class="date">24 de septiembre, 2025</td>
+                            <td class="topic">Prototipado</td>
+                            <td class="activities">Tipos de prototipos, herramientas, iteración rápida</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">9</span></td>
+                            <td class="date">1 de octubre, 2025</td>
+                            <td class="topic">Testing y Validación</td>
+                            <td class="activities">Métodos de testing, feedback de usuarios, iteración</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">10</span></td>
+                            <td class="date">8 de octubre, 2025</td>
+                            <td class="topic">Presentación de Proyectos - Fase 1</td>
+                            <td class="activities">Presentación de investigaciones y definición de problemas</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">11</span></td>
+                            <td class="date">15 de octubre, 2025</td>
+                            <td class="topic">Desarrollo de Soluciones</td>
+                            <td class="activities">Refinamiento de ideas, desarrollo de conceptos</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">12</span></td>
+                            <td class="date">22 de octubre, 2025</td>
+                            <td class="topic">Implementación y Lanzamiento</td>
+                            <td class="activities">Estrategias de implementación, go-to-market, métricas</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">13</span></td>
+                            <td class="date">29 de octubre, 2025</td>
+                            <td class="topic">Sostenibilidad e Impacto</td>
+                            <td class="activities">Impacto social, sostenibilidad, escalabilidad</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">14</span></td>
+                            <td class="date">5 de noviembre, 2025</td>
+                            <td class="topic">Presentación Final de Proyectos</td>
+                            <td class="activities">Presentación de proyectos completos, evaluación final</td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">15</span></td>
+                            <td class="date">12 de noviembre, 2025</td>
+                            <td class="topic">Cierre del Curso</td>
+                            <td class="activities">Reflexiones finales, feedback, cierre académico</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+            <p>📧 Para consultas: [Email del profesor]</p>
+            <p>🕒 Última actualización: Agosto 2025</p>
+        </div>
+    </div>
+</body>
+</html> 
