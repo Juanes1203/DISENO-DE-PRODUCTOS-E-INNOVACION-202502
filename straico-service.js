@@ -6,11 +6,11 @@ class StraicoService {
     constructor() {
         this.API_KEY = 'Cf-Pv8Guv2e04tpPbfPWDZ9779KKfjkRMEhQQbkYw7gIo1Dhtb7';
         // URL correcta según la documentación oficial de STRAICO
-        this.BASE_URL = 'https://api.straico.com/v1/chat/completions';
+        this.BASE_URL = 'https://api.straico.com/v1/prompt/completion';
         
         // Historial de preguntas para evitar repeticiones
         this.questionHistory = new Set();
-        
+
         // Cronograma del curso ISIS2007 por semana
         this.COURSE_SCHEDULE = {
             1: {
@@ -227,29 +227,17 @@ RESPONDE SOLO CON JSON VÁLIDO:
         return await this.callStraicoAPI(prompt, 'specific');
     }
 
-    // Llamada a la API de STRAICO mejorada con documentación oficial
+    // Llamada a la API de STRAICO mejorada con formato correcto
     async callStraicoAPI(prompt, category) {
         console.log(`🔍 Debug: Llamando a STRAICO API para categoría: ${category}`);
         
         try {
-            // Intentar con diferentes configuraciones según la documentación
+            // Formato correcto basado en el ejemplo que funciona
             const requestBody = {
-                model: 'gpt-4',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido. IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse.'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                max_tokens: 3000,
+                models: ["anthropic/claude-3.7-sonnet:thinking"],
+                message: prompt,
                 temperature: 0.9,
-                top_p: 0.9,
-                frequency_penalty: 0.5,
-                presence_penalty: 0.5
+                max_tokens: 4000
             };
 
             console.log(`🔍 Debug: Request body:`, JSON.stringify(requestBody, null, 2));
@@ -271,33 +259,50 @@ RESPONDE SOLO CON JSON VÁLIDO:
                 const data = await response.json();
                 console.log(`🔍 Debug: Respuesta exitosa:`, data);
                 
-                if (data.choices && data.choices[0] && data.choices[0].message) {
-                    const content = data.choices[0].message.content;
-                    console.log(`🔍 Debug: Contenido de respuesta:`, content);
+                // Extraer el contenido de la respuesta según el formato de STRAICO
+                const firstModelKey = Object.keys(data.data.completions)[0];
+                const completion = data.data.completions[firstModelKey].completion;
+                
+                if (!completion.choices?.[0]?.message?.content) {
+                    console.error('Invalid response format:', data);
+                    throw new Error('Invalid response format from STRAICO API');
+                }
+
+                const content = completion.choices[0].message.content;
+                console.log(`🔍 Debug: Contenido de respuesta:`, content);
+                
+                try {
+                    // Limpiar el contenido para obtener solo el JSON
+                    const cleanContent = content
+                        .replace(/```json\n?|\n?```/g, '') // Remove markdown code blocks
+                        .replace(/^[\s\n]+|[\s\n]+$/g, '') // Trim whitespace and newlines
+                        .replace(/[\u2018\u2019]/g, "'") // Replace smart quotes with regular quotes
+                        .replace(/[\u201C\u201D]/g, '"') // Replace smart quotes with regular quotes
+                        .replace(/^[^{]*({[\s\S]*})[^}]*$/, '$1'); // Extract only the JSON object
                     
-                    try {
-                        const parsed = JSON.parse(content);
-                        
-                        // Filtrar preguntas repetidas
-                        if (parsed.questions) {
-                            const uniqueQuestions = [];
-                            for (const question of parsed.questions) {
-                                if (!this.isQuestionRepeated(question.pregunta)) {
-                                    this.addToHistory(question.pregunta);
-                                    uniqueQuestions.push(question);
-                                } else {
-                                    console.log(`🔍 Debug: Pregunta repetida filtrada: ${question.pregunta.substring(0, 50)}...`);
-                                }
+                    console.log('Cleaned content:', cleanContent);
+                    
+                    const parsed = JSON.parse(cleanContent);
+                    
+                    // Filtrar preguntas repetidas
+                    if (parsed.questions) {
+                        const uniqueQuestions = [];
+                        for (const question of parsed.questions) {
+                            if (!this.isQuestionRepeated(question.pregunta)) {
+                                this.addToHistory(question.pregunta);
+                                uniqueQuestions.push(question);
+                            } else {
+                                console.log(`🔍 Debug: Pregunta repetida filtrada: ${question.pregunta.substring(0, 50)}...`);
                             }
-                            parsed.questions = uniqueQuestions;
                         }
-                        
-                        console.log(`🔍 Debug: JSON parseado exitosamente con ${parsed.questions ? parsed.questions.length : 0} preguntas únicas`);
-                        return parsed;
-                    } catch (parseError) {
-                        console.error(`🔍 Debug: Error al parsear JSON:`, parseError);
-                        console.log(`🔍 Debug: Contenido que falló:`, content);
+                        parsed.questions = uniqueQuestions;
                     }
+                    
+                    console.log(`🔍 Debug: JSON parseado exitosamente con ${parsed.questions ? parsed.questions.length : 0} preguntas únicas`);
+                    return parsed;
+                } catch (parseError) {
+                    console.error(`🔍 Debug: Error al parsear JSON:`, parseError);
+                    console.log(`🔍 Debug: Contenido que falló:`, content);
                 }
             } else {
                 const errorText = await response.text();
@@ -319,41 +324,114 @@ RESPONDE SOLO CON JSON VÁLIDO:
         const weekData = this.COURSE_SCHEDULE[currentWeek];
         const timestamp = Date.now();
         
-        const fallbackQuestions = [
-            {
-                pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
-                respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
-                explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
-                dificultad: "ALTA",
-                semana: currentWeek
-            },
-            {
-                pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
-                respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
-                explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
-                dificultad: "ALTA",
-                semana: currentWeek
-            },
-            {
-                pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
-                respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
-                explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
-                dificultad: "ALTA",
-                semana: currentWeek
-            },
-            {
-                pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
-                respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
-                explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
-                dificultad: "ALTA"
-            },
-            {
-                pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
-                respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
-                explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
-                dificultad: "ALTA"
-            }
-        ];
+        // Preguntas específicas por categoría - COMPLETAMENTE DIFERENTES
+        const categoryQuestions = {
+            'general': [
+                {
+                    pregunta: `¿Cómo aplicarías el principio de "Build-Measure-Learn" de Eric Ries en el desarrollo de un producto de IA para el mercado latinoamericano? (${timestamp})`,
+                    respuesta_correcta: `Implementaría el ciclo Build-Measure-Learn adaptado al contexto latinoamericano: Build (construir MVP con características específicas para el mercado local), Measure (métricas como engagement, retención y conversión en usuarios latinos), Learn (insights sobre preferencias culturales, barreras de adopción y necesidades específicas del mercado).`,
+                    explicacion: `El ciclo Build-Measure-Learn es fundamental en Lean Startup para validar hipótesis de manera rápida y económica.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
+                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
+                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de innovación tecnológica? (${timestamp})`,
+                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para innovación tecnológica, enfocaría en métricas específicas del dominio y adopción de nuevas tecnologías.`,
+                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
+                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
+                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
+                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
+                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
+                    dificultad: "ALTA"
+                }
+            ],
+            'class': [
+                {
+                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
+                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
+                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
+                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
+                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
+                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
+                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
+                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
+                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
+                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
+                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
+                    dificultad: "ALTA"
+                }
+            ],
+            'specific': [
+                {
+                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
+                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
+                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
+                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
+                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
+                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
+                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
+                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
+                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
+                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
+                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
+                    dificultad: "ALTA"
+                }
+            ]
+        };
+
+        // Obtener preguntas específicas de la categoría
+        const fallbackQuestions = categoryQuestions[category] || categoryQuestions['general'];
 
         // Agregar al historial para evitar repeticiones
         fallbackQuestions.forEach(q => this.addToHistory(q.pregunta));
