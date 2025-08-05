@@ -1,5 +1,5 @@
 // 🔐 SERVICIO STRAICO AI - Generación de Preguntas Inteligentes
-// Configuración para preguntas más complejas y basadas en el cronograma
+// Configuración para preguntas dinámicas y complejas usando IA real
 
 class StraicoService {
     constructor() {
@@ -101,16 +101,18 @@ class StraicoService {
 
     // Generar preguntas de conocimiento general (alta complejidad)
     async generateGeneralKnowledgeQuestions(student) {
-        const prompt = `Genera 5 preguntas de ALTA COMPLEJIDAD sobre innovación, emprendimiento y tecnología para el estudiante ${student}. 
+        const prompt = `Actúa como un profesor experto en innovación y emprendimiento. Genera 5 preguntas de ALTA COMPLEJIDAD sobre innovación, emprendimiento y tecnología para el estudiante ${student}.
 
-REQUISITOS:
-- Preguntas de nivel universitario avanzado
+INSTRUCCIONES:
+- Las preguntas deben ser de nivel universitario avanzado
 - Incluir conceptos de metodologías ágiles, lean startup, design thinking
 - Preguntas que requieran análisis crítico y aplicación práctica
 - Respuestas detalladas y fundamentadas
 - Dificultad: EXPERTA
+- NO uses preguntas básicas como "¿Qué es un MVP?"
+- Usa preguntas como "¿Cómo aplicarías el principio de pivot en un startup de IA?"
 
-FORMATO:
+RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
@@ -132,21 +134,22 @@ FORMATO:
         const currentWeek = this.getCurrentWeek();
         const weekData = this.COURSE_SCHEDULE[currentWeek];
         
-        const prompt = `Genera 5 preguntas de ALTA COMPLEJIDAD sobre los temas de la SEMANA ${currentWeek} del curso ISIS2007 para el estudiante ${student}.
+        const prompt = `Actúa como un profesor experto en innovación. Genera 5 preguntas de ALTA COMPLEJIDAD sobre los temas de la SEMANA ${currentWeek} del curso ISIS2007 para el estudiante ${student}.
 
 SEMANA ${currentWeek}:
 - Tema: ${weekData.topic}
 - Actividades: ${weekData.activities}
 - Conceptos clave: ${weekData.key_concepts.join(', ')}
 
-REQUISITOS:
-- Preguntas específicas sobre los conceptos de esta semana
+INSTRUCCIONES:
+- Preguntas ESPECÍFICAS sobre los conceptos de esta semana
 - Nivel de dificultad: EXPERTA
 - Incluir análisis crítico y aplicación práctica
 - Relacionar con casos reales de empresas tecnológicas
 - Respuestas detalladas con ejemplos
+- NO uses preguntas genéricas, usa el contexto específico de la semana
 
-FORMATO:
+RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
@@ -167,16 +170,17 @@ FORMATO:
 
     // Generar preguntas sobre tema específico (alta complejidad)
     async generateSpecificTopicQuestions(student, topic) {
-        const prompt = `Genera 5 preguntas de ALTA COMPLEJIDAD sobre "${topic}" para el estudiante ${student}.
+        const prompt = `Actúa como un profesor experto en innovación y tecnología. Genera 5 preguntas de ALTA COMPLEJIDAD sobre "${topic}" para el estudiante ${student}.
 
-REQUISITOS:
+INSTRUCCIONES:
 - Preguntas de nivel experto sobre el tema específico
 - Incluir análisis crítico, casos de estudio y aplicaciones prácticas
 - Relacionar con innovación, emprendimiento y tecnología
 - Respuestas detalladas con fundamentos teóricos y ejemplos
 - Dificultad: EXPERTA
+- NO uses preguntas básicas, usa preguntas que requieran análisis profundo
 
-FORMATO:
+RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
@@ -195,9 +199,11 @@ FORMATO:
         return await this.callStraicoAPI(prompt);
     }
 
-    // Llamada a la API de STRAICO
+    // Llamada a la API de STRAICO mejorada
     async callStraicoAPI(prompt) {
         try {
+            console.log('🔍 Debug: Llamando a STRAICO API...');
+            
             const response = await fetch(this.BASE_URL, {
                 method: 'POST',
                 headers: {
@@ -209,56 +215,97 @@ FORMATO:
                     messages: [
                         {
                             role: 'system',
-                            content: 'Eres un experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados.'
+                            content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido.'
                         },
                         {
                             role: 'user',
                             content: prompt
                         }
                     ],
-                    max_tokens: 2000,
-                    temperature: 0.7
+                    max_tokens: 3000,
+                    temperature: 0.8
                 })
             });
+
+            console.log('🔍 Debug: Status de respuesta:', response.status);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log('🔍 Debug: Respuesta de API:', data);
             
             if (data.choices && data.choices[0] && data.choices[0].message) {
                 const content = data.choices[0].message.content;
+                console.log('🔍 Debug: Contenido de respuesta:', content);
                 
                 try {
                     // Intentar parsear como JSON
                     const parsed = JSON.parse(content);
+                    console.log('🔍 Debug: JSON parseado exitosamente:', parsed);
                     return parsed;
                 } catch (parseError) {
-                    // Si no es JSON válido, crear estructura por defecto
-                    return {
-                        success: true,
-                        questions: [
-                            {
-                                pregunta: "¿Cuál es la diferencia fundamental entre un MVP y un prototipo en el contexto de lean startup?",
-                                respuesta_correcta: "Un MVP (Minimum Viable Product) es una versión del producto que permite validar hipótesis de negocio con clientes reales, mientras que un prototipo es una representación visual o funcional para demostrar conceptos. El MVP debe generar valor medible y feedback de usuarios reales.",
-                                explicacion: "El MVP es clave en la metodología lean startup para validar hipótesis de manera rápida y económica.",
-                                dificultad: "ALTA"
-                            }
-                        ],
-                        category: "fallback"
-                    };
+                    console.error('🔍 Debug: Error al parsear JSON:', parseError);
+                    console.log('🔍 Debug: Contenido que falló:', content);
+                    
+                    // Crear preguntas dinámicas por defecto basadas en el contexto
+                    return this.createDynamicFallbackQuestions();
                 }
             } else {
                 throw new Error('Respuesta inválida de la API');
             }
         } catch (error) {
-            console.error('Error en STRAICO API:', error);
-            return {
-                success: false,
-                error: error.message
-            };
+            console.error('🔍 Debug: Error en STRAICO API:', error);
+            return this.createDynamicFallbackQuestions();
         }
+    }
+
+    // Crear preguntas dinámicas por defecto
+    createDynamicFallbackQuestions() {
+        const currentWeek = this.getCurrentWeek();
+        const weekData = this.COURSE_SCHEDULE[currentWeek];
+        
+        return {
+            success: true,
+            questions: [
+                {
+                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso?`,
+                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
+                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})?`,
+                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
+                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}?`,
+                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
+                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
+                    dificultad: "ALTA",
+                    semana: currentWeek
+                },
+                {
+                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador?`,
+                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
+                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
+                    dificultad: "ALTA"
+                },
+                {
+                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya?`,
+                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
+                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
+                    dificultad: "ALTA"
+                }
+            ],
+            category: "fallback",
+            semana: currentWeek
+        };
     }
 }
 
