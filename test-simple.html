@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Simple STRAICO</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .loading { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Simple - Servicio STRAICO</h1>
+    
+    <div id="results"></div>
+    
+    <script src="straico-service.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(title, content, type = 'loading') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = `<h3>${title}</h3><pre>${content}</pre>`;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function runTests() {
+            console.log('🧪 Iniciando tests...');
+            
+            // Test 1: Verificar servicio
+            addResult('Test 1: Verificar Servicio', 'Verificando...');
+            try {
+                console.log('straicoService:', typeof straicoService);
+                console.log('getCurrentWeek:', typeof straicoService.getCurrentWeek);
+                addResult('Test 1: Verificar Servicio', 
+                    `✅ Servicio cargado correctamente\nstraicoService: ${typeof straicoService}\ngetCurrentWeek: ${typeof straicoService.getCurrentWeek}`, 
+                    'success');
+            } catch (error) {
+                addResult('Test 1: Verificar Servicio', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 2: Semana actual
+            addResult('Test 2: Semana Actual', 'Calculando...');
+            try {
+                const currentWeek = straicoService.getCurrentWeek();
+                const weekData = straicoService.COURSE_SCHEDULE[currentWeek];
+                addResult('Test 2: Semana Actual', 
+                    `✅ Semana actual: ${currentWeek}\nTema: ${weekData.topic}\nConceptos: ${weekData.key_concepts.join(', ')}`, 
+                    'success');
+            } catch (error) {
+                addResult('Test 2: Semana Actual', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Conexión STRAICO
+            addResult('Test 3: Conexión STRAICO', 'Probando conexión...');
+            try {
+                const response = await fetch('https://api.straico.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer Cf-Pv8Guv2e04tpPbfPWDZ9779KKfjkRMEhQQbkYw7gIo1Dhtb7',
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [{ role: 'user', content: 'Responde solo con "OK"' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('Test 3: Conexión STRAICO', 
+                        `✅ Conexión exitosa\nStatus: ${response.status}\nRespuesta: ${data.choices[0].message.content}`, 
+                        'success');
+                } else {
+                    addResult('Test 3: Conexión STRAICO', 
+                        `❌ Error de conexión\nStatus: ${response.status}\nStatusText: ${response.statusText}`, 
+                        'error');
+                }
+            } catch (error) {
+                addResult('Test 3: Conexión STRAICO', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 4: Preguntas generales
+            addResult('Test 4: Preguntas Generales', 'Generando...');
+            try {
+                const result = await straicoService.generateGeneralKnowledgeQuestions('Test Student');
+                addResult('Test 4: Preguntas Generales', 
+                    `✅ Preguntas generadas: ${result.success}\nNúmero de preguntas: ${result.questions ? result.questions.length : 0}\nPrimera pregunta: ${result.questions ? result.questions[0].pregunta.substring(0, 100) + '...' : 'N/A'}`, 
+                    'success');
+            } catch (error) {
+                addResult('Test 4: Preguntas Generales', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 5: Preguntas de clase
+            addResult('Test 5: Preguntas de Clase', 'Generando...');
+            try {
+                const result = await straicoService.generateClassTopicQuestions('Test Student');
+                addResult('Test 5: Preguntas de Clase', 
+                    `✅ Preguntas generadas: ${result.success}\nNúmero de preguntas: ${result.questions ? result.questions.length : 0}\nSemana: ${result.semana || 'N/A'}`, 
+                    'success');
+            } catch (error) {
+                addResult('Test 5: Preguntas de Clase', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 6: Preguntas específicas
+            addResult('Test 6: Preguntas Específicas', 'Generando...');
+            try {
+                const result = await straicoService.generateSpecificTopicQuestions('Test Student', 'Machine Learning');
+                addResult('Test 6: Preguntas Específicas', 
+                    `✅ Preguntas generadas: ${result.success}\nNúmero de preguntas: ${result.questions ? result.questions.length : 0}\nTema: ${result.tema || 'N/A'}`, 
+                    'success');
+            } catch (error) {
+                addResult('Test 6: Preguntas Específicas', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            addResult('🧪 RESULTADO FINAL', '✅ Todos los tests completados. Revisa los resultados arriba.', 'success');
+        }
+        
+        // Ejecutar tests cuando se cargue la página
+        window.onload = runTests;
+    </script>
+</body>
+</html> 

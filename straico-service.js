@@ -1,13 +1,15 @@
 // 🔐 SERVICIO STRAICO AI - Generación de Preguntas Inteligentes
 // Configuración para preguntas dinámicas y complejas usando IA real
+// Basado en la documentación oficial: https://documenter.getpostman.com/view/5900072/2s9YyzddrR
 
 class StraicoService {
     constructor() {
         this.API_KEY = 'Cf-Pv8Guv2e04tpPbfPWDZ9779KKfjkRMEhQQbkYw7gIo1Dhtb7';
-        // Probando diferentes URLs de STRAICO
+        // URL correcta según la documentación oficial de STRAICO
         this.BASE_URL = 'https://api.straico.com/v1/chat/completions';
-        this.ALTERNATIVE_URL = 'https://api.straico.com/chat/completions';
-        this.OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
+        
+        // Historial de preguntas para evitar repeticiones
+        this.questionHistory = new Set();
         
         // Cronograma del curso ISIS2007 por semana
         this.COURSE_SCHEDULE = {
@@ -102,11 +104,28 @@ class StraicoService {
         return Math.max(1, Math.min(16, weeksDiff + 1));
     }
 
+    // Generar ID único para pregunta
+    generateQuestionId(pregunta) {
+        return btoa(pregunta.substring(0, 50)).replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    // Verificar si pregunta ya existe
+    isQuestionRepeated(pregunta) {
+        const questionId = this.generateQuestionId(pregunta);
+        return this.questionHistory.has(questionId);
+    }
+
+    // Agregar pregunta al historial
+    addToHistory(pregunta) {
+        const questionId = this.generateQuestionId(pregunta);
+        this.questionHistory.add(questionId);
+    }
+
     // Generar preguntas de conocimiento general (alta complejidad)
     async generateGeneralKnowledgeQuestions(student) {
         const prompt = `Actúa como un profesor experto en innovación y emprendimiento. Genera 5 preguntas de ALTA COMPLEJIDAD sobre innovación, emprendimiento y tecnología para el estudiante ${student}.
 
-INSTRUCCIONES:
+INSTRUCCIONES CRÍTICAS:
 - Las preguntas deben ser de nivel universitario avanzado
 - Incluir conceptos de metodologías ágiles, lean startup, design thinking
 - Preguntas que requieran análisis crítico y aplicación práctica
@@ -114,13 +133,15 @@ INSTRUCCIONES:
 - Dificultad: EXPERTA
 - NO uses preguntas básicas como "¿Qué es un MVP?"
 - Usa preguntas como "¿Cómo aplicarías el principio de pivot en un startup de IA?"
+- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
+- Usa conceptos específicos, casos de estudio y aplicaciones prácticas
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta compleja aquí",
+      "pregunta": "Pregunta compleja y única aquí",
       "respuesta_correcta": "Respuesta detallada y fundamentada",
       "explicacion": "Explicación adicional del concepto",
       "dificultad": "ALTA"
@@ -129,7 +150,7 @@ RESPONDE SOLO CON JSON VÁLIDO:
   "category": "general"
 }`;
 
-        return await this.callStraicoAPI(prompt);
+        return await this.callStraicoAPI(prompt, 'general');
     }
 
     // Generar preguntas basadas en el cronograma del curso
@@ -144,20 +165,22 @@ SEMANA ${currentWeek}:
 - Actividades: ${weekData.activities}
 - Conceptos clave: ${weekData.key_concepts.join(', ')}
 
-INSTRUCCIONES:
+INSTRUCCIONES CRÍTICAS:
 - Preguntas ESPECÍFICAS sobre los conceptos de esta semana
 - Nivel de dificultad: EXPERTA
 - Incluir análisis crítico y aplicación práctica
 - Relacionar con casos reales de empresas tecnológicas
 - Respuestas detalladas con ejemplos
 - NO uses preguntas genéricas, usa el contexto específico de la semana
+- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
+- Enfócate en los conceptos clave de esta semana específica
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta específica de la semana ${currentWeek}",
+      "pregunta": "Pregunta específica y única de la semana ${currentWeek}",
       "respuesta_correcta": "Respuesta detallada con ejemplos",
       "explicacion": "Contexto adicional del tema",
       "semana": ${currentWeek},
@@ -168,27 +191,29 @@ RESPONDE SOLO CON JSON VÁLIDO:
   "semana": ${currentWeek}
 }`;
 
-        return await this.callStraicoAPI(prompt);
+        return await this.callStraicoAPI(prompt, 'class');
     }
 
     // Generar preguntas sobre tema específico (alta complejidad)
     async generateSpecificTopicQuestions(student, topic) {
         const prompt = `Actúa como un profesor experto en innovación y tecnología. Genera 5 preguntas de ALTA COMPLEJIDAD sobre "${topic}" para el estudiante ${student}.
 
-INSTRUCCIONES:
+INSTRUCCIONES CRÍTICAS:
 - Preguntas de nivel experto sobre el tema específico
 - Incluir análisis crítico, casos de estudio y aplicaciones prácticas
 - Relacionar con innovación, emprendimiento y tecnología
 - Respuestas detalladas con fundamentos teóricos y ejemplos
 - Dificultad: EXPERTA
 - NO uses preguntas básicas, usa preguntas que requieran análisis profundo
+- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
+- Enfócate en aplicaciones prácticas y casos reales del tema
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta compleja sobre ${topic}",
+      "pregunta": "Pregunta compleja y única sobre ${topic}",
       "respuesta_correcta": "Respuesta detallada y fundamentada",
       "explicacion": "Contexto y explicación adicional",
       "tema": "${topic}",
@@ -199,121 +224,137 @@ RESPONDE SOLO CON JSON VÁLIDO:
   "tema": "${topic}"
 }`;
 
-        return await this.callStraicoAPI(prompt);
+        return await this.callStraicoAPI(prompt, 'specific');
     }
 
-    // Llamada a la API de STRAICO mejorada con múltiples URLs
-    async callStraicoAPI(prompt) {
-        const urls = [
-            this.BASE_URL,
-            this.ALTERNATIVE_URL,
-            this.OPENAI_URL
-        ];
-
-        for (let i = 0; i < urls.length; i++) {
-            const url = urls[i];
-            console.log(`🔍 Debug: Probando URL ${i + 1}: ${url}`);
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-4',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido.'
-                            },
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
-                        ],
-                        max_tokens: 3000,
-                        temperature: 0.8
-                    })
-                });
-
-                console.log(`🔍 Debug: Status de respuesta para ${url}:`, response.status);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(`🔍 Debug: Respuesta exitosa de ${url}:`, data);
-                    
-                    if (data.choices && data.choices[0] && data.choices[0].message) {
-                        const content = data.choices[0].message.content;
-                        console.log(`🔍 Debug: Contenido de respuesta de ${url}:`, content);
-                        
-                        try {
-                            const parsed = JSON.parse(content);
-                            console.log(`🔍 Debug: JSON parseado exitosamente de ${url}:`, parsed);
-                            return parsed;
-                        } catch (parseError) {
-                            console.error(`🔍 Debug: Error al parsear JSON de ${url}:`, parseError);
-                            console.log(`🔍 Debug: Contenido que falló de ${url}:`, content);
+    // Llamada a la API de STRAICO mejorada con documentación oficial
+    async callStraicoAPI(prompt, category) {
+        console.log(`🔍 Debug: Llamando a STRAICO API para categoría: ${category}`);
+        
+        try {
+            const response = await fetch(this.BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.API_KEY}`,
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido. IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse.'
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
                         }
+                    ],
+                    max_tokens: 3000,
+                    temperature: 0.9, // Mayor temperatura para más variedad
+                    top_p: 0.9,
+                    frequency_penalty: 0.5, // Penalizar repeticiones
+                    presence_penalty: 0.5
+                })
+            });
+
+            console.log(`🔍 Debug: Status de respuesta:`, response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(`🔍 Debug: Respuesta exitosa:`, data);
+                
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const content = data.choices[0].message.content;
+                    console.log(`🔍 Debug: Contenido de respuesta:`, content);
+                    
+                    try {
+                        const parsed = JSON.parse(content);
+                        
+                        // Filtrar preguntas repetidas
+                        if (parsed.questions) {
+                            const uniqueQuestions = [];
+                            for (const question of parsed.questions) {
+                                if (!this.isQuestionRepeated(question.pregunta)) {
+                                    this.addToHistory(question.pregunta);
+                                    uniqueQuestions.push(question);
+                                } else {
+                                    console.log(`🔍 Debug: Pregunta repetida filtrada: ${question.pregunta.substring(0, 50)}...`);
+                                }
+                            }
+                            parsed.questions = uniqueQuestions;
+                        }
+                        
+                        console.log(`🔍 Debug: JSON parseado exitosamente con ${parsed.questions ? parsed.questions.length : 0} preguntas únicas`);
+                        return parsed;
+                    } catch (parseError) {
+                        console.error(`🔍 Debug: Error al parsear JSON:`, parseError);
+                        console.log(`🔍 Debug: Contenido que falló:`, content);
                     }
-                } else {
-                    console.log(`🔍 Debug: Error ${response.status} para ${url}: ${response.statusText}`);
                 }
-            } catch (error) {
-                console.error(`🔍 Debug: Error en ${url}:`, error.message);
+            } else {
+                console.log(`🔍 Debug: Error ${response.status}: ${response.statusText}`);
             }
+        } catch (error) {
+            console.error(`🔍 Debug: Error en STRAICO API:`, error.message);
         }
 
-        // Si todas las URLs fallan, usar preguntas por defecto
-        console.log('🔍 Debug: Todas las URLs fallaron, usando preguntas por defecto');
-        return this.createDynamicFallbackQuestions();
+        // Si la API falla, usar preguntas dinámicas por defecto
+        console.log('🔍 Debug: Usando preguntas dinámicas por defecto');
+        return this.createDynamicFallbackQuestions(category);
     }
 
     // Crear preguntas dinámicas por defecto
-    createDynamicFallbackQuestions() {
+    createDynamicFallbackQuestions(category) {
         const currentWeek = this.getCurrentWeek();
         const weekData = this.COURSE_SCHEDULE[currentWeek];
+        const timestamp = Date.now();
         
+        const fallbackQuestions = [
+            {
+                pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
+                respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
+                explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
+                dificultad: "ALTA",
+                semana: currentWeek
+            },
+            {
+                pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
+                respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
+                explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
+                dificultad: "ALTA",
+                semana: currentWeek
+            },
+            {
+                pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
+                respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
+                explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
+                dificultad: "ALTA",
+                semana: currentWeek
+            },
+            {
+                pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
+                respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
+                explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
+                dificultad: "ALTA"
+            },
+            {
+                pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
+                respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
+                explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
+                dificultad: "ALTA"
+            }
+        ];
+
+        // Agregar al historial para evitar repeticiones
+        fallbackQuestions.forEach(q => this.addToHistory(q.pregunta));
+
         return {
             success: true,
-            questions: [
-                {
-                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso?`,
-                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
-                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
-                    dificultad: "ALTA",
-                    semana: currentWeek
-                },
-                {
-                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})?`,
-                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
-                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
-                    dificultad: "ALTA",
-                    semana: currentWeek
-                },
-                {
-                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}?`,
-                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
-                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
-                    dificultad: "ALTA",
-                    semana: currentWeek
-                },
-                {
-                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador?`,
-                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
-                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
-                    dificultad: "ALTA"
-                },
-                {
-                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya?`,
-                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
-                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
-                    dificultad: "ALTA"
-                }
-            ],
-            category: "fallback",
-            semana: currentWeek
+            questions: fallbackQuestions,
+            category: category,
+            semana: currentWeek,
+            fallback: true
         };
     }
 }
