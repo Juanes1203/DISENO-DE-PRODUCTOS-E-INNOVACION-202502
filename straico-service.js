@@ -232,33 +232,40 @@ RESPONDE SOLO CON JSON VÁLIDO:
         console.log(`🔍 Debug: Llamando a STRAICO API para categoría: ${category}`);
         
         try {
+            // Intentar con diferentes configuraciones según la documentación
+            const requestBody = {
+                model: 'gpt-4',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido. IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse.'
+                    },
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ],
+                max_tokens: 3000,
+                temperature: 0.9,
+                top_p: 0.9,
+                frequency_penalty: 0.5,
+                presence_penalty: 0.5
+            };
+
+            console.log(`🔍 Debug: Request body:`, JSON.stringify(requestBody, null, 2));
+
             const response = await fetch(this.BASE_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.API_KEY}`,
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'Eres un profesor universitario experto en innovación, emprendimiento y tecnología. Genera preguntas de ALTA COMPLEJIDAD para estudiantes universitarios avanzados. SIEMPRE responde en formato JSON válido. IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse.'
-                        },
-                        {
-                            role: 'user',
-                            content: prompt
-                        }
-                    ],
-                    max_tokens: 3000,
-                    temperature: 0.9, // Mayor temperatura para más variedad
-                    top_p: 0.9,
-                    frequency_penalty: 0.5, // Penalizar repeticiones
-                    presence_penalty: 0.5
-                })
+                body: JSON.stringify(requestBody)
             });
 
             console.log(`🔍 Debug: Status de respuesta:`, response.status);
+            console.log(`🔍 Debug: Headers de respuesta:`, Object.fromEntries(response.headers.entries()));
 
             if (response.ok) {
                 const data = await response.json();
@@ -293,7 +300,9 @@ RESPONDE SOLO CON JSON VÁLIDO:
                     }
                 }
             } else {
+                const errorText = await response.text();
                 console.log(`🔍 Debug: Error ${response.status}: ${response.statusText}`);
+                console.log(`🔍 Debug: Error response:`, errorText);
             }
         } catch (error) {
             console.error(`🔍 Debug: Error en STRAICO API:`, error.message);

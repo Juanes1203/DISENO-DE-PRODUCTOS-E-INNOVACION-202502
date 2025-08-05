@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔑 Test API Key STRAICO</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>🔑 Test API Key STRAICO</h1>
+    
+    <div id="results"></div>
+    
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = `<h3>${title}</h3><pre>${content}</pre>`;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testAPIKey() {
+            const API_KEY = 'Cf-Pv8Guv2e04tpPbfPWDZ9779KKfjkRMEhQQbkYw7gIo1Dhtb7';
+            const BASE_URL = 'https://api.straico.com/v1/chat/completions';
+            
+            addResult('Test 1: Información de API', `API Key: ${API_KEY.substring(0, 10)}...\nURL: ${BASE_URL}`, 'info');
+            
+            // Test 2: Verificar si la URL existe
+            addResult('Test 2: Verificar URL', 'Probando conexión...');
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                    }
+                });
+                
+                if (response.ok) {
+                    addResult('Test 2: Verificar URL', `✅ URL accesible\nStatus: ${response.status}`, 'success');
+                } else {
+                    addResult('Test 2: Verificar URL', `❌ URL no accesible\nStatus: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('Test 2: Verificar URL', `❌ Error de conexión: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Probar con request simple
+            addResult('Test 3: Request Simple', 'Probando request simple...');
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: 'Responde solo con "OK"'
+                            }
+                        ],
+                        max_tokens: 10
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('Test 3: Request Simple', `✅ Request exitoso\nStatus: ${response.status}\nRespuesta: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('Test 3: Request Simple', `❌ Request falló\nStatus: ${response.status}\nError: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('Test 3: Request Simple', `❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Test 4: Probar con diferentes modelos
+            addResult('Test 4: Diferentes Modelos', 'Probando diferentes modelos...');
+            const models = ['gpt-4', 'gpt-3.5-turbo', 'claude-3-sonnet'];
+            
+            for (const model of models) {
+                try {
+                    const response = await fetch(BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`,
+                        },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: 'Responde solo con "OK"'
+                                }
+                            ],
+                            max_tokens: 10
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        addResult(`Test 4: Modelo ${model}`, `✅ Modelo ${model} funciona\nStatus: ${response.status}`, 'success');
+                    } else {
+                        const errorText = await response.text();
+                        addResult(`Test 4: Modelo ${model}`, `❌ Modelo ${model} falló\nStatus: ${response.status}\nError: ${errorText}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`Test 4: Modelo ${model}`, `❌ Error con ${model}: ${error.message}`, 'error');
+                }
+            }
+            
+            // Test 5: Verificar documentación
+            addResult('Test 5: Documentación', `📖 Documentación oficial: https://documenter.getpostman.com/view/5900072/2s9YyzddrR\n\nVerificar:\n1. URL correcta\n2. Headers requeridos\n3. Parámetros válidos\n4. API key válida`, 'info');
+        }
+        
+        // Ejecutar tests
+        window.onload = testAPIKey;
+    </script>
+</body>
+</html> 
