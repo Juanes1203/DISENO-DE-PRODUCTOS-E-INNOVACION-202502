@@ -701,6 +701,72 @@
             });
         }
 
+        // Cargar datos de asistencia
+        function loadAttendanceData() {
+            const saved = localStorage.getItem('attendanceData');
+            if (saved) {
+                attendanceData = JSON.parse(saved);
+            }
+            
+            // Migrar datos antiguos si es necesario
+            migrateOldData();
+        }
+
+        // Migrar datos antiguos a nuevo formato
+        function migrateOldData() {
+            let needsMigration = false;
+            
+            // Verificar si hay datos en formato antiguo
+            Object.keys(attendanceData).forEach(date => {
+                if (date !== '_session' && attendanceData[date]) {
+                    // Si los datos no tienen la estructura correcta, migrar
+                    if (!attendanceData[date]._session) {
+                        needsMigration = true;
+                    }
+                }
+            });
+            
+            if (needsMigration) {
+                console.log('🔧 Migrando datos de asistencia a nuevo formato...');
+                
+                // Crear nueva estructura
+                const newAttendanceData = {};
+                
+                Object.keys(attendanceData).forEach(date => {
+                    if (date !== '_session' && attendanceData[date]) {
+                        newAttendanceData[date] = {
+                            _session: {
+                                user: 'Sistema',
+                                role: 'Migración',
+                                timestamp: new Date().toISOString()
+                            },
+                            students: {}
+                        };
+                        
+                        // Migrar datos de estudiantes
+                        students.forEach(student => {
+                            const status = attendanceData[date][student];
+                            if (status) {
+                                newAttendanceData[date].students[student] = status;
+                            }
+                        });
+                    }
+                });
+                
+                attendanceData = newAttendanceData;
+                localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+                console.log('✅ Migración completada');
+            }
+        }
+
+        // Obtener estado del estudiante
+        function getStudentStatus(student, date) {
+            if (attendanceData[date] && attendanceData[date].students && attendanceData[date].students[student]) {
+                return attendanceData[date].students[student];
+            }
+            return null;
+        }
+
         // Alternar asistencia
         function toggleAttendance(student, card) {
             const currentStatus = getStudentStatus(student, currentDate);
@@ -716,11 +782,23 @@
                 card.classList.add('present');
             }
 
-            // Guardar en localStorage
+            // Guardar en localStorage con nueva estructura
             if (!attendanceData[currentDate]) {
-                attendanceData[currentDate] = {};
+                attendanceData[currentDate] = {
+                    _session: {
+                        user: currentUser ? currentUser.username : 'Sistema',
+                        role: currentUser ? currentUser.role : 'Usuario',
+                        timestamp: new Date().toISOString()
+                    },
+                    students: {}
+                };
             }
-            attendanceData[currentDate][student] = newStatus;
+            
+            if (!attendanceData[currentDate].students) {
+                attendanceData[currentDate].students = {};
+            }
+            
+            attendanceData[currentDate].students[student] = newStatus;
             localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
 
             // Actualizar estado visual
@@ -731,41 +809,44 @@
             updateStats();
         }
 
-        // Obtener estado del estudiante
-        function getStudentStatus(student, date) {
-            if (attendanceData[date] && attendanceData[date][student]) {
-                return attendanceData[date][student];
-            }
-            return null;
-        }
-
         // Guardar asistencia
         async function saveAttendance() {
             const date = document.getElementById('attendanceDate').value;
+            
+            // Inicializar estructura para la fecha si no existe
             if (!attendanceData[date]) {
-                attendanceData[date] = {};
+                attendanceData[date] = {
+                    _session: {
+                        user: currentUser.username,
+                        role: currentUser.role,
+                        timestamp: new Date().toISOString()
+                    },
+                    students: {}
+                };
+            }
+            
+            if (!attendanceData[date].students) {
+                attendanceData[date].students = {};
             }
 
             // Marcar todos los no registrados como ausentes
             students.forEach(student => {
-                if (!attendanceData[date][student]) {
-                    attendanceData[date][student] = 'absent';
+                if (!attendanceData[date].students[student]) {
+                    attendanceData[date].students[student] = 'absent';
                 }
             });
 
-            // Guardar registro de la sesión
-            if (!attendanceData[date]._session) {
-                attendanceData[date]._session = {
-                    user: currentUser.username,
-                    role: currentUser.role,
-                    timestamp: new Date().toISOString()
-                };
-            }
+            // Actualizar información de sesión
+            attendanceData[date]._session = {
+                user: currentUser.username,
+                role: currentUser.role,
+                timestamp: new Date().toISOString()
+            };
 
             localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
             
             // Sincronizar con Airtable si está configurado
-            if (AIRTABLE_CONFIG.API_KEY !== 'YOUR_AIRTABLE_API_KEY') {
+            if (typeof AIRTABLE_CONFIG !== 'undefined' && AIRTABLE_CONFIG.API_KEY !== 'YOUR_AIRTABLE_API_KEY') {
                 try {
                     showLoadingMessage('🔄 Sincronizando con Airtable...');
                     
@@ -941,14 +1022,6 @@
             document.getElementById('attendanceRate').textContent = rate + '%';
         }
 
-        // Cargar datos de asistencia
-        function loadAttendanceData() {
-            const saved = localStorage.getItem('attendanceData');
-            if (saved) {
-                attendanceData = JSON.parse(saved);
-            }
-        }
-
         // Cargar historial
         function loadHistory() {
             const tbody = document.getElementById('historyBody');
@@ -993,7 +1066,8 @@
                 semester: '2025-2',
                 students: students,
                 attendance: attendanceData,
-                exportDate: new Date().toISOString()
+                exportDate: new Date().toISOString(),
+                format: 'v2.0'
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
