@@ -477,6 +477,8 @@
     </style>
 </head>
 <body>
+    <!-- 🔐 Cargar configuración segura -->
+    <script src="config.js"></script>
     <!-- Barra de Navegación -->
     <div class="nav-bar">
         <a href="index.html" class="nav-brand">🚀 ISIS2007</a>
@@ -620,11 +622,12 @@
             'Zambrano Burbano, Mateo'
         ];
 
-            // Credenciales de acceso - CONTRASEÑAS SEGURAS Y MEMORIZABLES
-    const users = {
-        'prof.arturo.gomez': { password: 'Arturo2025#Uniandes$Profesor!', role: 'Profesor Principal' },
-                    'monitor.juanes.rodriguez': { password: 'Juanes2025#Monitor$Uniandes!', role: 'Monitor' },
-        'monitor.catalina.martinez': { password: 'Catalina2025#Monitor$Uniandes!', role: 'Monitor' }
+                    // 🔐 CONFIGURACIÓN SEGURA - Cargar desde config.js
+        // Las credenciales ahora están protegidas en variables de entorno
+        const users = window.CONFIG ? window.CONFIG.USERS : {
+            'prof.arturo.gomez': { password: 'Arturo2025#Uniandes$Profesor!', role: 'Profesor Principal' },
+            'monitor.juanes.rodriguez': { password: 'Juanes2025#Monitor$Uniandes!', role: 'Monitor' },
+            'monitor.catalina.martinez': { password: 'Catalina2025#Monitor$Uniandes!', role: 'Monitor' }
         };
 
         let currentUser = null;
