@@ -9,19 +9,19 @@
 ## 👥 **Usuarios del Sistema**
 
 ### **Profesor Principal**
-- **Usuario:** `arturo`
+- **Usuario:** `prof.arturo.gomez`
 - **Contraseña:** `Arturo2025#Uniandes$Profesor!`
 - **Rol:** Profesor Principal
 - **Acceso:** Sistema de Asistencia + Ruleta con IA
 
 ### **Monitor Juanes**
-- **Usuario:** `juanes`
+- **Usuario:** `monitor.juanes.rodriguez`
 - **Contraseña:** `Juanes2025#Monitor$Uniandes!`
 - **Rol:** Monitor
 - **Acceso:** Sistema de Asistencia + Ruleta con IA
 
 ### **Monitor Catalina**
-- **Usuario:** `catalina`
+- **Usuario:** `monitor.catalina.martinez`
 - **Contraseña:** `Catalina2025#Monitor$Uniandes!`
 - **Rol:** Monitor
 - **Acceso:** Sistema de Asistencia + Ruleta con IA
