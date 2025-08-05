@@ -448,6 +448,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
         .question-number {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -458,7 +465,19 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            margin-bottom: 15px;
+        }
+
+        .difficulty-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .difficulty-badge.alta {
+            background: #dc3545;
         }
 
         .question-text {
@@ -477,6 +496,45 @@
             padding: 10px 15px;
             border-radius: 8px;
             border-left: 3px solid #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .explanation-text {
+            font-size: 0.9rem;
+            color: #8e44ad;
+            font-weight: 500;
+            background: rgba(142, 68, 173, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #8e44ad;
+        }
+
+        .show-answer-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .show-answer-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .show-answer-btn.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .answer-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
         }
 
         .loading-spinner {
@@ -1023,17 +1081,24 @@
             }
         }
 
-        // Mostrar preguntas generadas
+        // Mostrar preguntas generadas con respuestas ocultas
         function displayQuestions(questions, category) {
             const questionsContainer = document.getElementById('questionsContainer');
             
             let categoryTitle = '';
+            let semanaInfo = '';
+            
             switch(category) {
                 case 'general':
                     categoryTitle = '🌍 Conocimiento General';
                     break;
                 case 'class':
-                    categoryTitle = '📚 Temas de la Clase';
+                    const currentWeek = straicoService.getCurrentWeek();
+                    categoryTitle = `📚 Temas de la Clase - Semana ${currentWeek}`;
+                    semanaInfo = `<br><small>📅 Basado en el cronograma actual del curso</small>`;
+                    break;
+                case 'specific':
+                    categoryTitle = `🎯 Tema Específico`;
                     break;
                 default:
                     categoryTitle = `🎯 ${category}`;
@@ -1042,23 +1107,56 @@
             let html = `
                 <div class="success-message">
                     ✅ Preguntas generadas para <strong>${currentStudent}</strong><br>
-                    Categoría: <strong>${categoryTitle}</strong>
+                    Categoría: <strong>${categoryTitle}</strong>${semanaInfo}
                 </div>
             `;
             
             questions.forEach((question, index) => {
+                const difficultyBadge = question.dificultad === 'ALTA' ? 
+                    '<span class="difficulty-badge alta">🔥 ALTA</span>' : 
+                    '<span class="difficulty-badge">📚 MEDIA</span>';
+                
                 html += `
-                    <div class="question-card">
-                        <div class="question-number">${index + 1}</div>
+                    <div class="question-card" id="question-${index}">
+                        <div class="question-header">
+                            <div class="question-number">${index + 1}</div>
+                            ${difficultyBadge}
+                        </div>
                         <div class="question-text">${question.pregunta}</div>
-                        <div class="answer-text">
-                            <strong>Respuesta:</strong> ${question.respuesta_correcta}
+                        <button class="show-answer-btn" onclick="toggleAnswer(${index})" id="btn-${index}">
+                            👁️ Mostrar Respuesta
+                        </button>
+                        <div class="answer-container" id="answer-${index}" style="display: none;">
+                            <div class="answer-text">
+                                <strong>✅ Respuesta:</strong> ${question.respuesta_correcta}
+                            </div>
+                            ${question.explicacion ? `
+                                <div class="explanation-text">
+                                    <strong>💡 Explicación:</strong> ${question.explicacion}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
             });
             
             questionsContainer.innerHTML = html;
+        }
+
+        // Función para mostrar/ocultar respuestas
+        function toggleAnswer(index) {
+            const answerContainer = document.getElementById(`answer-${index}`);
+            const toggleBtn = document.getElementById(`btn-${index}`);
+            
+            if (answerContainer.style.display === 'none') {
+                answerContainer.style.display = 'block';
+                toggleBtn.innerHTML = '🙈 Ocultar Respuesta';
+                toggleBtn.classList.add('active');
+            } else {
+                answerContainer.style.display = 'none';
+                toggleBtn.innerHTML = '👁️ Mostrar Respuesta';
+                toggleBtn.classList.remove('active');
+            }
         }
 
         // Mostrar mensaje de error
