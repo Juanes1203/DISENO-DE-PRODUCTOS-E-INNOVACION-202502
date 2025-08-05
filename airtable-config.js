@@ -48,7 +48,7 @@ function createAttendanceRecord(student, status, date, user, role) {
             [AIRTABLE_CONFIG.FIELDS.ESTADO]: status,
             [AIRTABLE_CONFIG.FIELDS.USUARIO_REGISTRO]: user,
             [AIRTABLE_CONFIG.FIELDS.ROL_USUARIO]: role,
-            [AIRTABLE_CONFIG.FIELDS.TIMESTAMP]: new Date().toISOString(),
+            [AIRTABLE_CONFIG.FIELDS.TIMESTAMP]: new Date().toISOString().replace('Z', ''),
             [AIRTABLE_CONFIG.FIELDS.CURSO]: 'ISIS2007 - Diseño de Productos e Innovación en TI'
         }
     };

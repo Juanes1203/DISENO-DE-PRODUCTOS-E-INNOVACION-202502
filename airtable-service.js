@@ -250,7 +250,7 @@ class AirtableService {
                     [this.config.FIELDS.ESTADO]: status,
                     [this.config.FIELDS.USUARIO_REGISTRO]: user,
                     [this.config.FIELDS.ROL_USUARIO]: role,
-                    [this.config.FIELDS.TIMESTAMP]: new Date().toISOString(),
+                    [this.config.FIELDS.TIMESTAMP]: new Date().toISOString().replace('Z', ''),
                     [this.config.FIELDS.CURSO]: 'ISIS2007 - Diseño de Productos e Innovación en TI'
                 }
             };
@@ -289,7 +289,7 @@ class AirtableService {
                     [this.config.FIELDS.ESTADO]: status,
                     [this.config.FIELDS.USUARIO_REGISTRO]: user,
                     [this.config.FIELDS.ROL_USUARIO]: role,
-                    [this.config.FIELDS.TIMESTAMP]: new Date().toISOString()
+                    [this.config.FIELDS.TIMESTAMP]: new Date().toISOString().replace('Z', '')
                 }
             };
 

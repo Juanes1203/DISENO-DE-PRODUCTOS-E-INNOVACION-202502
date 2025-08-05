@@ -738,7 +738,7 @@
                             _session: {
                                 user: 'Sistema',
                                 role: 'Migración',
-                                timestamp: new Date().toISOString()
+                                timestamp: new Date().toISOString().replace('Z', '')
                             },
                             students: {}
                         };
@@ -788,7 +788,7 @@
                     _session: {
                         user: currentUser ? currentUser.username : 'Sistema',
                         role: currentUser ? currentUser.role : 'Usuario',
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString().replace('Z', '')
                     },
                     students: {}
                 };
@@ -819,7 +819,7 @@
                     _session: {
                         user: currentUser.username,
                         role: currentUser.role,
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString().replace('Z', '')
                     },
                     students: {}
                 };
@@ -840,7 +840,7 @@
             attendanceData[date]._session = {
                 user: currentUser.username,
                 role: currentUser.role,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString().replace('Z', '')
             };
 
             localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
