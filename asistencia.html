@@ -8,6 +8,8 @@
     <!-- Configuración de Airtable -->
     <script src="airtable-config.js"></script>
     <script src="airtable-service.js"></script>
+    <!-- 🔐 Configuración segura de credenciales -->
+    <script src="config.js"></script>
     
     <style>
         * {
@@ -477,8 +479,7 @@
     </style>
 </head>
 <body>
-    <!-- 🔐 Cargar configuración segura -->
-    <script src="config.js"></script>
+
     <!-- Barra de Navegación -->
     <div class="nav-bar">
         <a href="index.html" class="nav-brand">🚀 ISIS2007</a>
@@ -623,11 +624,13 @@
         ];
 
                     // 🔐 CONFIGURACIÓN SEGURA - Cargar desde config.js
+        console.log('🔍 Debug: window.CONFIG =', window.CONFIG);
         const users = window.CONFIG ? window.CONFIG.USERS : {
             'prof.arturo.gomez': { password: 'Arturo2025#Uniandes$Profesor!', role: 'Profesor Principal' },
             'monitor.juanes.rodriguez': { password: 'Juanes2025#Monitor$Uniandes!', role: 'Monitor' },
             'monitor.catalina.martinez': { password: 'Catalina2025#Monitor$Uniandes!', role: 'Monitor' }
         };
+        console.log('🔍 Debug: users =', users);
 
         let currentUser = null;
         let attendanceData = {};
@@ -645,6 +648,10 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const messageDiv = document.getElementById('loginMessage');
+
+            console.log('🔍 Debug: Intentando login con:', { username, password });
+            console.log('🔍 Debug: Usuario encontrado:', users[username]);
+            console.log('🔍 Debug: Contraseña correcta:', users[username] ? users[username].password : 'Usuario no existe');
 
             if (users[username] && users[username].password === password) {
                 currentUser = { username, role: users[username].role };
