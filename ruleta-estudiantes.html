@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎯 Ruleta de Estudiantes - ISIS2007</title>
+    
+    <!-- Servicio de STRAICO AI -->
+    <script src="straico-service.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -92,14 +96,32 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1400px;
             width: 100%;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .roulette-section {
+            flex: 1;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             text-align: center;
+        }
+
+        .questions-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 600px;
+            text-align: left;
         }
 
         .header {
@@ -292,6 +314,7 @@
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
+                flex-direction: column;
             }
             
             .roulette-container {
@@ -307,6 +330,299 @@
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
+
+        /* Estilos para el panel de preguntas */
+        .questions-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .questions-header h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .questions-header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .category-selector {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .specific-topic-input {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .specific-topic-input input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .specific-topic-input input:focus {
+            border-color: #667eea;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+            margin-top: 15px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(243, 156, 18, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .questions-container {
+            margin-top: 30px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .answer-text {
+            font-size: 0.95rem;
+            color: #27ae60;
+            font-weight: 500;
+            background: rgba(39, 174, 96, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #27ae60;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Estilos para el sistema de login */
+        .login-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .login-form {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            margin-left: 15px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .login-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .login-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .login-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .login-info li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .login-info li:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -314,48 +630,116 @@
     <div class="nav-bar">
         <a href="index.html" class="nav-brand">🚀 ISIS2007</a>
         <div class="nav-links">
-            <a href="documento-completo.html" class="nav-link">📚 Curso</a>
             <a href="team.html" class="nav-link">👥 Equipo</a>
             <a href="schedule.html" class="nav-link">📅 Cronograma</a>
             <a href="ruleta-estudiantes.html" class="nav-link active">🎯 Ruleta</a>
+            <a href="asistencia.html" class="nav-link">📊 Asistencia</a>
             <a href="index.html" class="home-button">🏠 Inicio</a>
         </div>
     </div>
 
     <div class="container">
-        <div class="header">
-            <h1>🎯 Ruleta de Estudiantes</h1>
-            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        <!-- Sección de la Ruleta -->
+        <div class="roulette-section">
+            <div class="header">
+                <h1>🎯 Ruleta de Estudiantes</h1>
+                <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+            </div>
+
+            <div class="roulette-container">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel"></div>
+            </div>
+
+            <div class="controls">
+                <button class="spin-button" id="spinButton" onclick="spinWheel()">
+                    🎲 Girar Ruleta
+                </button>
+                <button class="spin-button" onclick="resetWheel()">
+                    🔄 Reiniciar
+                </button>
+            </div>
+
+            <div class="result" id="result">
+                <div class="selected-student" id="selectedStudent"></div>
+                <div class="student-count" id="studentCount"></div>
+            </div>
+
+            <div class="student-list">
+                <h3>📋 Lista Completa de Estudiantes</h3>
+                <div class="student-grid" id="studentGrid"></div>
+            </div>
+
+            <div class="footer">
+                <p><strong>Universidad de los Andes</strong></p>
+                <p>Departamento de Ingeniería de Sistemas y Computación</p>
+                <p>Semestre 2025-2</p>
+            </div>
         </div>
 
-        <div class="roulette-container">
-            <div class="pointer"></div>
-            <div class="wheel" id="wheel"></div>
+        <!-- Sección de Login -->
+        <div class="login-section" id="loginSection">
+            <div class="questions-header">
+                <h3>🔐 Acceso a la Ruleta</h3>
+                <p>Ingresa tus credenciales para acceder al sistema</p>
+            </div>
+
+            <div class="login-form">
+                <div class="input-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" placeholder="Ingresa tu usuario">
+                </div>
+                <div class="input-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña">
+                </div>
+                <button class="login-btn" onclick="login()">🔐 Iniciar Sesión</button>
+            </div>
+
+            <div class="login-info">
+                <h4>🔐 Información de Acceso</h4>
+                <p>Contacta al administrador del sistema para obtener tus credenciales de acceso.</p>
+            </div>
         </div>
 
-        <div class="controls">
-            <button class="spin-button" id="spinButton" onclick="spinWheel()">
-                🎲 Girar Ruleta
-            </button>
-            <button class="spin-button" onclick="resetWheel()">
-                🔄 Reiniciar
-            </button>
-        </div>
+        <!-- Sección de Preguntas con IA (solo visible después del login) -->
+        <div class="questions-section" id="questionsSection" style="display: none;">
+            <div class="questions-header">
+                <h3>🤖 Preguntas con IA</h3>
+                <p>Genera preguntas inteligentes para el estudiante seleccionado</p>
+                <button class="logout-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+            </div>
 
-        <div class="result" id="result">
-            <div class="selected-student" id="selectedStudent"></div>
-            <div class="student-count" id="studentCount"></div>
-        </div>
+            <div class="category-selector">
+                <div class="category-buttons">
+                    <button class="category-btn" onclick="selectCategory('general')" id="btnGeneral">
+                        🌍 Conocimiento General
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('class')" id="btnClass">
+                        📚 Temas de la Clase
+                    </button>
+                    <button class="category-btn" onclick="selectCategory('specific')" id="btnSpecific">
+                        🎯 Tema Específico
+                    </button>
+                </div>
 
-        <div class="student-list">
-            <h3>📋 Lista Completa de Estudiantes</h3>
-            <div class="student-grid" id="studentGrid"></div>
-        </div>
+                <div class="specific-topic-input" id="specificTopicInput">
+                    <input type="text" id="topicInput" placeholder="Escribe el tema específico (ej: UX Design, Innovación, etc.)">
+                </div>
 
-        <div class="footer">
-            <p><strong>Universidad de los Andes</strong></p>
-            <p>Departamento de Ingeniería de Sistemas y Computación</p>
-            <p>Semestre 2025-2</p>
+                <button class="generate-btn" id="generateBtn" onclick="generateQuestions()" disabled>
+                    🚀 Generar Preguntas con IA
+                </button>
+            </div>
+
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Generando preguntas con IA...</p>
+            </div>
+
+            <div class="questions-container" id="questionsContainer">
+                <!-- Las preguntas se mostrarán aquí -->
+            </div>
         </div>
     </div>
 
@@ -491,6 +875,18 @@
             
             // Actualizar lista de estudiantes
             updateStudentList();
+            
+            // Actualizar estudiante actual para el sistema de preguntas
+            updateCurrentStudent(student);
+            
+            // Mostrar mensaje de que se puede generar preguntas
+            const questionsContainer = document.getElementById('questionsContainer');
+            questionsContainer.innerHTML = `
+                <div class="success-message">
+                    ✅ Estudiante seleccionado: <strong>${student}</strong><br>
+                    Selecciona una categoría y genera preguntas con IA
+                </div>
+            `;
         }
 
         // Reiniciar ruleta
@@ -520,6 +916,217 @@
                 
                 studentGrid.appendChild(studentItem);
             });
+        }
+
+        // Variables para el sistema de preguntas
+        let selectedCategory = null;
+        let currentStudent = null;
+        let currentUser = null;
+
+        // Credenciales de acceso - CONTRASEÑAS SEGURAS Y MEMORIZABLES
+        const users = {
+            'arturo': { password: 'Arturo2025#Uniandes$Profesor!', role: 'Profesor Principal' },
+            'juanes': { password: 'Juanes2025#Monitor$Uniandes!', role: 'Monitor' },
+            'catalina': { password: 'Catalina2025#Monitor$Uniandes!', role: 'Monitor' }
+        };
+
+        // Seleccionar categoría de preguntas
+        function selectCategory(category) {
+            selectedCategory = category;
+            
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Agregar clase active al botón seleccionado
+            document.getElementById(`btn${category.charAt(0).toUpperCase() + category.slice(1)}`).classList.add('active');
+            
+            // Mostrar/ocultar input para tema específico
+            const specificInput = document.getElementById('specificTopicInput');
+            if (category === 'specific') {
+                specificInput.style.display = 'block';
+            } else {
+                specificInput.style.display = 'none';
+            }
+            
+            // Habilitar botón de generar si hay estudiante seleccionado
+            if (currentStudent) {
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        // Generar preguntas con IA
+        async function generateQuestions() {
+            if (!currentUser) {
+                alert('Por favor inicia sesión primero');
+                return;
+            }
+            
+            if (!currentStudent) {
+                alert('Primero selecciona un estudiante girando la ruleta');
+                return;
+            }
+            
+            if (!selectedCategory) {
+                alert('Selecciona una categoría de preguntas');
+                return;
+            }
+            
+            if (selectedCategory === 'specific') {
+                const topic = document.getElementById('topicInput').value.trim();
+                if (!topic) {
+                    alert('Escribe un tema específico');
+                    return;
+                }
+            }
+            
+            // Mostrar loading
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const generateBtn = document.getElementById('generateBtn');
+            const questionsContainer = document.getElementById('questionsContainer');
+            
+            loadingSpinner.style.display = 'block';
+            generateBtn.disabled = true;
+            questionsContainer.innerHTML = '';
+            
+            try {
+                let questions;
+                
+                if (selectedCategory === 'general') {
+                    questions = await straicoService.generateGeneralKnowledgeQuestions(currentStudent);
+                } else if (selectedCategory === 'class') {
+                    questions = await straicoService.generateClassTopicQuestions(currentStudent);
+                } else if (selectedCategory === 'specific') {
+                    const topic = document.getElementById('topicInput').value.trim();
+                    questions = await straicoService.generateSpecificTopicQuestions(currentStudent, topic);
+                }
+                
+                // Ocultar loading
+                loadingSpinner.style.display = 'none';
+                generateBtn.disabled = false;
+                
+                if (questions.success) {
+                    displayQuestions(questions.questions, questions.category);
+                } else {
+                    showErrorMessage('Error al generar preguntas');
+                }
+                
+            } catch (error) {
+                console.error('Error al generar preguntas:', error);
+                loadingSpinner.style.display = 'none';
+                generateBtn.disabled = false;
+                showErrorMessage('Error de conexión con la IA');
+            }
+        }
+
+        // Mostrar preguntas generadas
+        function displayQuestions(questions, category) {
+            const questionsContainer = document.getElementById('questionsContainer');
+            
+            let categoryTitle = '';
+            switch(category) {
+                case 'general':
+                    categoryTitle = '🌍 Conocimiento General';
+                    break;
+                case 'class':
+                    categoryTitle = '📚 Temas de la Clase';
+                    break;
+                default:
+                    categoryTitle = `🎯 ${category}`;
+            }
+            
+            let html = `
+                <div class="success-message">
+                    ✅ Preguntas generadas para <strong>${currentStudent}</strong><br>
+                    Categoría: <strong>${categoryTitle}</strong>
+                </div>
+            `;
+            
+            questions.forEach((question, index) => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-number">${index + 1}</div>
+                        <div class="question-text">${question.pregunta}</div>
+                        <div class="answer-text">
+                            <strong>Respuesta:</strong> ${question.respuesta_correcta}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            questionsContainer.innerHTML = html;
+        }
+
+        // Mostrar mensaje de error
+        function showErrorMessage(message) {
+            const questionsContainer = document.getElementById('questionsContainer');
+            questionsContainer.innerHTML = `
+                <div class="error-message">
+                    ❌ ${message}
+                </div>
+            `;
+        }
+
+        // Función de login
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Por favor ingresa usuario y contraseña');
+                return;
+            }
+
+            if (users[username] && users[username].password === password) {
+                currentUser = { username, role: users[username].role };
+                
+                // Ocultar sección de login y mostrar sección de preguntas
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('questionsSection').style.display = 'block';
+                
+                // Mostrar mensaje de bienvenida
+                const questionsContainer = document.getElementById('questionsContainer');
+                questionsContainer.innerHTML = `
+                    <div class="success-message">
+                        ✅ Bienvenido, <strong>${username}</strong> (${users[username].role})<br>
+                        Gira la ruleta para seleccionar un estudiante
+                    </div>
+                `;
+                
+                // Limpiar campos de login
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                
+            } else {
+                alert('Usuario o contraseña incorrectos');
+            }
+        }
+
+        // Función de logout
+        function logout() {
+            currentUser = null;
+            currentStudent = null;
+            selectedCategory = null;
+            
+            // Mostrar sección de login y ocultar sección de preguntas
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('questionsSection').style.display = 'none';
+            
+            // Limpiar preguntas
+            document.getElementById('questionsContainer').innerHTML = '';
+            
+            // Resetear ruleta
+            resetWheel();
+        }
+
+        // Actualizar estudiante actual cuando se selecciona
+        function updateCurrentStudent(student) {
+            currentStudent = student;
+            // Limpiar preguntas anteriores
+            document.getElementById('questionsContainer').innerHTML = '';
+            // Deshabilitar botón hasta seleccionar categoría
+            document.getElementById('generateBtn').disabled = true;
         }
 
         // Inicializar

@@ -3,9 +3,9 @@
 ## 🔐 **Autenticación y Seguridad**
 
 ### **Credenciales de Acceso:**
-- **Profesor Principal:** `arturo` / `ArturoHenao2025!`
-- **Monitor Juanes:** `juanes` / `JuanesMonitor2025!`
-- **Monitor Catalina:** `catalina` / `CatalinaMonitor2025!`
+- **Profesor Principal:** `arturo` / `Arturo2025#Uniandes$Profesor!`
+- **Monitor Juanes:** `juanes` / `Juanes2025#Monitor$Uniandes!`
+- **Monitor Catalina:** `catalina` / `Catalina2025#Monitor$Uniandes!`
 
 ### **Características de Seguridad:**
 - ✅ Contraseñas fuertes con mayúsculas, números y símbolos
