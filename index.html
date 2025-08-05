@@ -228,6 +228,31 @@
             color: #d63031;
         }
 
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #764ba2;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -275,24 +300,34 @@
             <h3>📊 Sistema de Evaluación</h3>
             <div class="evaluation-grid">
                 <div class="evaluation-item">
-                    <h4>Proyecto Final</h4>
-                    <div class="percentage">40%</div>
-                    <div class="description">Desarrollo completo de un producto innovador</div>
+                    <h4>Primera Entrega del Proyecto + Calificación Jurados</h4>
+                    <div class="percentage">30%</div>
+                    <div class="description">Primera entrega completa del proyecto con evaluación de jurados</div>
                 </div>
                 <div class="evaluation-item">
-                    <h4>Presentaciones</h4>
-                    <div class="percentage">25%</div>
-                    <div class="description">Presentaciones de avances y resultados</div>
+                    <h4>Segunda Entrega del Proyecto + Calificación Jurados</h4>
+                    <div class="percentage">30%</div>
+                    <div class="description">Entrega final del proyecto con evaluación de jurados</div>
                 </div>
                 <div class="evaluation-item">
-                    <h4>Participación</h4>
-                    <div class="percentage">20%</div>
-                    <div class="description">Participación activa en clase y actividades</div>
+                    <h4>Presentación de Pitch de Problema a Solucionar</h4>
+                    <div class="percentage">10%</div>
+                    <div class="description">Presentación del pitch del problema a solucionar</div>
                 </div>
                 <div class="evaluation-item">
-                    <h4>Tareas y Talleres</h4>
-                    <div class="percentage">15%</div>
-                    <div class="description">Ejercicios prácticos y entregables</div>
+                    <h4>Lean Canvas - Análisis de Ejemplos</h4>
+                    <div class="percentage">10%</div>
+                    <div class="description">Análisis de ejemplos en empresas de tecnología, Running Lean Part 1</div>
+                </div>
+                <div class="evaluation-item">
+                    <h4>Trabajo Grupal en Proyectos</h4>
+                    <div class="percentage">10%</div>
+                    <div class="description">Trabajo grupal en proyectos y entrega landing page</div>
+                </div>
+                <div class="evaluation-item">
+                    <h4>Semana de Innovación</h4>
+                    <div class="percentage">10%</div>
+                    <div class="description">Actividades especiales durante la semana de innovación</div>
                 </div>
             </div>
         </div>
@@ -300,6 +335,13 @@
         <div class="important-note">
             <strong>⚠️ Nota Importante:</strong> Todas las clases se realizan los miércoles a partir del 6 de agosto de 2025. 
             Este cronograma está organizado semanalmente para facilitar el seguimiento del curso.
+        </div>
+
+        <div class="navigation">
+            <div class="nav-buttons">
+                <a href="welcome.html" class="nav-button">🏠 Página Principal</a>
+                <a href="team.html" class="nav-button">👥 Equipo Docente</a>
+            </div>
         </div>
 
         <div class="schedule-table">
@@ -384,44 +426,44 @@
                         <tr>
                             <td><span class="week-number">10</span></td>
                             <td class="date">8 de octubre, 2025</td>
-                            <td class="topic">Presentación de Proyectos - Fase 1</td>
-                            <td class="activities">Presentación de investigaciones y definición de problemas</td>
-                            <td class="percentage">25%</td>
+                            <td class="topic">Presentación de Pitch de Problema</td>
+                            <td class="activities">Presentación del pitch del problema a solucionar</td>
+                            <td class="percentage">10%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">11</span></td>
                             <td class="date">15 de octubre, 2025</td>
-                            <td class="topic">Desarrollo de Soluciones</td>
-                            <td class="activities">Refinamiento de ideas, desarrollo de conceptos</td>
-                            <td class="percentage">-</td>
+                            <td class="topic">Lean Canvas - Análisis de Ejemplos</td>
+                            <td class="activities">Análisis de ejemplos en empresas de tecnología, Running Lean Part 1</td>
+                            <td class="percentage">10%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">12</span></td>
                             <td class="date">22 de octubre, 2025</td>
-                            <td class="topic">Implementación y Lanzamiento</td>
-                            <td class="activities">Estrategias de implementación, go-to-market, métricas</td>
-                            <td class="percentage">-</td>
+                            <td class="topic">Trabajo Grupal en Proyectos</td>
+                            <td class="activities">Trabajo grupal en proyectos y entrega landing page</td>
+                            <td class="percentage">10%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">13</span></td>
                             <td class="date">29 de octubre, 2025</td>
-                            <td class="topic">Sostenibilidad e Impacto</td>
-                            <td class="activities">Impacto social, sostenibilidad, escalabilidad</td>
-                            <td class="percentage">-</td>
+                            <td class="topic">Semana de Innovación</td>
+                            <td class="activities">Actividades especiales durante la semana de innovación</td>
+                            <td class="percentage">10%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">14</span></td>
                             <td class="date">5 de noviembre, 2025</td>
-                            <td class="topic">Presentación Final de Proyectos</td>
-                            <td class="activities">Presentación de proyectos completos, evaluación final</td>
-                            <td class="percentage">40%</td>
+                            <td class="topic">Primera Entrega del Proyecto + Calificación Jurados</td>
+                            <td class="activities">Primera entrega completa del proyecto con evaluación de jurados</td>
+                            <td class="percentage">30%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">15</span></td>
                             <td class="date">12 de noviembre, 2025</td>
-                            <td class="topic">Cierre del Curso</td>
-                            <td class="activities">Reflexiones finales, feedback, cierre académico</td>
-                            <td class="percentage">-</td>
+                            <td class="topic">Segunda Entrega del Proyecto + Calificación Jurados</td>
+                            <td class="activities">Entrega final del proyecto con evaluación de jurados</td>
+                            <td class="percentage">30%</td>
                         </tr>
                     </tbody>
                 </table>

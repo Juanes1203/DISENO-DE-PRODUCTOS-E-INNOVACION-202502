@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenidos - ISIS2007 Diseño de Productos e Innovación en TI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-message h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .course-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-info h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-item p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .navigation {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .navigation h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .header h2 {
+                font-size: 1.2rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Bienvenidos a ISIS2007</h1>
+            <h2>Diseño de Productos e Innovación en Tecnologías de Información</h2>
+            <p style="color: #7f8c8d; font-size: 1.1rem;">Semestre 2025-2 - Universidad de los Andes</p>
+        </div>
+
+        <div class="welcome-message">
+            <h3>🎯 ¿Qué aprenderás en este curso?</h3>
+            <p>
+                En este curso exploraremos las metodologías más innovadoras para el diseño de productos digitales, 
+                desde la investigación de usuarios hasta el lanzamiento de soluciones tecnológicas. 
+                Aprenderás a aplicar <span class="highlight">Design Thinking</span>, <span class="highlight">Lean UX</span> 
+                y metodologías ágiles para crear productos que resuelvan problemas reales.
+            </p>
+            <p>
+                Trabajarás en proyectos reales, desarrollando habilidades prácticas en investigación, 
+                prototipado, testing y presentación de soluciones innovadoras.
+            </p>
+        </div>
+
+        <div class="course-info">
+            <h3>📚 Información del Curso</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>📅 Horario</h4>
+                    <p>Miércoles - 15 semanas</p>
+                    <p>Inicio: 6 de agosto de 2025</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎓 Créditos</h4>
+                    <p>3 créditos</p>
+                    <p>Modalidad: Presencial</p>
+                </div>
+                <div class="info-item">
+                    <h4>👥 Sección</h4>
+                    <p>Sección 1</p>
+                    <p>Departamento de Ingeniería de Sistemas</p>
+                </div>
+                <div class="info-item">
+                    <h4>📊 Evaluación</h4>
+                    <p>Proyectos: 60%</p>
+                    <p>Actividades: 40%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <h3>📋 Navegación del Curso</h3>
+            <div class="nav-buttons">
+                <a href="team.html" class="nav-button">👥 Equipo Docente</a>
+                <a href="index.html" class="nav-button">📅 Cronograma</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+            <p>🕒 Última actualización: Agosto 2025</p>
+        </div>
+    </div>
+</body>
+</html> 

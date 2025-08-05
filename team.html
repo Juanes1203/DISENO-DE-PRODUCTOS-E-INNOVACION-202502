@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo Docente - ISIS2007</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .team-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-section h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .team-member {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .member-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .member-name {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .member-role {
+            color: #667eea;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .member-email {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .member-bio {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header h2 {
+                font-size: 1.1rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 Equipo Docente</h1>
+            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        </div>
+
+        <div class="team-section">
+            <h3>🎓 Nuestro Equipo</h3>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="FotoArturo.jpg" alt="Arturo Henao Chaparro" class="member-photo">
+                    <div class="member-name">Arturo Henao Chaparro</div>
+                    <div class="role-badge">Profesor Principal</div>
+                    <div class="member-email">📧 a.henao59@uniandes.edu.co</div>
+                    <div class="member-bio">
+                        Profesor del Departamento de Ingeniería de Sistemas y Computación. 
+                        Experto en diseño de productos digitales, innovación tecnológica y metodologías ágiles. 
+                        Líder en proyectos de transformación digital y emprendimiento tecnológico.
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="FotoJuanes.jpg" alt="Juan Esteban Jiménez Benavides" class="member-photo">
+                    <div class="member-name">Juan Esteban Jiménez Benavides</div>
+                    <div class="role-badge">Monitor</div>
+                    <div class="member-email">📧 j.jimenezb@uniandes.edu.co</div>
+                    <div class="member-bio">
+                        Monitor del curso con experiencia en desarrollo de productos digitales y metodologías de innovación. 
+                        Apoya en la implementación de proyectos prácticos y mentoría a estudiantes.
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="FotoCatalina.jpg" alt="Catalina Álvarez Latorre" class="member-photo">
+                    <div class="member-name">Catalina Álvarez Latorre</div>
+                    <div class="role-badge">Monitor</div>
+                    <div class="member-email">📧 c.alvarezl2@uniandes.edu.co</div>
+                    <div class="member-bio">
+                        Monitor del curso especializada en investigación de usuarios y diseño centrado en el usuario. 
+                        Apoya en la facilitación de talleres y seguimiento de proyectos estudiantiles.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <div class="nav-buttons">
+                <a href="welcome.html" class="nav-button">🏠 Página Principal</a>
+                <a href="index.html" class="nav-button">📅 Cronograma</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+            <p>🕒 Última actualización: Agosto 2025</p>
+        </div>
+    </div>
+</body>
+</html> 
