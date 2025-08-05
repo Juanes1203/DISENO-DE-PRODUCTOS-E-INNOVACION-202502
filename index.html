@@ -1,1 +1,341 @@
- 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenidos - ISIS2007 Diseño de Productos e Innovación en TI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-message h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .course-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-info h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-item p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .navigation {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .navigation h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .objectives-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .objective-item {
+            background: #f0f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .objective-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .objective-item p {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        .ai-note {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-style: italic;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .header h2 {
+                font-size: 1.2rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Bienvenidos a ISIS2007</h1>
+            <h2>Diseño de Productos e Innovación en Tecnologías de Información</h2>
+            <p style="color: #7f8c8d; font-size: 1.1rem;">Semestre 2025-2 - Universidad de los Andes</p>
+        </div>
+
+        <div class="welcome-message">
+            <h3>🎯 ¿Qué aprenderás en este curso?</h3>
+            <p>
+                Este curso se encuentra situado en la línea de formación en proyectos e innovación en el programa de Ingeniería en la Universidad de los Andes. 
+                Después de la experiencia en primer semestre para el desarrollo de proyectos con ExpoAndes, durante un semestre los estudiantes van a trabajar 
+                en la definición y desarrollo de proyectos de innovación con tecnología informática. Estos proyectos tienen la ambición de ser sostenibles 
+                en el tiempo y competitivos a nivel internacional.
+            </p>
+            <p>
+                Esta dinámica debe verse reforzada con los conocimientos y competencias que se adquieren en la segunda mitad de la formación del ingeniero. 
+                Las actividades de los estudiantes en el proyecto de grado, que tiene una vocación de síntesis, pueden ser un factor de éxito para que algunos 
+                de estos proyectos iniciados en este curso encuentren un espacio en el mundo empresarial y/o académico.
+            </p>
+            
+            <div class="objectives-section">
+                <h4>🎯 Objetivos del Curso</h4>
+                <div class="objectives-grid">
+                    <div class="objective-item">
+                        <span class="objective-number">1</span>
+                        <p>Desarrollar capacidades en la conformación y organización de equipos de trabajo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">2</span>
+                        <p>Desarrollar competencias en el desarrollo de proyectos de innovación</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">3</span>
+                        <p>Desarrollar competencias de comunicación oral y escrita alrededor del desarrollo de proyectos</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">4</span>
+                        <p>Reforzar los procesos de aprendizaje autónomo</p>
+                    </div>
+                    <div class="objective-item">
+                        <span class="objective-number">5</span>
+                        <p>Buscar una exposición nacional e internacional de los resultados</p>
+                    </div>
+                </div>
+                <p class="ai-note">
+                    <strong>🤖 Con un enfoque innovador apoyado de la inteligencia artificial</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="course-info">
+            <h3>📚 Información del Curso</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>📅 Horario</h4>
+                    <p>Miércoles - 15 semanas</p>
+                    <p>Inicio: 6 de agosto de 2025</p>
+                </div>
+                <div class="info-item">
+                    <h4>🎓 Créditos</h4>
+                    <p>3 créditos</p>
+                    <p>Modalidad: Presencial</p>
+                </div>
+                <div class="info-item">
+                    <h4>👥 Sección</h4>
+                    <p>Sección 2</p>
+                    <p>Departamento de Ingeniería de Sistemas</p>
+                </div>
+                <div class="info-item">
+                    <h4>📊 Evaluación</h4>
+                    <p>Proyectos: 60%</p>
+                    <p>Actividades: 40%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <h3>📋 Navegación del Curso</h3>
+            <div class="nav-buttons">
+                <a href="team.html" class="nav-button">👥 Equipo Docente</a>
+                <a href="schedule.html" class="nav-button">📅 Cronograma</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+        </div>
+    </div>
+</body>
+</html> 

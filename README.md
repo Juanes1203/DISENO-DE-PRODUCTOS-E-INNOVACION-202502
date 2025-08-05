@@ -30,9 +30,7 @@ El sitio estará disponible en: `https://[tu-usuario].github.io/[nombre-del-repo
 ## 📁 Estructura del Repositorio
 
 ```
-├── index.html                    # Página principal de bienvenida
-├── schedule.html                 # Cronograma de clases
-├── team.html                     # Equipo docente
+├── index.html                    # Página principal del cronograma
 ├── README.md                     # Este archivo
 └── Copia de Copia de ISIS2007-202410-Cronograma-Sección 1.xlsx  # Archivo Excel original
 ```
