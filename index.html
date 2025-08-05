@@ -67,6 +67,52 @@
             margin-bottom: 8px;
         }
 
+        .evaluation-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .evaluation-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .evaluation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .evaluation-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .evaluation-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .evaluation-item .percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .evaluation-item .description {
+            color: #555;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
         .schedule-table {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
@@ -141,6 +187,21 @@
             font-size: 0.9rem;
         }
 
+        .percentage {
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .evaluation-badge {
+            background: #e8f5e8;
+            color: #2d5a2d;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
         .footer {
             text-align: center;
             background: rgba(255, 255, 255, 0.9);
@@ -188,6 +249,10 @@
             .table-container {
                 font-size: 0.8rem;
             }
+
+            .evaluation-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -204,6 +269,32 @@
             <p><strong>Sección:</strong> 1</p>
             <p><strong>Horario:</strong> Miércoles</p>
             <p><strong>Inicio:</strong> 6 de agosto de 2025</p>
+        </div>
+
+        <div class="evaluation-section">
+            <h3>📊 Sistema de Evaluación</h3>
+            <div class="evaluation-grid">
+                <div class="evaluation-item">
+                    <h4>Proyecto Final</h4>
+                    <div class="percentage">40%</div>
+                    <div class="description">Desarrollo completo de un producto innovador</div>
+                </div>
+                <div class="evaluation-item">
+                    <h4>Presentaciones</h4>
+                    <div class="percentage">25%</div>
+                    <div class="description">Presentaciones de avances y resultados</div>
+                </div>
+                <div class="evaluation-item">
+                    <h4>Participación</h4>
+                    <div class="percentage">20%</div>
+                    <div class="description">Participación activa en clase y actividades</div>
+                </div>
+                <div class="evaluation-item">
+                    <h4>Tareas y Talleres</h4>
+                    <div class="percentage">15%</div>
+                    <div class="description">Ejercicios prácticos y entregables</div>
+                </div>
+            </div>
         </div>
 
         <div class="important-note">
@@ -223,6 +314,7 @@
                             <th>Fecha</th>
                             <th>Tema/Actividad</th>
                             <th>Descripción</th>
+                            <th>Evaluación</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -231,90 +323,105 @@
                             <td class="date">6 de agosto, 2025</td>
                             <td class="topic">Introducción al curso</td>
                             <td class="activities">Presentación del syllabus, objetivos del curso, metodología de evaluación</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">2</span></td>
                             <td class="date">13 de agosto, 2025</td>
                             <td class="topic">Fundamentos del Diseño de Productos</td>
                             <td class="activities">Conceptos básicos, principios de diseño, metodologías</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">3</span></td>
                             <td class="date">20 de agosto, 2025</td>
                             <td class="topic">Innovación en Tecnologías de Información</td>
                             <td class="activities">Tendencias tecnológicas, casos de estudio, análisis de innovación</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">4</span></td>
                             <td class="date">27 de agosto, 2025</td>
                             <td class="topic">Metodologías de Diseño</td>
                             <td class="activities">Design Thinking, Lean UX, Agile methodologies</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">5</span></td>
                             <td class="date">3 de septiembre, 2025</td>
                             <td class="topic">Investigación de Usuarios</td>
                             <td class="activities">Técnicas de investigación, entrevistas, encuestas, análisis de datos</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">6</span></td>
                             <td class="date">10 de septiembre, 2025</td>
                             <td class="topic">Definición de Problemas</td>
                             <td class="activities">Identificación de oportunidades, definición de problemas, statement de diseño</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">7</span></td>
                             <td class="date">17 de septiembre, 2025</td>
                             <td class="topic">Generación de Ideas</td>
                             <td class="activities">Brainstorming, técnicas de creatividad, divergencia y convergencia</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">8</span></td>
                             <td class="date">24 de septiembre, 2025</td>
                             <td class="topic">Prototipado</td>
                             <td class="activities">Tipos de prototipos, herramientas, iteración rápida</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">9</span></td>
                             <td class="date">1 de octubre, 2025</td>
                             <td class="topic">Testing y Validación</td>
                             <td class="activities">Métodos de testing, feedback de usuarios, iteración</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">10</span></td>
                             <td class="date">8 de octubre, 2025</td>
                             <td class="topic">Presentación de Proyectos - Fase 1</td>
                             <td class="activities">Presentación de investigaciones y definición de problemas</td>
+                            <td class="percentage">25%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">11</span></td>
                             <td class="date">15 de octubre, 2025</td>
                             <td class="topic">Desarrollo de Soluciones</td>
                             <td class="activities">Refinamiento de ideas, desarrollo de conceptos</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">12</span></td>
                             <td class="date">22 de octubre, 2025</td>
                             <td class="topic">Implementación y Lanzamiento</td>
                             <td class="activities">Estrategias de implementación, go-to-market, métricas</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">13</span></td>
                             <td class="date">29 de octubre, 2025</td>
                             <td class="topic">Sostenibilidad e Impacto</td>
                             <td class="activities">Impacto social, sostenibilidad, escalabilidad</td>
+                            <td class="percentage">-</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">14</span></td>
                             <td class="date">5 de noviembre, 2025</td>
                             <td class="topic">Presentación Final de Proyectos</td>
                             <td class="activities">Presentación de proyectos completos, evaluación final</td>
+                            <td class="percentage">40%</td>
                         </tr>
                         <tr>
                             <td><span class="week-number">15</span></td>
                             <td class="date">12 de noviembre, 2025</td>
                             <td class="topic">Cierre del Curso</td>
                             <td class="activities">Reflexiones finales, feedback, cierre académico</td>
+                            <td class="percentage">-</td>
                         </tr>
                     </tbody>
                 </table>
