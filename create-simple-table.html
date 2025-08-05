@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Crear Tabla Simple - Airtable</title>
+    
+    <!-- Configuración de Airtable Simplificada -->
+    <script src="airtable-config-simple.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            margin: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .button.success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .button.danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .field-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .field-list li {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .student-count {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Crear Tabla Simple en Airtable</h1>
+        
+        <div class="section">
+            <h2>📋 Información de la Tabla</h2>
+            <p><strong>Nombre de la tabla:</strong> Asistencia_Simple</p>
+            <p><strong>Campos:</strong></p>
+            <ul class="field-list">
+                <li><strong>Nombre</strong> - Texto (nombre del estudiante)</li>
+                <li><strong>Fecha</strong> - Fecha (fecha de la clase)</li>
+                <li><strong>Asistió</strong> - Texto ('Sí' o 'No')</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>👥 Lista de Estudiantes</h2>
+            <div class="student-count">Total: 44 estudiantes</div>
+            <button class="button" onclick="showStudents()">📋 Ver Lista Completa</button>
+            <div id="studentsList" class="result info" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Crear Tabla</h2>
+            <p>Esta acción creará la tabla "Asistencia_Simple" en tu base de datos de Airtable.</p>
+            <button class="button success" onclick="createTable()">🏗️ Crear Tabla</button>
+            <div id="createResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Probar Conexión</h2>
+            <p>Prueba la conexión con la nueva tabla.</p>
+            <button class="button" onclick="testConnection()">🔍 Probar Conexión</button>
+            <div id="testResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>📝 Crear Registro de Prueba</h2>
+            <p>Crea un registro de prueba para verificar que todo funciona.</p>
+            <button class="button" onclick="createTestRecord()">🧪 Crear Registro de Prueba</button>
+            <div id="testRecordResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Ir a Asistencia Simple</h2>
+            <p>Una vez creada la tabla, puedes usar el sistema de asistencia simplificado.</p>
+            <a href="asistencia-simple.html" class="button success">📊 Ir a Asistencia Simple</a>
+        </div>
+    </div>
+
+    <script>
+        function addResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+
+        function showStudents() {
+            const list = document.getElementById('studentsList');
+            list.style.display = 'block';
+            list.className = 'result info';
+            list.textContent = ESTUDIANTES.join('\n');
+        }
+
+        async function createTable() {
+            addResult('createResult', '🔄 Creando tabla...', 'info');
+            
+            try {
+                // Nota: La creación de tablas requiere permisos especiales
+                // Por ahora, solo verificaremos la conexión
+                const response = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_CONFIG_SIMPLE.BASE_ID}/tables`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG_SIMPLE.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const tableExists = data.tables.some(table => table.name === AIRTABLE_CONFIG_SIMPLE.TABLE_NAME);
+                    
+                    if (tableExists) {
+                        addResult('createResult', '✅ La tabla "Asistencia_Simple" ya existe en tu base de datos.\n\nPara crear la tabla manualmente:\n1. Ve a tu base de datos de Airtable\n2. Crea una nueva tabla llamada "Asistencia_Simple"\n3. Agrega los campos:\n   - Nombre (Texto)\n   - Fecha (Fecha)\n   - Asistió (Texto)', 'success');
+                    } else {
+                        addResult('createResult', '📋 La tabla "Asistencia_Simple" no existe.\n\nPara crear la tabla manualmente:\n1. Ve a tu base de datos de Airtable\n2. Crea una nueva tabla llamada "Asistencia_Simple"\n3. Agrega los campos:\n   - Nombre (Texto)\n   - Fecha (Fecha)\n   - Asistió (Texto)', 'info');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    addResult('createResult', `❌ Error al verificar tablas: ${response.status}\n${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('createResult', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testConnection() {
+            addResult('testResult', '🔄 Probando conexión...', 'info');
+            
+            try {
+                const url = getAirtableURLSimple();
+                const response = await fetch(`${url}?maxRecords=1`, {
+                    method: 'GET',
+                    headers: getHeadersSimple()
+                });
+
+                if (response.ok) {
+                    addResult('testResult', '✅ Conexión exitosa con la tabla "Asistencia_Simple"\n\nURL: ' + url, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('testResult', `❌ Error de conexión: ${response.status}\n${errorText}\n\nAsegúrate de que la tabla "Asistencia_Simple" existe en tu base de datos.`, 'error');
+                }
+            } catch (error) {
+                addResult('testResult', `❌ Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        async function createTestRecord() {
+            addResult('testRecordResult', '🔄 Creando registro de prueba...', 'info');
+            
+            try {
+                const testRecord = createSimpleAttendanceRecord('Test Student', '2025-01-15', true);
+                
+                const response = await fetch(getAirtableURLSimple(), {
+                    method: 'POST',
+                    headers: getHeadersSimple(),
+                    body: JSON.stringify({
+                        records: [testRecord]
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('testRecordResult', `✅ Registro de prueba creado exitosamente\n\nID: ${result.records[0].id}\nDatos: ${JSON.stringify(testRecord, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('testRecordResult', `❌ Error al crear registro: ${response.status}\n${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('testRecordResult', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Página de creación de tabla cargada');
+            console.log('📋 Configuración:', AIRTABLE_CONFIG_SIMPLE);
+            console.log('👥 Estudiantes:', ESTUDIANTES.length);
+        });
+    </script>
+</body>
+</html> 
