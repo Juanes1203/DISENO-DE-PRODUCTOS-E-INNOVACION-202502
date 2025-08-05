@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenidos - ISIS2007 Diseño de Productos e Innovación en TI</title>
+    <title>ISIS2007 - Diseño de Productos e Innovación en TI</title>
     <style>
         * {
             margin: 0;
@@ -47,6 +47,57 @@
             font-size: 1.5rem;
             font-weight: 400;
             margin-bottom: 20px;
+        }
+
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .nav-card.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .nav-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .nav-title {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .nav-description {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         .welcome-message {
@@ -102,145 +153,63 @@
 
         .info-item h4 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
         .info-item p {
             color: #555;
-            font-size: 1rem;
-        }
-
-        .navigation {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .navigation h3 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            font-size: 0.9rem;
         }
 
         .footer {
             text-align: center;
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         .footer p {
             color: #7f8c8d;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
         }
 
-        .highlight {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: bold;
+        .coming-soon {
+            opacity: 0.6;
+            position: relative;
         }
 
-        .objectives-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .objectives-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .objective-item {
-            background: #f0f7fa;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .objective-number {
-            background: #667eea;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 50%;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-right: 10px;
-            flex-shrink: 0;
-        }
-
-        .objective-item p {
+        .coming-soon::after {
+            content: "Próximamente";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffc107;
             color: #333;
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-
-        .ai-note {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #ccc;
-            font-style: italic;
-            color: #555;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
-
+            
             .header h1 {
                 font-size: 2.2rem;
             }
-
-            .header h2 {
-                font-size: 1.2rem;
+            
+            .navigation-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
-
-            .nav-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-button {
-                width: 100%;
-                max-width: 300px;
+            
+            .nav-card {
+                padding: 25px;
             }
         }
     </style>
@@ -248,67 +217,100 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Bienvenidos a ISIS2007</h1>
+            <h1>🚀 ISIS2007</h1>
             <h2>Diseño de Productos e Innovación en Tecnologías de Información</h2>
             <p style="color: #7f8c8d; font-size: 1.1rem;">Semestre 2025-2 - Universidad de los Andes</p>
         </div>
 
         <div class="welcome-message">
-            <h3>🎯 ¿Qué aprenderás en este curso?</h3>
+            <h3>🎯 Bienvenidos al Portal del Curso</h3>
             <p>
-                Este curso se encuentra situado en la línea de formación en proyectos e innovación en el programa de Ingeniería en la Universidad de los Andes. 
-                Después de la experiencia en primer semestre para el desarrollo de proyectos con ExpoAndes, durante un semestre los estudiantes van a trabajar 
-                en la definición y desarrollo de proyectos de innovación con tecnología informática. Estos proyectos tienen la ambición de ser sostenibles 
-                en el tiempo y competitivos a nivel internacional.
+                Este es el centro de navegación para todos los recursos y herramientas del curso ISIS2007. 
+                Aquí encontrarás información del curso, equipo docente, cronograma, herramientas interactivas 
+                y más contenido que se irá agregando durante el semestre.
             </p>
             <p>
-                <strong>Nos orientamos mucho en aplicar la metodología Lean Startup</strong>, que nos permite desarrollar productos de manera iterativa y 
-                basada en evidencia, validando hipótesis con usuarios reales desde las primeras etapas del desarrollo. Esta metodología nos ayuda a 
-                minimizar el riesgo y maximizar las posibilidades de éxito de nuestros proyectos.
+                <strong>Navega por las diferentes secciones</strong> usando los enlaces de abajo para acceder 
+                a toda la información del curso de manera organizada y fácil.
             </p>
-            <p>
-                <strong>Los proyectos tienen que usar Generative AI sí o sí</strong>, ya que consideramos que la inteligencia artificial generativa es 
-                una herramienta fundamental para la innovación en la actualidad. Los estudiantes aprenderán a integrar estas tecnologías de manera 
-                ética y efectiva en sus proyectos, explorando nuevas posibilidades de creación de valor.
-            </p>
-            <p>
-                Esta dinámica debe verse reforzada con los conocimientos y competencias que se adquieren en la segunda mitad de la formación del ingeniero. 
-                Las actividades de los estudiantes en el proyecto de grado, que tiene una vocación de síntesis, pueden ser un factor de éxito para que algunos 
-                de estos proyectos iniciados en este curso encuentren un espacio en el mundo empresarial y/o académico.
-            </p>
-            
-            <div class="objectives-section">
-                <h4>🎯 Objetivos del Curso</h4>
-                <div class="objectives-grid">
-                    <div class="objective-item">
-                        <span class="objective-number">1</span>
-                        <p>Desarrollar capacidades en la conformación y organización de equipos de trabajo</p>
-                    </div>
-                    <div class="objective-item">
-                        <span class="objective-number">2</span>
-                        <p>Desarrollar competencias en el desarrollo de proyectos de innovación</p>
-                    </div>
-                    <div class="objective-item">
-                        <span class="objective-number">3</span>
-                        <p>Desarrollar competencias de comunicación oral y escrita alrededor del desarrollo de proyectos</p>
-                    </div>
-                    <div class="objective-item">
-                        <span class="objective-number">4</span>
-                        <p>Reforzar los procesos de aprendizaje autónomo</p>
-                    </div>
-                    <div class="objective-item">
-                        <span class="objective-number">5</span>
-                        <p>Buscar una exposición nacional e internacional de los resultados</p>
-                    </div>
+        </div>
+
+        <div class="navigation-grid">
+            <!-- Sistema de Asistencia -->
+            <a href="asistencia.html" class="nav-card">
+                <span class="nav-icon">📊</span>
+                <div class="nav-title">Sistema de Asistencia</div>
+                <div class="nav-description">
+                    Control de asistencia con autenticación para profesores y monitores. Registro de fechas y estadísticas.
                 </div>
-                <p class="ai-note">
-                    <strong>🤖 Con un enfoque innovador apoyado de la inteligencia artificial</strong>
-                </p>
+            </a>
+
+            <!-- Equipo Docente -->
+            <a href="team.html" class="nav-card">
+                <span class="nav-icon">👥</span>
+                <div class="nav-title">Equipo Docente</div>
+                <div class="nav-description">
+                    Conoce al profesor principal y monitores del curso con sus perfiles y contacto.
+                </div>
+            </a>
+
+            <!-- Cronograma -->
+            <a href="schedule.html" class="nav-card">
+                <span class="nav-icon">📅</span>
+                <div class="nav-title">Cronograma del Curso</div>
+                <div class="nav-description">
+                    Cronograma detallado de 16 semanas con fechas, actividades y sistema de evaluación.
+                </div>
+            </a>
+
+            <!-- Ruleta de Estudiantes -->
+            <a href="ruleta-estudiantes.html" class="nav-card">
+                <span class="nav-icon">🎯</span>
+                <div class="nav-title">Ruleta de Estudiantes</div>
+                <div class="nav-description">
+                    Herramienta interactiva para selección aleatoria de estudiantes durante las clases.
+                </div>
+            </a>
+
+            <!-- Recursos y Materiales -->
+            <div class="nav-card coming-soon">
+                <span class="nav-icon">📖</span>
+                <div class="nav-title">Recursos y Materiales</div>
+                <div class="nav-description">
+                    Documentos, presentaciones, enlaces útiles y material de apoyo del curso.
+                </div>
+            </div>
+
+            <!-- Proyectos y Entregas -->
+            <div class="nav-card coming-soon">
+                <span class="nav-icon">💼</span>
+                <div class="nav-title">Proyectos y Entregas</div>
+                <div class="nav-description">
+                    Información sobre entregas, fechas importantes y criterios de evaluación.
+                </div>
+            </div>
+
+            <!-- Galería de Proyectos -->
+            <div class="nav-card coming-soon">
+                <span class="nav-icon">🖼️</span>
+                <div class="nav-title">Galería de Proyectos</div>
+                <div class="nav-description">
+                    Muestra de proyectos destacados y trabajos de estudiantes del curso.
+                </div>
+            </div>
+
+            <!-- Herramientas y Software -->
+            <div class="nav-card coming-soon">
+                <span class="nav-icon">🛠️</span>
+                <div class="nav-title">Herramientas y Software</div>
+                <div class="nav-description">
+                    Guías de uso de herramientas, software recomendado y tutoriales.
+                </div>
             </div>
         </div>
 
         <div class="course-info">
-            <h3>📚 Información del Curso</h3>
+            <h3>📊 Información Rápida del Curso</h3>
             <div class="info-grid">
                 <div class="info-item">
                     <h4>📅 Horario</h4>
@@ -330,14 +332,6 @@
                     <p>Proyectos: 60%</p>
                     <p>Actividades: 40%</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="navigation">
-            <h3>📋 Navegación del Curso</h3>
-            <div class="nav-buttons">
-                <a href="team.html" class="nav-button">👥 Equipo Docente</a>
-                <a href="schedule.html" class="nav-button">📅 Cronograma</a>
             </div>
         </div>
 

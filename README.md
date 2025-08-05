@@ -1,67 +1,110 @@
-# Cronograma ISIS2007 - Diseño de Productos e Innovación en TI
+# 🚀 ISIS2007 - PDF Export Tool
 
-## 📚 Descripción del Proyecto
+Este proyecto permite exportar todas las páginas HTML del curso ISIS2007 (index, schedule, team) en un solo PDF perfecto con imágenes incluidas.
 
-Este repositorio contiene el cronograma oficial de la materia **ISIS2007 - Diseño de Productos e Innovación en TI** para el semestre 2025-2, Sección 1.
+## 📋 Características
 
-## 📅 Información del Curso
+- ✅ **Exportación completa**: Combina index, schedule y team en un solo PDF
+- ✅ **Imágenes integradas**: Las fotos del equipo se incluyen automáticamente
+- ✅ **Estilos optimizados**: Diseño perfecto para impresión
+- ✅ **Saltos de página**: Organización automática del contenido
+- ✅ **Colores preservados**: Gradientes y estilos visuales mantenidos
+- ✅ **Tablas formateadas**: Cronograma perfectamente estructurado
 
-- **Materia:** ISIS2007 - Diseño de Productos e Innovación en TI
-- **Sección:** 1
-- **Horario:** Miércoles
-- **Inicio:** 6 de agosto de 2025
-- **Universidad:** Universidad de los Andes
-- **Departamento:** Ingeniería de Sistemas y Computación
+## 🛠️ Instalación
 
-## 🌐 Despliegue en GitHub Pages
-
-El cronograma está disponible en formato HTML y se puede visualizar directamente en GitHub Pages.
-
-### Para activar GitHub Pages:
-
-1. Ve a la pestaña **Settings** de tu repositorio
-2. Desplázate hacia abajo hasta la sección **Pages**
-3. En **Source**, selecciona **Deploy from a branch**
-4. Selecciona la rama **main** (o **master**)
-5. Haz clic en **Save**
-
-El sitio estará disponible en: `https://[tu-usuario].github.io/[nombre-del-repositorio]`
-
-## 📁 Estructura del Repositorio
-
-```
-├── index.html                    # Página principal del cronograma
-├── README.md                     # Este archivo
-└── Copia de Copia de ISIS2007-202410-Cronograma-Sección 1.xlsx  # Archivo Excel original
+```bash
+npm install
 ```
 
-## 🎨 Características del Sitio Web
+## 🚀 Uso
 
-- **Diseño Responsivo:** Se adapta a dispositivos móviles y de escritorio
-- **Interfaz Moderna:** Diseño limpio y profesional con gradientes y efectos visuales
-- **Navegación Intuitiva:** Tabla organizada con información clara y fácil de leer
-- **Accesibilidad:** Colores contrastantes y estructura semántica
+### Exportar todo el contenido a PDF
 
-## 📋 Cronograma
+```bash
+npm run export-all
+```
 
-El cronograma incluye 15 semanas de clases, organizadas de la siguiente manera:
+O directamente:
 
-1. **Semanas 1-3:** Introducción y fundamentos
-2. **Semanas 4-6:** Metodologías y investigación
-3. **Semanas 7-9:** Generación de ideas y prototipado
-4. **Semanas 10-12:** Desarrollo e implementación
-5. **Semanas 13-15:** Presentaciones y cierre
+```bash
+node export-all-to-pdf.js
+```
 
-## 🔧 Tecnologías Utilizadas
+### Exportar solo una página específica
 
-- **HTML5:** Estructura semántica
-- **CSS3:** Estilos modernos con gradientes y efectos
-- **Diseño Responsivo:** Media queries para diferentes dispositivos
+```bash
+npm run convert
+```
 
-## 📞 Contacto
+## 📄 Archivos generados
 
-Para consultas sobre el cronograma o el curso, contacta al profesor correspondiente.
+- `ISIS2007-Documento-Completo-Perfecto.pdf` - PDF completo con todas las páginas
+
+## 📁 Estructura del proyecto
+
+```
+├── index.html              # Página principal
+├── schedule.html           # Página del cronograma
+├── team.html              # Página del equipo
+├── documento-completo.html # Versión combinada
+├── export-all-to-pdf.js   # Script principal de exportación
+├── FotoArturo.jpeg        # Foto del profesor
+├── FotoJuanes.jpeg        # Foto del monitor
+├── FotoCatalina.jpeg      # Foto del monitor
+└── package.json           # Configuración del proyecto
+```
+
+## 🎨 Características del PDF generado
+
+### Página 1: Información del Curso
+- Descripción del curso ISIS2007
+- Objetivos de aprendizaje
+- Información académica (créditos, horario, sección)
+- Enfoque en Lean Startup y Generative AI
+
+### Página 2: Equipo Docente
+- Fotos de todos los miembros del equipo
+- Información de contacto
+- Enlaces a LinkedIn
+- Roles y responsabilidades
+
+### Página 3: Cronograma Completo
+- Información del semestre
+- Sistema de evaluación detallado
+- Cronograma semanal completo
+- Fechas y actividades específicas
+
+## 🔧 Configuración técnica
+
+- **Formato**: A4
+- **Márgenes**: 20mm en todos los lados
+- **Fondo**: Incluido para preservar colores
+- **Imágenes**: Integradas en base64
+- **Fuentes**: Segoe UI (sistema)
+
+## 🐛 Solución de problemas
+
+### Error: "Cannot find module 'puppeteer'"
+```bash
+npm install
+```
+
+### Error: "Cannot find image files"
+Asegúrate de que los archivos de imagen estén en el directorio raíz:
+- `FotoArturo.jpeg`
+- `FotoJuanes.jpeg`
+- `FotoCatalina.jpeg`
+
+### PDF no se genera
+Verifica que tienes permisos de escritura en el directorio actual.
+
+## 📞 Soporte
+
+Para problemas técnicos, contacta al equipo de ISIS2007.
 
 ---
 
-**Última actualización:** Agosto 2025
+**Universidad de los Andes**  
+Departamento de Ingeniería de Sistemas y Computación  
+Semestre 2025-2

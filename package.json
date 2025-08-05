@@ -4,11 +4,17 @@
   "description": "Convert HTML pages to PDF for ISIS2007 course",
   "main": "convert-to-pdf.js",
   "scripts": {
-    "convert": "node convert-to-pdf.js"
+    "convert": "node convert-to-pdf.js",
+    "export-all": "node export-all-to-pdf.js"
   },
   "dependencies": {
-    "puppeteer": "^21.0.0"
+    "puppeteer": "^21.0.0",
+    "xlsx": "^0.18.5"
   },
-  "keywords": ["pdf", "html", "conversion"],
+  "keywords": [
+    "pdf",
+    "html",
+    "conversion"
+  ],
   "author": "ISIS2007 Team"
-} 
+}

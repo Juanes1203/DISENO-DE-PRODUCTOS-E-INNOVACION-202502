@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Ruleta de Estudiantes - ISIS2007</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 80px 20px 20px;
+        }
+
+        /* Barra de Navegación */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .nav-brand:hover {
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #7f8c8d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-link.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .home-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .roulette-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #667eea;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            transition: transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .wheel.spinning {
+            animation: spin 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(var(--final-rotation)); }
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .wheel-segment:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #e74c3c;
+            z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .controls {
+            margin-bottom: 30px;
+        }
+
+        .spin-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            margin: 0 10px;
+        }
+
+        .spin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .selected-student {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .student-count {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .student-list {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+        }
+
+        .student-list h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .student-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #555;
+            border-left: 3px solid #667eea;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .roulette-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .student-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de Navegación -->
+    <div class="nav-bar">
+        <a href="index.html" class="nav-brand">🚀 ISIS2007</a>
+        <div class="nav-links">
+            <a href="documento-completo.html" class="nav-link">📚 Curso</a>
+            <a href="team.html" class="nav-link">👥 Equipo</a>
+            <a href="schedule.html" class="nav-link">📅 Cronograma</a>
+            <a href="ruleta-estudiantes.html" class="nav-link active">🎯 Ruleta</a>
+            <a href="index.html" class="home-button">🏠 Inicio</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Ruleta de Estudiantes</h1>
+            <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
+        </div>
+
+        <div class="roulette-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"></div>
+        </div>
+
+        <div class="controls">
+            <button class="spin-button" id="spinButton" onclick="spinWheel()">
+                🎲 Girar Ruleta
+            </button>
+            <button class="spin-button" onclick="resetWheel()">
+                🔄 Reiniciar
+            </button>
+        </div>
+
+        <div class="result" id="result">
+            <div class="selected-student" id="selectedStudent"></div>
+            <div class="student-count" id="studentCount"></div>
+        </div>
+
+        <div class="student-list">
+            <h3>📋 Lista Completa de Estudiantes</h3>
+            <div class="student-grid" id="studentGrid"></div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Universidad de los Andes</strong></p>
+            <p>Departamento de Ingeniería de Sistemas y Computación</p>
+            <p>Semestre 2025-2</p>
+        </div>
+    </div>
+
+    <script>
+        // Lista de estudiantes reales del curso ISIS2007
+        const students = [
+            'Alcala Gonzalez, Sofia',
+            'Aristizabal Garcia, Gabriel',
+            'Avila Nivia, Juan Sebastian',
+            'Benavides Rocha, Diego Juan Vicente',
+            'Botero Ruiz, Andres',
+            'Briceño Estupiñan, David Alejandro',
+            'Briceño Toro, Juan Eduardo',
+            'Carrillo, Maria Alejandra',
+            'Castellanos Ribero, Pablo',
+            'Castro, Anais Maria',
+            'Cespedes Cortes, Yefran David',
+            'Cuervo Ortiz, Juan David',
+            'Davila Betancourt, Andrea',
+            'Diez Leal, Samuel',
+            'Escobar Pineda, Samuel Alejandro',
+            'Franco Pardo, Yhojan Alejandro',
+            'Garrido Arroyo, Esteban',
+            'Gonzalez Bermudez, Julian David',
+            'Guiza Melo, Laura Valentina',
+            'Hernandez Paez, Juan Felipe',
+            'Jimenez Tovar, Laura Valentina',
+            'Leschhorn, Martin',
+            'Maldonado Manrique, Juan Sebastian',
+            'Muñoz Estevez, Laura Valentina',
+            'Niño Mendez, Joel David',
+            'Ochoa Bejarano, Juan Felipe',
+            'Pereira Avila, Andres Felipe',
+            'Perez Diaz, Juan David',
+            'Pineda Cano, Jeronimo Arnulfo',
+            'Pinto, Julian Rafael',
+            'Polania Arias, Angie Katherine',
+            'Quiroz Pintor, Santiago Alberto',
+            'Ramirez Aleman, Julian Roberto',
+            'Reyes Romero, Juan Pablo',
+            'Rodriguez Pinto, Gabriel Enrique',
+            'Roncancio Camacho, Juan David',
+            'Ross Aguirre, Joshua John',
+            'Sanabria Salazar, Maria Alejandra',
+            'Sanmiguel Losada, Felipe',
+            'Sarmiento Gutierrez, Laura Sofia',
+            'Serrano Arango, Amelia',
+            'Velasquez Delgado, Tomas Emilio',
+            'Vides Vivero, Alejandro Enrique',
+            'Zambrano Burbano, Mateo'
+        ];
+
+        const colors = [
+            '#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe',
+            '#43e97b', '#38f9d7', '#fa709a', '#fee140', '#a8edea', '#fed6e3',
+            '#ffecd2', '#fcb69f', '#ff9a9e', '#fecfef', '#fecfef', '#fad0c4',
+            '#ff9a9e', '#a8edea', '#d299c2', '#fef9d7', '#667eea', '#764ba2'
+        ];
+
+        let isSpinning = false;
+        let selectedStudents = new Set();
+
+        // Crear la ruleta
+        function createWheel() {
+            const wheel = document.getElementById('wheel');
+            const segmentAngle = 360 / students.length;
+            
+            students.forEach((student, index) => {
+                const segment = document.createElement('div');
+                segment.className = 'wheel-segment';
+                // Solo mostrar iniciales o un símbolo en lugar del nombre completo
+                segment.textContent = '🎓';
+                segment.style.backgroundColor = colors[index % colors.length];
+                segment.style.transform = `rotate(${index * segmentAngle}deg)`;
+                segment.style.clipPath = `polygon(0 0, 100% 0, 100% 100%, 0 100%)`;
+                wheel.appendChild(segment);
+            });
+        }
+
+        // Girar la ruleta
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            const spinButton = document.getElementById('spinButton');
+            spinButton.disabled = true;
+            spinButton.textContent = '🎲 Girando...';
+            
+            const wheel = document.getElementById('wheel');
+            const result = document.getElementById('result');
+            result.classList.remove('show');
+            
+            // Seleccionar estudiante aleatorio
+            const availableStudents = students.filter(student => !selectedStudents.has(student));
+            
+            if (availableStudents.length === 0) {
+                alert('¡Todos los estudiantes han sido seleccionados! Reinicia para empezar de nuevo.');
+                resetWheel();
+                return;
+            }
+            
+            const randomStudent = availableStudents[Math.floor(Math.random() * availableStudents.length)];
+            const studentIndex = students.indexOf(randomStudent);
+            
+            // Calcular rotación final
+            const segmentAngle = 360 / students.length;
+            const targetAngle = studentIndex * segmentAngle;
+            const finalRotation = 360 * 5 + (360 - targetAngle); // 5 vueltas + posición final
+            
+            wheel.style.setProperty('--final-rotation', `${finalRotation}deg`);
+            wheel.classList.add('spinning');
+            
+            // Solo mostrar el resultado después de que termine de girar
+            setTimeout(() => {
+                selectedStudents.add(randomStudent);
+                showResult(randomStudent);
+                wheel.classList.remove('spinning');
+                isSpinning = false;
+                spinButton.disabled = false;
+                spinButton.textContent = '🎲 Girar Ruleta';
+            }, 4000);
+        }
+
+        // Mostrar resultado
+        function showResult(student) {
+            const result = document.getElementById('result');
+            const selectedStudent = document.getElementById('selectedStudent');
+            const studentCount = document.getElementById('studentCount');
+            
+            selectedStudent.textContent = `🎉 ¡${student}!`;
+            studentCount.textContent = `Estudiante seleccionado (${selectedStudents.size}/44)`;
+            result.classList.add('show');
+            
+            // Actualizar lista de estudiantes
+            updateStudentList();
+        }
+
+        // Reiniciar ruleta
+        function resetWheel() {
+            selectedStudents.clear();
+            const result = document.getElementById('result');
+            result.classList.remove('show');
+            updateStudentList();
+        }
+
+        // Actualizar lista de estudiantes
+        function updateStudentList() {
+            const studentGrid = document.getElementById('studentGrid');
+            studentGrid.innerHTML = '';
+            
+            students.forEach(student => {
+                const studentItem = document.createElement('div');
+                studentItem.className = 'student-item';
+                studentItem.textContent = student;
+                
+                if (selectedStudents.has(student)) {
+                    studentItem.style.backgroundColor = '#e8f5e8';
+                    studentItem.style.color = '#2d5a2d';
+                    studentItem.style.borderLeftColor = '#28a745';
+                    studentItem.innerHTML = `✅ ${student}`;
+                }
+                
+                studentGrid.appendChild(studentItem);
+            });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            createWheel();
+            updateStudentList();
+        });
+    </script>
+</body>
+</html> 
