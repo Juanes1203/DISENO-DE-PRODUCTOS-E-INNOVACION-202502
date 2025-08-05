@@ -3,288 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏗️ Crear Tabla Airtable desde Cero</title>
+    <title>Configurar Tabla Airtable</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .section { background: rgba(255,255,255,0.1); padding: 20px; margin: 20px 0; border-radius: 10px; }
-        .btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
-        .btn:hover { background: #218838; }
-        .btn.warning { background: #ffc107; color: black; }
-        .btn.warning:hover { background: #e0a800; }
-        .btn.danger { background: #dc3545; }
-        .btn.danger:hover { background: #c82333; }
-        .result { background: rgba(0,0,0,0.3); padding: 15px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 12px; }
-        .error { background: rgba(220,53,69,0.3); }
-        .success { background: rgba(40,167,69,0.3); }
-        .info { background: rgba(23,162,184,0.3); }
-        .warning { background: rgba(255,193,7,0.3); }
-        .field-info { background: rgba(108,117,125,0.3); margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .field-info h4 { margin: 0 0 5px 0; color: #ffc107; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .setup-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .status.info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+
+        .log {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .config-info {
+            background: #edf2f7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .config-info h3 {
+            margin-top: 0;
+            color: #4a5568;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .config-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .config-value {
+            color: #2d3748;
+            font-family: monospace;
+        }
+
+        .steps {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .steps h3 {
+            margin-top: 0;
+            color: #4a5568;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .step-number {
+            background: #4299e1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step.completed .step-number {
+            background: #48bb78;
+        }
+
+        .step.error .step-number {
+            background: #f56565;
+        }
     </style>
 </head>
 <body>
-    <h1>🏗️ Crear Tabla Airtable desde Cero</h1>
-    
-    <div class="section">
-        <h3>📋 Estructura Ideal de la Tabla</h3>
-        <div class="field-info">
-            <h4>📝 Campo: Nombre</h4>
-            <p>Tipo: Single line text</p>
-            <p>Descripción: Nombre completo del estudiante</p>
-            <p>Ejemplo: "Alcala Gonzalez, Sofia"</p>
+    <div class="container">
+        <h1>🔧 Configurar Tabla Airtable</h1>
+        
+        <div class="config-info">
+            <h3>📋 Configuración Actual</h3>
+            <div class="config-item">
+                <span class="config-label">Base ID:</span>
+                <span class="config-value">appvW207EbN1h8xhG</span>
+            </div>
+            <div class="config-item">
+                <span class="config-label">Tabla:</span>
+                <span class="config-value">Asistencia</span>
+            </div>
+            <div class="config-item">
+                <span class="config-label">API Key:</span>
+                <span class="config-value">patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da</span>
+            </div>
         </div>
-        <div class="field-info">
-            <h4>📅 Campo: Fecha</h4>
-            <p>Tipo: Date</p>
-            <p>Descripción: Fecha de la clase</p>
-            <p>Ejemplo: "2025-01-15"</p>
+
+        <div class="steps">
+            <h3>📝 Pasos de Configuración</h3>
+            <div class="step" id="step1">
+                <div class="step-number">1</div>
+                <div>Verificar conexión con Airtable</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div>Crear tabla "Asistencia" si no existe</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div>Configurar campos necesarios</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <div>Verificar estructura final</div>
+            </div>
         </div>
-        <div class="field-info">
-            <h4>✅ Campo: Estado</h4>
-            <p>Tipo: Single select</p>
-            <p>Opciones: "present", "absent"</p>
-            <p>Descripción: Estado de asistencia del estudiante</p>
+
+        <div class="setup-section">
+            <h3>🚀 Configuración Automática</h3>
+            <p>Este proceso configurará automáticamente la tabla "Asistencia" en Airtable con todos los campos necesarios para el sistema de asistencia.</p>
+            
+            <button class="btn" onclick="startSetup()">🔧 Iniciar Configuración</button>
+            <button class="btn btn-success" onclick="testConnection()">🔗 Probar Conexión</button>
+            <button class="btn btn-warning" onclick="checkTableStructure()">📋 Verificar Estructura</button>
+            <button class="btn btn-danger" onclick="clearLog()">🗑️ Limpiar Log</button>
         </div>
-        <div class="field-info">
-            <h4>👤 Campo: Usuario Registro</h4>
-            <p>Tipo: Single line text</p>
-            <p>Descripción: Usuario que registró la asistencia</p>
-            <p>Ejemplo: "prof.arturo.gomez"</p>
-        </div>
-        <div class="field-info">
-            <h4>🎭 Campo: Rol Usuario</h4>
-            <p>Tipo: Single line text</p>
-            <p>Descripción: Rol del usuario que registró</p>
-            <p>Ejemplo: "Profesor Principal"</p>
-        </div>
-        <div class="field-info">
-            <h4>⏰ Campo: Timestamp</h4>
-            <p>Tipo: Date time</p>
-            <p>Descripción: Fecha y hora exacta del registro</p>
-            <p>Ejemplo: "2025-01-15T10:30:00.000Z"</p>
-        </div>
-        <div class="field-info">
-            <h4>📚 Campo: Curso</h4>
-            <p>Tipo: Single line text</p>
-            <p>Descripción: Nombre del curso</p>
-            <p>Ejemplo: "ISIS2007 - Diseño de Productos e Innovación en TI"</p>
-        </div>
-    </div>
-    
-    <div class="section">
-        <h3>🔧 Pasos para Crear la Tabla</h3>
-        <ol>
-            <li><strong>Ve a Airtable</strong> y abre tu base de datos</li>
-            <li><strong>Crea una nueva tabla</strong> llamada "Asistencia"</li>
-            <li><strong>Agrega los campos</strong> según la estructura de arriba</li>
-            <li><strong>Configura los tipos</strong> correctamente</li>
-            <li><strong>Guarda la tabla</strong></li>
-        </ol>
-    </div>
-    
-    <div class="section">
-        <h3>🧪 Test de la Nueva Tabla</h3>
-        <button class="btn" onclick="testNewTable()">Probar Nueva Tabla</button>
-        <button class="btn warning" onclick="createSampleData()">Crear Datos de Prueba</button>
-        <button class="btn danger" onclick="clearAllData()">Limpiar Todos los Datos</button>
-        <div id="test-result" class="result"></div>
-    </div>
-    
-    <div class="section">
-        <h3>📝 Configuración Actualizada</h3>
-        <button class="btn" onclick="showUpdatedConfig()">Mostrar Configuración</button>
-        <div id="config-result" class="result"></div>
+
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <div id="log" class="log" style="display: none;"></div>
     </div>
 
-    <script src="airtable-config.js"></script>
-    
+    <script src="airtable-setup.js"></script>
     <script>
-        function addResult(elementId, message, type = 'info') {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
-            element.className = `result ${type}`;
+        let logContent = '';
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logContent += `[${timestamp}] ${message}\n`;
+            
+            const logElement = document.getElementById('log');
+            logElement.textContent = logContent;
+            logElement.style.display = 'block';
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            console.log(message);
         }
 
-        async function testNewTable() {
+        function showStatus(message, type = 'info') {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = 'block';
+        }
+
+        function updateStep(stepNumber, status) {
+            const stepElement = document.getElementById(`step${stepNumber}`);
+            stepElement.className = `step ${status}`;
+        }
+
+        function clearLog() {
+            logContent = '';
+            document.getElementById('log').style.display = 'none';
+            document.getElementById('status').style.display = 'none';
+            
+            // Reset steps
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                stepElement.className = 'step';
+            }
+        }
+
+        async function testConnection() {
+            log('🔗 Probando conexión con Airtable...');
+            
             try {
-                addResult('test-result', '🔄 Probando nueva tabla...', 'info');
-                
-                // Test de conexión básica
-                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`, {
+                const response = await fetch('https://api.airtable.com/v0/meta/bases/appvW207EbN1h8xhG', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Authorization': 'Bearer patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da',
                         'Content-Type': 'application/json'
                     }
                 });
-                
+
                 if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.records && data.records.length > 0) {
-                        const record = data.records[0];
-                        const fields = Object.keys(record.fields);
-                        
-                        let result = '✅ Tabla encontrada y funcionando:\n\n';
-                        result += 'Campos detectados:\n';
-                        fields.forEach(field => {
-                            result += `- "${field}": ${typeof record.fields[field]}\n`;
-                        });
-                        
-                        result += '\nEjemplo de registro:\n';
-                        result += JSON.stringify(record.fields, null, 2);
-                        
-                        addResult('test-result', result, 'success');
-                    } else {
-                        addResult('test-result', 'ℹ️ Tabla creada pero vacía. Lista para recibir datos.', 'info');
-                    }
+                    log('✅ Conexión exitosa con Airtable');
+                    showStatus('✅ Conexión exitosa con Airtable', 'success');
                 } else {
-                    const errorText = await response.text();
-                    addResult('test-result', `❌ Error ${response.status}: ${errorText}`, 'error');
+                    log(`❌ Error de conexión: ${response.status}`);
+                    showStatus(`❌ Error de conexión: ${response.status}`, 'error');
                 }
             } catch (error) {
-                addResult('test-result', `Error: ${error.message}`, 'error');
+                log(`❌ Error de conexión: ${error.message}`);
+                showStatus(`❌ Error de conexión: ${error.message}`, 'error');
             }
         }
 
-        async function createSampleData() {
+        async function checkTableStructure() {
+            log('📋 Verificando estructura de tabla...');
+            
             try {
-                addResult('test-result', '🔄 Creando datos de prueba...', 'info');
+                const tableInfo = await AirtableSetup.getTableInfo();
                 
-                const sampleRecords = [
-                    {
-                        fields: {
-                            'Nombre': 'Alcala Gonzalez, Sofia',
-                            'Fecha': '2025-01-15',
-                            'Estado': 'present',
-                            'Usuario Registro': 'prof.arturo.gomez',
-                            'Rol Usuario': 'Profesor Principal',
-                            'Timestamp': new Date().toISOString(),
-                            'Curso': 'ISIS2007 - Diseño de Productos e Innovación en TI'
-                        }
-                    },
-                    {
-                        fields: {
-                            'Nombre': 'Aristizabal Garcia, Gabriel',
-                            'Fecha': '2025-01-15',
-                            'Estado': 'absent',
-                            'Usuario Registro': 'prof.arturo.gomez',
-                            'Rol Usuario': 'Profesor Principal',
-                            'Timestamp': new Date().toISOString(),
-                            'Curso': 'ISIS2007 - Diseño de Productos e Innovación en TI'
-                        }
-                    },
-                    {
-                        fields: {
-                            'Nombre': 'Avila Nivia, Juan Sebastian',
-                            'Fecha': '2025-01-15',
-                            'Estado': 'present',
-                            'Usuario Registro': 'prof.arturo.gomez',
-                            'Rol Usuario': 'Profesor Principal',
-                            'Timestamp': new Date().toISOString(),
-                            'Curso': 'ISIS2007 - Diseño de Productos e Innovación en TI'
-                        }
-                    }
-                ];
-                
-                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        records: sampleRecords
-                    })
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    addResult('test-result', `✅ Datos de prueba creados exitosamente:\n${result.records.length} registros agregados`, 'success');
+                if (tableInfo) {
+                    log('✅ Tabla encontrada');
+                    log(`📋 Campos en la tabla:`);
+                    tableInfo.fields.forEach(field => {
+                        log(`   - ${field.name} (${field.type})`);
+                    });
+                    showStatus('✅ Tabla encontrada con estructura válida', 'success');
                 } else {
-                    const errorText = await response.text();
-                    addResult('test-result', `❌ Error ${response.status}: ${errorText}`, 'error');
+                    log('❌ Tabla no encontrada');
+                    showStatus('❌ Tabla no encontrada', 'error');
                 }
             } catch (error) {
-                addResult('test-result', `Error: ${error.message}`, 'error');
+                log(`❌ Error al verificar estructura: ${error.message}`);
+                showStatus(`❌ Error al verificar estructura: ${error.message}`, 'error');
             }
         }
 
-        async function clearAllData() {
+        async function startSetup() {
+            log('🚀 Iniciando configuración automática...');
+            showStatus('🔄 Configurando tabla de Airtable...', 'info');
+            
+            // Step 1: Verificar conexión
+            updateStep(1, 'completed');
+            log('✅ Paso 1: Verificando conexión...');
+            
             try {
-                addResult('test-result', '🔄 Limpiando todos los datos...', 'info');
-                
-                // Primero obtener todos los registros
-                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1000`, {
+                const response = await fetch('https://api.airtable.com/v0/meta/bases/appvW207EbN1h8xhG', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                        'Authorization': 'Bearer patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da',
                         'Content-Type': 'application/json'
                     }
                 });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.records && data.records.length > 0) {
-                        // Eliminar cada registro
-                        for (const record of data.records) {
-                            await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}/${record.id}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`
-                                }
-                            });
-                        }
-                        
-                        addResult('test-result', `✅ ${data.records.length} registros eliminados`, 'success');
-                    } else {
-                        addResult('test-result', 'ℹ️ No hay datos para limpiar', 'info');
-                    }
-                } else {
-                    const errorText = await response.text();
-                    addResult('test-result', `❌ Error ${response.status}: ${errorText}`, 'error');
+
+                if (!response.ok) {
+                    throw new Error(`Error de conexión: ${response.status}`);
                 }
+                
+                log('✅ Conexión exitosa');
+                
+                // Step 2: Verificar/Crear tabla
+                updateStep(2, 'completed');
+                log('✅ Paso 2: Verificando tabla...');
+                
+                const tableResult = await AirtableSetup.verifyAndFixTableStructure();
+                
+                if (tableResult) {
+                    log('✅ Tabla configurada correctamente');
+                    
+                    // Step 3: Verificar campos
+                    updateStep(3, 'completed');
+                    log('✅ Paso 3: Campos verificados');
+                    
+                    // Step 4: Verificación final
+                    updateStep(4, 'completed');
+                    log('✅ Paso 4: Configuración completada');
+                    
+                    showStatus('✅ Configuración completada exitosamente', 'success');
+                    log('🎉 ¡Configuración completada! La tabla está lista para usar.');
+                } else {
+                    updateStep(2, 'error');
+                    updateStep(3, 'error');
+                    updateStep(4, 'error');
+                    throw new Error('Error al configurar la tabla');
+                }
+                
             } catch (error) {
-                addResult('test-result', `Error: ${error.message}`, 'error');
+                log(`❌ Error durante la configuración: ${error.message}`);
+                showStatus(`❌ Error en la configuración: ${error.message}`, 'error');
+                
+                // Marcar pasos como error
+                updateStep(1, 'error');
+                updateStep(2, 'error');
+                updateStep(3, 'error');
+                updateStep(4, 'error');
             }
         }
 
-        function showUpdatedConfig() {
-            const config = `// Configuración actualizada para la nueva tabla
-const AIRTABLE_CONFIG = {
-    API_KEY: '${AIRTABLE_CONFIG.API_KEY}',
-    BASE_ID: '${AIRTABLE_CONFIG.BASE_ID}',
-    TABLE_NAME: 'Asistencia',
-    BASE_URL: 'https://api.airtable.com/v0',
-    FIELDS: {
-        NOMBRE: 'Nombre',
-        FECHA: 'Fecha',
-        ESTADO: 'Estado',
-        USUARIO_REGISTRO: 'Usuario Registro',
-        ROL_USUARIO: 'Rol Usuario',
-        TIMESTAMP: 'Timestamp',
-        CURSO: 'Curso'
-    }
-};
-
-// Instrucciones para crear la tabla en Airtable:
-// 1. Crear nueva tabla llamada "Asistencia"
-// 2. Agregar campos con los nombres exactos de arriba
-// 3. Configurar tipos: Text (Nombre, Usuario Registro, Rol Usuario, Curso)
-// 4. Configurar tipos: Date (Fecha), Date time (Timestamp)
-// 5. Configurar tipos: Single select (Estado) con opciones: "present", "absent"
-// 6. Guardar la tabla
-
-// Esta configuración debería funcionar perfectamente con la nueva tabla.`;
-
-            addResult('config-result', config, 'success');
-        }
-
-        // Auto-ejecutar al cargar
-        window.onload = function() {
-            showUpdatedConfig();
-        };
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Página de configuración cargada');
+            log('📋 Configuración actual:');
+            log('   - Base ID: appvW207EbN1h8xhG');
+            log('   - Tabla: Asistencia');
+            log('   - API Key: Configurada');
+        });
     </script>
 </body>
 </html> 

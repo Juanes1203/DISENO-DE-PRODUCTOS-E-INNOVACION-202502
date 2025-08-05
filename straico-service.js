@@ -121,30 +121,27 @@ class StraicoService {
         this.questionHistory.add(questionId);
     }
 
-    // Generar preguntas de conocimiento general (alta complejidad)
+    // Generar preguntas de conocimiento general (nivel básico-intermedio)
     async generateGeneralKnowledgeQuestions(student) {
-        const prompt = `Actúa como un profesor experto en innovación y emprendimiento. Genera 5 preguntas de ALTA COMPLEJIDAD sobre innovación, emprendimiento y tecnología para el estudiante ${student}.
+        const prompt = `Genera 5 preguntas básicas sobre innovación y emprendimiento para el estudiante ${student}.
 
-INSTRUCCIONES CRÍTICAS:
-- Las preguntas deben ser de nivel universitario avanzado
-- Incluir conceptos de metodologías ágiles, lean startup, design thinking
-- Preguntas que requieran análisis crítico y aplicación práctica
-- Respuestas detalladas y fundamentadas
-- Dificultad: EXPERTA
-- NO uses preguntas básicas como "¿Qué es un MVP?"
-- Usa preguntas como "¿Cómo aplicarías el principio de pivot en un startup de IA?"
-- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
-- Usa conceptos específicos, casos de estudio y aplicaciones prácticas
+INSTRUCCIONES:
+- Preguntas de nivel básico a intermedio
+- Conceptos fundamentales de innovación y emprendimiento
+- Respuestas cortas y directas
+- Dificultad: BÁSICA-INTERMEDIA
+- Usa preguntas como "¿Qué es un MVP?" o "¿Cuál es la diferencia entre startup y empresa tradicional?"
+- IMPORTANTE: Cada pregunta debe ser ÚNICA
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta compleja y única aquí",
-      "respuesta_correcta": "Respuesta detallada y fundamentada",
-      "explicacion": "Explicación adicional del concepto",
-      "dificultad": "ALTA"
+      "pregunta": "Pregunta básica aquí",
+      "respuesta_correcta": "Respuesta corta y directa",
+      "explicacion": "Explicación breve",
+      "dificultad": "BÁSICA"
     }
   ],
   "category": "general"
@@ -158,33 +155,29 @@ RESPONDE SOLO CON JSON VÁLIDO:
         const currentWeek = this.getCurrentWeek();
         const weekData = this.COURSE_SCHEDULE[currentWeek];
         
-        const prompt = `Actúa como un profesor experto en innovación. Genera 5 preguntas de ALTA COMPLEJIDAD sobre los temas de la SEMANA ${currentWeek} del curso ISIS2007 para el estudiante ${student}.
+        const prompt = `Genera 5 preguntas básicas sobre los temas de la SEMANA ${currentWeek} del curso ISIS2007 para el estudiante ${student}.
 
 SEMANA ${currentWeek}:
 - Tema: ${weekData.topic}
-- Actividades: ${weekData.activities}
 - Conceptos clave: ${weekData.key_concepts.join(', ')}
 
-INSTRUCCIONES CRÍTICAS:
-- Preguntas ESPECÍFICAS sobre los conceptos de esta semana
-- Nivel de dificultad: EXPERTA
-- Incluir análisis crítico y aplicación práctica
-- Relacionar con casos reales de empresas tecnológicas
-- Respuestas detalladas con ejemplos
-- NO uses preguntas genéricas, usa el contexto específico de la semana
-- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
-- Enfócate en los conceptos clave de esta semana específica
+INSTRUCCIONES:
+- Preguntas básicas sobre los conceptos de esta semana
+- Nivel de dificultad: BÁSICO
+- Respuestas cortas y directas
+- NO uses preguntas complejas, usa conceptos fundamentales
+- IMPORTANTE: Cada pregunta debe ser ÚNICA
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta específica y única de la semana ${currentWeek}",
-      "respuesta_correcta": "Respuesta detallada con ejemplos",
-      "explicacion": "Contexto adicional del tema",
+      "pregunta": "Pregunta básica de la semana ${currentWeek}",
+      "respuesta_correcta": "Respuesta corta",
+      "explicacion": "Explicación breve",
       "semana": ${currentWeek},
-      "dificultad": "ALTA"
+      "dificultad": "BÁSICA"
     }
   ],
   "category": "class",
@@ -194,30 +187,28 @@ RESPONDE SOLO CON JSON VÁLIDO:
         return await this.callStraicoAPI(prompt, 'class');
     }
 
-    // Generar preguntas sobre tema específico (alta complejidad)
+    // Generar preguntas sobre tema específico (nivel básico)
     async generateSpecificTopicQuestions(student, topic) {
-        const prompt = `Actúa como un profesor experto en innovación y tecnología. Genera 5 preguntas de ALTA COMPLEJIDAD sobre "${topic}" para el estudiante ${student}.
+        const prompt = `Genera 5 preguntas básicas sobre "${topic}" para el estudiante ${student}.
 
-INSTRUCCIONES CRÍTICAS:
-- Preguntas de nivel experto sobre el tema específico
-- Incluir análisis crítico, casos de estudio y aplicaciones prácticas
-- Relacionar con innovación, emprendimiento y tecnología
-- Respuestas detalladas con fundamentos teóricos y ejemplos
-- Dificultad: EXPERTA
-- NO uses preguntas básicas, usa preguntas que requieran análisis profundo
-- IMPORTANTE: Cada pregunta debe ser ÚNICA y NO repetirse nunca
-- Enfócate en aplicaciones prácticas y casos reales del tema
+INSTRUCCIONES:
+- Preguntas básicas sobre el tema específico
+- Conceptos fundamentales
+- Respuestas cortas y directas
+- Dificultad: BÁSICA
+- Usa preguntas simples y directas
+- IMPORTANTE: Cada pregunta debe ser ÚNICA
 
 RESPONDE SOLO CON JSON VÁLIDO:
 {
   "success": true,
   "questions": [
     {
-      "pregunta": "Pregunta compleja y única sobre ${topic}",
-      "respuesta_correcta": "Respuesta detallada y fundamentada",
-      "explicacion": "Contexto y explicación adicional",
+      "pregunta": "Pregunta básica sobre ${topic}",
+      "respuesta_correcta": "Respuesta corta",
+      "explicacion": "Explicación breve",
       "tema": "${topic}",
-      "dificultad": "ALTA"
+      "dificultad": "BÁSICA"
     }
   ],
   "category": "specific",
@@ -236,8 +227,8 @@ RESPONDE SOLO CON JSON VÁLIDO:
             const requestBody = {
                 models: ["anthropic/claude-3.7-sonnet:thinking"],
                 message: prompt,
-                temperature: 0.9,
-                max_tokens: 4000
+                temperature: 0.7,
+                max_tokens: 1000
             };
 
             console.log(`🔍 Debug: Request body:`, JSON.stringify(requestBody, null, 2));
@@ -318,114 +309,114 @@ RESPONDE SOLO CON JSON VÁLIDO:
         return this.createDynamicFallbackQuestions(category);
     }
 
-    // Crear preguntas dinámicas por defecto
+    // Crear preguntas dinámicas por defecto (más básicas)
     createDynamicFallbackQuestions(category) {
         const currentWeek = this.getCurrentWeek();
         const weekData = this.COURSE_SCHEDULE[currentWeek];
         const timestamp = Date.now();
         
-        // Preguntas específicas por categoría - COMPLETAMENTE DIFERENTES
+        // Preguntas básicas por categoría
         const categoryQuestions = {
             'general': [
                 {
-                    pregunta: `¿Cómo aplicarías el principio de "Build-Measure-Learn" de Eric Ries en el desarrollo de un producto de IA para el mercado latinoamericano? (${timestamp})`,
-                    respuesta_correcta: `Implementaría el ciclo Build-Measure-Learn adaptado al contexto latinoamericano: Build (construir MVP con características específicas para el mercado local), Measure (métricas como engagement, retención y conversión en usuarios latinos), Learn (insights sobre preferencias culturales, barreras de adopción y necesidades específicas del mercado).`,
-                    explicacion: `El ciclo Build-Measure-Learn es fundamental en Lean Startup para validar hipótesis de manera rápida y económica.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es un MVP? (${timestamp})`,
+                    respuesta_correcta: `Un MVP (Minimum Viable Product) es la versión más simple de un producto que permite validar una hipótesis de negocio con el mínimo esfuerzo y recursos.`,
+                    explicacion: `El MVP es fundamental en metodologías ágiles para validar ideas rápidamente.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
-                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
-                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Cuál es la diferencia entre startup y empresa tradicional? (${timestamp})`,
+                    respuesta_correcta: `Una startup busca un modelo de negocio escalable y repetible, mientras que una empresa tradicional ya tiene un modelo establecido. Las startups se enfocan en crecimiento rápido e innovación.`,
+                    explicacion: `Las startups se caracterizan por su capacidad de escalar rápidamente.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de innovación tecnológica? (${timestamp})`,
-                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para innovación tecnológica, enfocaría en métricas específicas del dominio y adopción de nuevas tecnologías.`,
-                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es el Design Thinking? (${timestamp})`,
+                    respuesta_correcta: `Design Thinking es una metodología de innovación centrada en el usuario que incluye empatía, definición, ideación, prototipado y testing.`,
+                    explicacion: `Es un proceso iterativo para resolver problemas complejos.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
-                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
-                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es el Lean Startup? (${timestamp})`,
+                    respuesta_correcta: `Lean Startup es una metodología que busca crear productos de manera eficiente mediante experimentos, iteraciones rápidas y validación de hipótesis.`,
+                    explicacion: `Se basa en el ciclo Build-Measure-Learn.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
-                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
-                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es el Customer Development? (${timestamp})`,
+                    respuesta_correcta: `Customer Development es un proceso para validar hipótesis de negocio mediante entrevistas con clientes potenciales y experimentos.`,
+                    explicacion: `Fue desarrollado por Steve Blank para startups.`,
+                    dificultad: "BÁSICA"
                 }
             ],
             'class': [
                 {
-                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
-                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
-                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué es el Canvas de modelo de negocio? (${timestamp})`,
+                    respuesta_correcta: `El Canvas es una herramienta visual que describe los elementos clave de un modelo de negocio en 9 bloques: propuesta de valor, segmentos de clientes, canales, relaciones, ingresos, recursos, actividades, socios y costos.`,
+                    explicacion: `Es una herramienta fundamental para planificar negocios.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
-                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
-                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué es la IA Generativa? (${timestamp})`,
+                    respuesta_correcta: `La IA Generativa es un tipo de inteligencia artificial que puede crear contenido nuevo como texto, imágenes, música o código basándose en patrones aprendidos de datos existentes.`,
+                    explicacion: `Ejemplos incluyen ChatGPT, DALL-E y GitHub Copilot.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
-                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
-                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué son los modelos de monetización? (${timestamp})`,
+                    respuesta_correcta: `Los modelos de monetización son las estrategias que usa una empresa para generar ingresos, como suscripciones, publicidad, marketplace fees, freemium o venta directa.`,
+                    explicacion: `Son fundamentales para la sostenibilidad del negocio.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
-                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
-                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es un pitch? (${timestamp})`,
+                    respuesta_correcta: `Un pitch es una presentación breve y persuasiva que explica una idea de negocio, producto o proyecto de manera clara y atractiva.`,
+                    explicacion: `Es esencial para conseguir inversión o apoyo.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
-                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
-                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es el Running Lean? (${timestamp})`,
+                    respuesta_correcta: `Running Lean es una metodología desarrollada por Ash Maurya que adapta el Lean Startup para crear productos de manera más eficiente, enfocándose en validación rápida.`,
+                    explicacion: `Es una evolución del Lean Startup más práctica.`,
+                    dificultad: "BÁSICA"
                 }
             ],
             'specific': [
                 {
-                    pregunta: `¿Cómo aplicarías los principios de Customer Development de Steve Blank en la validación de un MVP para la semana ${currentWeek} del curso? (${timestamp})`,
-                    respuesta_correcta: `En la semana ${currentWeek}, se aplicaría Customer Development mediante entrevistas estructuradas con usuarios potenciales, validación de hipótesis de problema y solución, y medición de métricas clave como engagement y retención. El proceso incluiría iteraciones rápidas basadas en feedback real.`,
-                    explicacion: `Customer Development es fundamental para validar hipótesis de negocio antes de invertir recursos significativos en desarrollo.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué es la validación de hipótesis? (${timestamp})`,
+                    respuesta_correcta: `La validación de hipótesis es el proceso de probar si las suposiciones sobre un negocio o producto son correctas mediante experimentos y datos reales.`,
+                    explicacion: `Es fundamental para evitar construir productos que nadie quiere.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Qué estrategias de monetización serían más efectivas para un startup de tecnología en la etapa actual del curso (semana ${currentWeek})? (${timestamp})`,
-                    respuesta_correcta: `Para la semana ${currentWeek}, las estrategias más efectivas incluirían freemium, suscripciones SaaS, marketplace fees, y data monetization. La elección dependería del modelo de negocio validado y la propuesta de valor única.`,
-                    explicacion: `La monetización debe alinearse con el valor percibido por el usuario y la capacidad de ejecución del equipo.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué son las métricas clave? (${timestamp})`,
+                    respuesta_correcta: `Las métricas clave son indicadores medibles que muestran el progreso y éxito de un negocio, como engagement, conversión, retención y crecimiento.`,
+                    explicacion: `Ayudan a tomar decisiones basadas en datos.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Cómo implementarías un sistema de métricas y KPIs para medir el éxito de un MVP en el contexto de ${weekData.topic}? (${timestamp})`,
-                    respuesta_correcta: `Implementaría métricas de engagement (DAU/MAU), conversión (funnel rates), retención (cohort analysis), y métricas de negocio (LTV, CAC). Para ${weekData.topic}, enfocaría en métricas específicas del dominio.`,
-                    explicacion: `Las métricas deben ser accionables y alineadas con los objetivos de negocio y la etapa del producto.`,
-                    dificultad: "ALTA",
+                    pregunta: `¿Qué es el prototipado? (${timestamp})`,
+                    respuesta_correcta: `El prototipado es crear versiones rápidas y simples de un producto para probar ideas y obtener feedback antes de desarrollar la versión final.`,
+                    explicacion: `Permite iterar rápidamente y mejorar el producto.`,
+                    dificultad: "BÁSICA",
                     semana: currentWeek
                 },
                 {
-                    pregunta: `¿Qué técnicas de Design Thinking aplicarías para resolver problemas de UX/UI en el desarrollo de un producto digital innovador? (${timestamp})`,
-                    respuesta_correcta: `Aplicaría empatía (user research), definición (problem framing), ideación (brainstorming), prototipado (rapid prototyping), y testing (user validation). El proceso sería iterativo y centrado en el usuario.`,
-                    explicacion: `Design Thinking es una metodología que combina creatividad y análisis para resolver problemas complejos.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es el feedback del usuario? (${timestamp})`,
+                    respuesta_correcta: `El feedback del usuario son las opiniones, sugerencias y comentarios que los usuarios dan sobre un producto o servicio para ayudar a mejorarlo.`,
+                    explicacion: `Es esencial para crear productos que resuelvan problemas reales.`,
+                    dificultad: "BÁSICA"
                 },
                 {
-                    pregunta: `¿Cómo evaluarías la viabilidad técnica y comercial de una idea de startup usando el framework de Ash Maurya? (${timestamp})`,
-                    respuesta_correcta: `Usaría el Lean Canvas para mapear el modelo de negocio, validaría hipótesis con experimentos, mediría métricas clave, y pivotearía basado en datos. El proceso incluiría entrevistas con usuarios y análisis de competencia.`,
-                    explicacion: `El framework de Ash Maurya es una adaptación del Business Model Canvas específicamente diseñada para startups.`,
-                    dificultad: "ALTA"
+                    pregunta: `¿Qué es la iteración? (${timestamp})`,
+                    respuesta_correcta: `La iteración es el proceso de mejorar un producto mediante ciclos repetidos de desarrollo, prueba y refinamiento basado en feedback.`,
+                    explicacion: `Es fundamental en metodologías ágiles.`,
+                    dificultad: "BÁSICA"
                 }
             ]
         };

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arreglar Tabla de Asistencia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .fix-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .result {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        .success {
+            background: #22543d;
+            color: #c6f6d5;
+        }
+
+        .info {
+            background: #2a4365;
+            color: #bee3f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Arreglar Tabla de Asistencia</h1>
+        
+        <div class="fix-section">
+            <h3>📋 Información de la Tabla</h3>
+            <p><strong>ID de la tabla:</strong> tbl4vKX8fIx593IOB</p>
+            <p><strong>Nombre:</strong> Asistencia_Diaria</p>
+            <button class="btn" onclick="getTableInfo()">📋 Obtener Información de la Tabla</button>
+        </div>
+
+        <div class="fix-section">
+            <h3>🔧 Agregar Campos Faltantes</h3>
+            <button class="btn" onclick="addFechaField()">📅 Agregar Campo Fecha</button>
+            <button class="btn" onclick="addAsistioField()">✅ Agregar Campo Asistió</button>
+            <button class="btn btn-success" onclick="addAllFields()">🔄 Agregar Todos los Campos</button>
+        </div>
+
+        <div class="fix-section">
+            <h3>🧪 Probar Funcionalidad</h3>
+            <button class="btn" onclick="testSimpleRecord()">📝 Probar Registro Simple</button>
+            <button class="btn btn-success" onclick="testAttendanceRecord()">✅ Probar Registro de Asistencia</button>
+        </div>
+
+        <div id="results" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const AIRTABLE_CONFIG = {
+            API_KEY: 'patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da',
+            BASE_ID: 'appvW207EbN1h8xhG',
+            TABLE_ID: 'tbl4vKX8fIx593IOB', // ID correcto de la tabla
+            TABLE_NAME: 'Asistencia_Diaria',
+            BASE_URL: 'https://api.airtable.com/v0'
+        };
+
+        function getHeaders() {
+            return {
+                'Authorization': `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const formattedMessage = `[${timestamp}] ${message}\n`;
+            
+            resultsDiv.textContent += formattedMessage;
+            resultsDiv.className = `result ${type}`;
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            
+            console.log(message);
+        }
+
+        async function getTableInfo() {
+            addResult('📋 Obteniendo información de la tabla...', 'info');
+            
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_CONFIG.BASE_ID}/tables/${AIRTABLE_CONFIG.TABLE_ID}`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+
+                if (response.ok) {
+                    const tableInfo = await response.json();
+                    addResult('✅ Información de la tabla obtenida:', 'success');
+                    addResult(`📋 Nombre: ${tableInfo.name}`, 'success');
+                    addResult(`🆔 ID: ${tableInfo.id}`, 'success');
+                    addResult(`📝 Descripción: ${tableInfo.description || 'Sin descripción'}`, 'success');
+                    
+                    addResult('📋 Campos actuales:', 'info');
+                    tableInfo.fields.forEach(field => {
+                        addResult(`   - ${field.name} (${field.type})`, 'info');
+                    });
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al obtener información: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function addFechaField() {
+            addResult('📅 Agregando campo Fecha...', 'info');
+            
+            try {
+                const fieldSchema = {
+                    name: 'Fecha',
+                    type: 'date',
+                    options: {
+                        dateFormat: {
+                            name: 'local'
+                        }
+                    },
+                    description: 'Fecha de la clase'
+                };
+
+                const response = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_CONFIG.BASE_ID}/tables/${AIRTABLE_CONFIG.TABLE_ID}/fields`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(fieldSchema)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('✅ Campo Fecha agregado exitosamente', 'success');
+                    addResult(`🆔 ID del campo: ${result.id}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al agregar campo Fecha: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function addAsistioField() {
+            addResult('✅ Agregando campo Asistió...', 'info');
+            
+            try {
+                const fieldSchema = {
+                    name: 'Asistio',
+                    type: 'singleSelect',
+                    options: {
+                        choices: [
+                            { name: 'Sí' },
+                            { name: 'No' }
+                        ]
+                    },
+                    description: '¿El estudiante asistió a clase?'
+                };
+
+                const response = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_CONFIG.BASE_ID}/tables/${AIRTABLE_CONFIG.TABLE_ID}/fields`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(fieldSchema)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('✅ Campo Asistió agregado exitosamente', 'success');
+                    addResult(`🆔 ID del campo: ${result.id}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al agregar campo Asistió: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function addAllFields() {
+            addResult('🔄 Agregando todos los campos...', 'info');
+            
+            try {
+                // Agregar campo Fecha
+                await addFechaField();
+                
+                // Esperar un momento
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Agregar campo Asistió
+                await addAsistioField();
+                
+                addResult('✅ Todos los campos agregados exitosamente', 'success');
+            } catch (error) {
+                addResult(`❌ Error al agregar campos: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSimpleRecord() {
+            addResult('📝 Probando registro simple...', 'info');
+            
+            try {
+                const record = {
+                    fields: {
+                        'Estudiante': 'Test Student',
+                        'Fecha': '2025-01-15',
+                        'Asistio': 'Sí'
+                    }
+                };
+
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({
+                        records: [record]
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('✅ Registro simple creado exitosamente', 'success');
+                    addResult(`📝 ID: ${result.records[0].id}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al crear registro: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAttendanceRecord() {
+            addResult('✅ Probando registro de asistencia...', 'info');
+            
+            try {
+                const record = {
+                    fields: {
+                        'Estudiante': 'Alcala Gonzalez, Sofia',
+                        'Fecha': '2025-01-15',
+                        'Asistio': 'Sí'
+                    }
+                };
+
+                const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({
+                        records: [record]
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    addResult('✅ Registro de asistencia creado exitosamente', 'success');
+                    addResult(`📝 Estudiante: Alcala Gonzalez, Sofia`, 'success');
+                    addResult(`📅 Fecha: 2025-01-15`, 'success');
+                    addResult(`✅ Asistió: Sí`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al crear registro de asistencia: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🚀 Página de arreglo cargada', 'info');
+            addResult('📋 Instrucciones:', 'info');
+            addResult('   1. Obtén información de la tabla', 'info');
+            addResult('   2. Agrega los campos faltantes', 'info');
+            addResult('   3. Prueba la funcionalidad', 'info');
+        });
+    </script>
+</body>
+</html> 

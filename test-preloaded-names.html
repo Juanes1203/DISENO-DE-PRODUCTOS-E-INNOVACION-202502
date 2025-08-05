@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Nombres Pre-cargados</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .test-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .result {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        .success {
+            background: #22543d;
+            color: #c6f6d5;
+        }
+
+        .info {
+            background: #2a4365;
+            color: #bee3f8;
+        }
+
+        .student-select {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            align-items: center;
+        }
+
+        .student-select select, .student-select input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .student-select button {
+            padding: 8px 16px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .students-list {
+            background: #edf2f7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-item.found {
+            background: #c6f6d5;
+            color: #22543d;
+            border-radius: 4px;
+            padding: 8px;
+        }
+
+        .student-item.not-found {
+            background: #fed7d7;
+            color: #742a2a;
+            border-radius: 4px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Nombres Pre-cargados</h1>
+        
+        <div class="test-section">
+            <h3>📋 Verificar Nombres en Airtable</h3>
+            <button class="btn" onclick="loadStudentsFromAirtable()">📥 Cargar Estudiantes desde Airtable</button>
+            <button class="btn btn-success" onclick="testStudentSearch()">🔍 Probar Búsqueda de Estudiantes</button>
+            <button class="btn btn-warning" onclick="testAttendanceUpdate()">✅ Probar Actualización de Asistencia</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Simular Registro de Asistencia</h3>
+            <p>Selecciona un estudiante y registra su asistencia:</p>
+            
+            <div class="student-select">
+                <select id="studentSelect">
+                    <option value="">Selecciona un estudiante...</option>
+                </select>
+                <select id="attendanceStatus">
+                    <option value="present">Presente</option>
+                    <option value="absent">Ausente</option>
+                </select>
+                <input type="date" id="attendanceDate" value="2025-01-15">
+                <button onclick="registerAttendance()">✅ Registrar Asistencia</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Lista de Estudiantes</h3>
+            <div class="students-list" id="studentsList">
+                <p>Carga los estudiantes desde Airtable para ver la lista</p>
+            </div>
+        </div>
+
+        <div id="results" class="result" style="display: none;"></div>
+    </div>
+
+    <script src="airtable-config.js"></script>
+    <script src="airtable-service.js"></script>
+    <script>
+        let studentsFromAirtable = [];
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const formattedMessage = `[${timestamp}] ${message}\n`;
+            
+            resultsDiv.textContent += formattedMessage;
+            resultsDiv.className = `result ${type}`;
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            
+            console.log(message);
+        }
+
+        async function loadStudentsFromAirtable() {
+            addResult('📥 Cargando estudiantes desde Airtable...', 'info');
+            
+            try {
+                const response = await fetch(`${getAirtableURL()}?maxRecords=100`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    studentsFromAirtable = data.records.filter(record => record.fields.Nombre);
+                    
+                    addResult(`✅ ${studentsFromAirtable.length} estudiantes cargados desde Airtable`, 'success');
+                    
+                    // Actualizar select de estudiantes
+                    updateStudentSelect();
+                    
+                    // Mostrar lista de estudiantes
+                    updateStudentsList();
+                    
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al cargar estudiantes: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error al cargar estudiantes: ${error.message}`, 'error');
+            }
+        }
+
+        function updateStudentSelect() {
+            const select = document.getElementById('studentSelect');
+            select.innerHTML = '<option value="">Selecciona un estudiante...</option>';
+            
+            studentsFromAirtable.forEach(record => {
+                const option = document.createElement('option');
+                option.value = record.fields.Nombre;
+                option.textContent = record.fields.Nombre;
+                select.appendChild(option);
+            });
+        }
+
+        function updateStudentsList() {
+            const listDiv = document.getElementById('studentsList');
+            listDiv.innerHTML = '';
+            
+            if (studentsFromAirtable.length === 0) {
+                listDiv.innerHTML = '<p>No hay estudiantes cargados</p>';
+                return;
+            }
+            
+            studentsFromAirtable.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `
+                    <span>👤 ${record.fields.Nombre}</span>
+                    <span>🆔 ${record.id}</span>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+
+        async function testStudentSearch() {
+            addResult('🔍 Probando búsqueda de estudiantes...', 'info');
+            
+            const testStudents = [
+                'Alcala Gonzalez, Sofia',
+                'Aristizabal Garcia, Gabriel',
+                'Avila Nivia, Juan Sebastian',
+                'Test Student Not Found'
+            ];
+            
+            for (const student of testStudents) {
+                addResult(`🔍 Buscando: "${student}"`, 'info');
+                
+                try {
+                    const existingRecord = await airtableService.findExistingRecord('2025-01-15', student);
+                    
+                    if (existingRecord) {
+                        addResult(`✅ "${student}" encontrado con ID: ${existingRecord.id}`, 'success');
+                    } else {
+                        addResult(`❌ "${student}" no encontrado`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ Error buscando "${student}": ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function testAttendanceUpdate() {
+            addResult('✅ Probando actualización de asistencia...', 'info');
+            
+            const testStudent = 'Alcala Gonzalez, Sofia';
+            const testDate = '2025-01-15';
+            const testStatus = 'present';
+            
+            addResult(`🧪 Probando: ${testStudent} - ${testDate} - ${testStatus}`, 'info');
+            
+            try {
+                // Buscar estudiante
+                const existingRecord = await airtableService.findExistingRecord(testDate, testStudent);
+                
+                if (existingRecord) {
+                    addResult(`✅ Estudiante encontrado, actualizando asistencia...`, 'success');
+                    
+                    // Actualizar asistencia
+                    const updateResult = await airtableService.updateAttendanceForDate(
+                        existingRecord.id,
+                        testDate,
+                        testStatus,
+                        'test.user',
+                        'Test'
+                    );
+                    
+                    if (updateResult) {
+                        addResult(`✅ Asistencia actualizada exitosamente`, 'success');
+                    } else {
+                        addResult(`❌ Error al actualizar asistencia`, 'error');
+                    }
+                } else {
+                    addResult(`❌ Estudiante no encontrado`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error en prueba: ${error.message}`, 'error');
+            }
+        }
+
+        async function registerAttendance() {
+            const studentName = document.getElementById('studentSelect').value;
+            const status = document.getElementById('attendanceStatus').value;
+            const date = document.getElementById('attendanceDate').value;
+
+            if (!studentName || !date) {
+                addResult('❌ Por favor selecciona un estudiante y una fecha', 'error');
+                return;
+            }
+
+            addResult(`📝 Registrando asistencia: ${studentName} - ${date} - ${status}`, 'info');
+            
+            try {
+                // Buscar estudiante
+                const existingRecord = await airtableService.findExistingRecord(date, studentName);
+                
+                if (existingRecord) {
+                    addResult(`✅ Estudiante encontrado, actualizando asistencia...`, 'success');
+                    
+                    // Actualizar asistencia
+                    const updateResult = await airtableService.updateAttendanceForDate(
+                        existingRecord.id,
+                        date,
+                        status,
+                        'test.user',
+                        'Test'
+                    );
+                    
+                    if (updateResult) {
+                        addResult(`✅ Asistencia registrada exitosamente`, 'success');
+                    } else {
+                        addResult(`❌ Error al registrar asistencia`, 'error');
+                    }
+                } else {
+                    addResult(`❌ Estudiante "${studentName}" no encontrado en Airtable`, 'error');
+                    addResult(`💡 Verifica que el nombre esté exactamente como aparece en Airtable`, 'info');
+                }
+            } catch (error) {
+                addResult(`❌ Error al registrar asistencia: ${error.message}`, 'error');
+            }
+        }
+
+        // Funciones auxiliares
+        function getHeaders() {
+            return {
+                'Authorization': 'Bearer patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da',
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function getAirtableURL() {
+            return `https://api.airtable.com/v0/appvW207EbN1h8xhG/Asistencia`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🚀 Página de prueba de nombres pre-cargados cargada', 'info');
+            addResult('📋 Instrucciones:', 'info');
+            addResult('   1. Carga los estudiantes desde Airtable', 'info');
+            addResult('   2. Prueba la búsqueda de estudiantes', 'info');
+            addResult('   3. Registra asistencia usando el formulario', 'info');
+        });
+    </script>
+</body>
+</html> 

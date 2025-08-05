@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flujo de Asistencia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .test-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .result {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        .success {
+            background: #22543d;
+            color: #c6f6d5;
+        }
+
+        .info {
+            background: #2a4365;
+            color: #bee3f8;
+        }
+
+        .student-input {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            align-items: center;
+        }
+
+        .student-input input, .student-input select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .student-input button {
+            padding: 8px 16px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .student-list {
+            background: #edf2f7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Flujo de Asistencia</h1>
+        
+        <div class="test-section">
+            <h3>📝 Simular Registro de Asistencia</h3>
+            <p>Esta herramienta te permite probar el flujo completo de registro de asistencia:</p>
+            
+            <div class="student-input">
+                <input type="text" id="studentName" placeholder="Nombre del estudiante" value="Test Student">
+                <select id="attendanceStatus">
+                    <option value="present">Presente</option>
+                    <option value="absent">Ausente</option>
+                </select>
+                <input type="date" id="attendanceDate" value="2025-01-15">
+                <button onclick="addStudentAttendance()">➕ Agregar Asistencia</button>
+            </div>
+
+            <div class="student-list" id="studentList">
+                <h4>📋 Estudiantes Registrados:</h4>
+                <div id="studentsList"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Sincronización con Airtable</h3>
+            <button class="btn" onclick="testSync()">🔄 Probar Sincronización</button>
+            <button class="btn btn-success" onclick="loadFromAirtable()">📥 Cargar desde Airtable</button>
+            <button class="btn btn-warning" onclick="clearLocalData()">🗑️ Limpiar Datos Locales</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Verificar Registros</h3>
+            <button class="btn" onclick="checkExistingRecords()">🔍 Verificar Registros Existentes</button>
+            <button class="btn" onclick="testCreateAndUpdate()">🔄 Probar Crear y Actualizar</button>
+        </div>
+
+        <div id="results" class="result" style="display: none;"></div>
+    </div>
+
+    <script src="airtable-config.js"></script>
+    <script src="airtable-service.js"></script>
+    <script>
+        let localAttendanceData = {};
+        let students = [];
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const formattedMessage = `[${timestamp}] ${message}\n`;
+            
+            resultsDiv.textContent += formattedMessage;
+            resultsDiv.className = `result ${type}`;
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            
+            console.log(message);
+        }
+
+        function addStudentAttendance() {
+            const studentName = document.getElementById('studentName').value;
+            const status = document.getElementById('attendanceStatus').value;
+            const date = document.getElementById('attendanceDate').value;
+
+            if (!studentName || !date) {
+                addResult('❌ Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            // Agregar a datos locales
+            if (!localAttendanceData[date]) {
+                localAttendanceData[date] = {
+                    _session: {
+                        user: 'test.user',
+                        role: 'Test',
+                        timestamp: new Date().toISOString()
+                    }
+                };
+            }
+
+            localAttendanceData[date][studentName] = status;
+
+            // Agregar a lista de estudiantes si no existe
+            if (!students.includes(studentName)) {
+                students.push(studentName);
+            }
+
+            addResult(`✅ ${studentName} marcado como ${status} para ${date}`, 'success');
+            updateStudentsList();
+        }
+
+        function updateStudentsList() {
+            const listDiv = document.getElementById('studentsList');
+            listDiv.innerHTML = '';
+
+            students.forEach(student => {
+                const item = document.createElement('div');
+                item.className = 'student-item';
+                item.innerHTML = `
+                    <span>👤 ${student}</span>
+                    <span>📅 ${Object.keys(localAttendanceData).length} fechas registradas</span>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+
+        async function testSync() {
+            addResult('🔄 Probando sincronización con Airtable...', 'info');
+            
+            try {
+                const syncResults = await airtableService.syncWithAirtable(localAttendanceData);
+                
+                if (syncResults.success > 0) {
+                    addResult(`✅ Sincronización exitosa: ${syncResults.success} registros procesados`, 'success');
+                    syncResults.details.forEach(detail => {
+                        addResult(`   ${detail}`, 'success');
+                    });
+                } else if (syncResults.errors > 0) {
+                    addResult(`⚠️ Errores en sincronización: ${syncResults.errors} errores`, 'error');
+                    syncResults.details.forEach(detail => {
+                        addResult(`   ${detail}`, 'error');
+                    });
+                } else {
+                    addResult('ℹ️ No hay datos nuevos para sincronizar', 'info');
+                }
+            } catch (error) {
+                addResult(`❌ Error en sincronización: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadFromAirtable() {
+            addResult('📥 Cargando datos desde Airtable...', 'info');
+            
+            try {
+                const airtableData = await airtableService.loadFromAirtable();
+                
+                if (Object.keys(airtableData).length > 0) {
+                    addResult('✅ Datos cargados desde Airtable:', 'success');
+                    Object.entries(airtableData).forEach(([date, attendance]) => {
+                        addResult(`📅 ${date}:`, 'info');
+                        Object.entries(attendance).forEach(([student, status]) => {
+                            addResult(`   👤 ${student}: ${status}`, 'info');
+                        });
+                    });
+                } else {
+                    addResult('ℹ️ No hay datos en Airtable', 'info');
+                }
+            } catch (error) {
+                addResult(`❌ Error al cargar datos: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLocalData() {
+            localAttendanceData = {};
+            students = [];
+            updateStudentsList();
+            addResult('🗑️ Datos locales limpiados', 'success');
+        }
+
+        async function checkExistingRecords() {
+            addResult('🔍 Verificando registros existentes...', 'info');
+            
+            try {
+                const response = await fetch(`${getAirtableURL()}?maxRecords=10`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`📊 Registros encontrados: ${data.records.length}`, 'success');
+                    
+                    data.records.forEach((record, index) => {
+                        addResult(`📝 Registro ${index + 1}:`, 'info');
+                        addResult(`   ID: ${record.id}`, 'info');
+                        addResult(`   Nombre: ${record.fields.Nombre || 'N/A'}`, 'info');
+                        addResult(`   Fecha: ${record.fields.Fecha || 'N/A'}`, 'info');
+                        addResult(`   Estado: ${record.fields.Estado || 'N/A'}`, 'info');
+                    });
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ Error al verificar registros: ${response.status}`, 'error');
+                    addResult(`❌ Detalles: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error al verificar registros: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCreateAndUpdate() {
+            addResult('🔄 Probando crear y actualizar registro...', 'info');
+            
+            const testStudent = 'Test Student Flow';
+            const testDate = '2025-01-15';
+            
+            // Paso 1: Crear registro
+            addResult('📝 Paso 1: Creando registro inicial...', 'info');
+            
+            try {
+                const createResult = await airtableService.saveAttendance(
+                    testStudent,
+                    'present',
+                    testDate,
+                    'test.user',
+                    'Test'
+                );
+                
+                if (createResult) {
+                    addResult('✅ Registro creado exitosamente', 'success');
+                    
+                    // Paso 2: Buscar registro
+                    addResult('🔍 Paso 2: Buscando registro...', 'info');
+                    const existingRecord = await airtableService.findExistingRecord(testDate, testStudent);
+                    
+                    if (existingRecord) {
+                        addResult('✅ Registro encontrado', 'success');
+                        
+                        // Paso 3: Actualizar estado
+                        addResult('🔄 Paso 3: Actualizando estado...', 'info');
+                        const updateResult = await airtableService.updateAttendanceStatus(
+                            existingRecord.id,
+                            'absent',
+                            'test.user',
+                            'Test'
+                        );
+                        
+                        if (updateResult) {
+                            addResult('✅ Estado actualizado exitosamente', 'success');
+                        } else {
+                            addResult('❌ Error al actualizar estado', 'error');
+                        }
+                    } else {
+                        addResult('❌ Registro no encontrado', 'error');
+                    }
+                } else {
+                    addResult('❌ Error al crear registro', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error en prueba: ${error.message}`, 'error');
+            }
+        }
+
+        // Funciones auxiliares
+        function getHeaders() {
+            return {
+                'Authorization': 'Bearer patLHsooZ8NZ5iREL.d4df11c0c687acbaefb084cae8fc10e04b5c51a52e80b73cce0a38900890b8da',
+                'Content-Type': 'application/json'
+            };
+        }
+
+        function getAirtableURL() {
+            return `https://api.airtable.com/v0/appvW207EbN1h8xhG/Asistencia`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🚀 Página de prueba de flujo cargada', 'info');
+            addResult('📋 Instrucciones:', 'info');
+            addResult('   1. Agrega estudiantes usando el formulario', 'info');
+            addResult('   2. Prueba la sincronización con Airtable', 'info');
+            addResult('   3. Verifica los registros existentes', 'info');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Simple de Asistencia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .setup-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .result {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        .success {
+            background: #22543d;
+            color: #c6f6d5;
+        }
+
+        .info {
+            background: #2a4365;
+            color: #bee3f8;
+        }
+
+        .attendance-form {
+            background: #edf2f7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group button {
+            padding: 10px 20px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .form-group button:hover {
+            background: #38a169;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .student-card.present {
+            border-left: 4px solid #48bb78;
+            background: #f0fff4;
+        }
+
+        .student-card.absent {
+            border-left: 4px solid #f56565;
+            background: #fff5f5;
+        }
+
+        .student-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .attendance-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-absent {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-unregistered {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Registro Simple de Asistencia</h1>
+        
+        <div class="setup-section">
+            <h3>🔧 Configuración</h3>
+            <button class="btn" onclick="createTable()">🏗️ Crear Tabla de Asistencia</button>
+            <button class="btn btn-success" onclick="loadStudents()">📥 Cargar Estudiantes</button>
+            <button class="btn btn-warning" onclick="testAttendance()">🧪 Probar Registro</button>
+        </div>
+
+        <div class="setup-section">
+            <h3>📝 Registrar Asistencia</h3>
+            <div class="attendance-form">
+                <div class="form-group">
+                    <label for="studentName">Estudiante:</label>
+                    <select id="studentName">
+                        <option value="">Selecciona un estudiante...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="attendanceDate">Fecha:</label>
+                    <input type="date" id="attendanceDate" value="2025-01-15">
+                </div>
+                
+                <div class="form-group">
+                    <label for="attendanceStatus">Asistió:</label>
+                    <select id="attendanceStatus">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button onclick="registerAttendance()">✅ Registrar Asistencia</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-section">
+            <h3>📊 Estudiantes</h3>
+            <div class="students-grid" id="studentsGrid">
+                <p>Carga los estudiantes para ver la lista</p>
+            </div>
+        </div>
+
+        <div id="results" class="result" style="display: none;"></div>
+    </div>
+
+    <script src="create-attendance-table.js"></script>
+    <script>
+        let students = [];
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const formattedMessage = `[${timestamp}] ${message}\n`;
+            
+            resultsDiv.textContent += formattedMessage;
+            resultsDiv.className = `result ${type}`;
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            
+            console.log(message);
+        }
+
+        async function createTable() {
+            addResult('🏗️ Creando tabla de asistencia diaria...', 'info');
+            
+            try {
+                const result = await DailyAttendanceService.createDailyAttendanceTable();
+                
+                if (result) {
+                    addResult('✅ Tabla de asistencia diaria creada exitosamente', 'success');
+                } else {
+                    addResult('❌ Error al crear la tabla', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadStudents() {
+            addResult('📥 Cargando estudiantes...', 'info');
+            
+            // Lista de estudiantes pre-cargados
+            students = [
+                'Alcala Gonzalez, Sofia',
+                'Aristizabal Garcia, Gabriel',
+                'Avila Nivia, Juan Sebastian',
+                'Benavides Rocha, Diego Juan Vicente',
+                'Botero Ruiz, Andres',
+                'Briceño Estupiñan, David Alejandro',
+                'Briceño Toro, Juan Eduardo',
+                'Carrillo, Maria Alejandra',
+                'Castellanos Ribero, Pablo',
+                'Castro, Anais Maria',
+                'Cespedes Cortes, Yefran David',
+                'Cuervo Ortiz, Juan David',
+                'Davila Betancourt, Andrea',
+                'Diez Leal, Samuel',
+                'Escobar Pineda, Samuel Alejandro',
+                'Franco Pardo, Yhojan Alejandro',
+                'Garrido Arroyo, Esteban',
+                'Gonzalez Bermudez, Julian David',
+                'Guiza Melo, Laura Valentina',
+                'Hernandez Paez, Juan Felipe',
+                'Jimenez Tovar, Laura Valentina',
+                'Leschhorn, Martin',
+                'Maldonado Manrique, Juan Sebastian',
+                'Muñoz Estevez, Laura Valentina',
+                'Niño Mendez, Joel David',
+                'Ochoa Bejarano, Juan Felipe',
+                'Pereira Avila, Andres Felipe',
+                'Perez Diaz, Juan David',
+                'Pineda Cano, Jeronimo Arnulfo',
+                'Pinto, Julian Rafael',
+                'Polania Arias, Angie Katherine',
+                'Quiroz Pintor, Santiago Alberto',
+                'Ramirez Aleman, Julian Roberto',
+                'Reyes Romero, Juan Pablo',
+                'Rodriguez Pinto, Gabriel Enrique',
+                'Roncancio Camacho, Juan David',
+                'Ross Aguirre, Joshua John',
+                'Sanabria Salazar, Maria Alejandra',
+                'Sanmiguel Losada, Felipe',
+                'Sarmiento Gutierrez, Laura Sofia',
+                'Serrano Arango, Amelia',
+                'Velasquez Delgado, Tomas Emilio',
+                'Vides Vivero, Alejandro Enrique',
+                'Zambrano Burbano, Mateo'
+            ];
+            
+            addResult(`✅ ${students.length} estudiantes cargados`, 'success');
+            
+            // Actualizar select
+            updateStudentSelect();
+            
+            // Actualizar grid
+            updateStudentsGrid();
+        }
+
+        function updateStudentSelect() {
+            const select = document.getElementById('studentName');
+            select.innerHTML = '<option value="">Selecciona un estudiante...</option>';
+            
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student;
+                option.textContent = student;
+                select.appendChild(option);
+            });
+        }
+
+        function updateStudentsGrid() {
+            const grid = document.getElementById('studentsGrid');
+            grid.innerHTML = '';
+            
+            students.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.onclick = () => selectStudent(student);
+                
+                card.innerHTML = `
+                    <div class="student-name">👤 ${student}</div>
+                    <div class="attendance-status status-unregistered">Sin registrar</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function selectStudent(student) {
+            document.getElementById('studentName').value = student;
+            addResult(`👤 Estudiante seleccionado: ${student}`, 'info');
+        }
+
+        async function registerAttendance() {
+            const student = document.getElementById('studentName').value;
+            const date = document.getElementById('attendanceDate').value;
+            const attended = document.getElementById('attendanceStatus').value === 'true';
+
+            if (!student || !date) {
+                addResult('❌ Por favor selecciona un estudiante y una fecha', 'error');
+                return;
+            }
+
+            addResult(`📝 Registrando asistencia: ${student} - ${date} - ${attended ? 'Presente' : 'Ausente'}`, 'info');
+            
+            try {
+                const result = await DailyAttendanceService.registerOrUpdateAttendance(
+                    student, 
+                    date, 
+                    attended, 
+                    'test.user'
+                );
+                
+                if (result) {
+                    addResult('✅ Asistencia registrada exitosamente', 'success');
+                    updateStudentCard(student, attended);
+                } else {
+                    addResult('❌ Error al registrar asistencia', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function updateStudentCard(student, attended) {
+            const cards = document.querySelectorAll('.student-card');
+            cards.forEach(card => {
+                const nameElement = card.querySelector('.student-name');
+                if (nameElement.textContent.includes(student)) {
+                    card.className = `student-card ${attended ? 'present' : 'absent'}`;
+                    const statusElement = card.querySelector('.attendance-status');
+                    statusElement.textContent = attended ? 'Presente' : 'Ausente';
+                    statusElement.className = `attendance-status ${attended ? 'status-present' : 'status-absent'}`;
+                }
+            });
+        }
+
+        async function testAttendance() {
+            addResult('🧪 Probando registro de asistencia...', 'info');
+            
+            const testStudent = 'Alcala Gonzalez, Sofia';
+            const testDate = '2025-01-15';
+            
+            addResult(`🧪 Probando: ${testStudent} - ${testDate} - Presente`, 'info');
+            
+            try {
+                const result = await DailyAttendanceService.registerOrUpdateAttendance(
+                    testStudent,
+                    testDate,
+                    true,
+                    'test.user'
+                );
+                
+                if (result) {
+                    addResult('✅ Prueba exitosa - Asistencia registrada', 'success');
+                } else {
+                    addResult('❌ Error en la prueba', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error en prueba: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🚀 Página de registro simple cargada', 'info');
+            addResult('📋 Instrucciones:', 'info');
+            addResult('   1. Crea la tabla de asistencia', 'info');
+            addResult('   2. Carga los estudiantes', 'info');
+            addResult('   3. Registra asistencia usando el formulario', 'info');
+        });
+    </script>
+</body>
+</html> 

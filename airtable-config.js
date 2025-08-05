@@ -61,6 +61,13 @@ function createSearchRecord(date, student) {
     };
 }
 
+// Función para buscar registros por nombre del estudiante (nombres pre-cargados)
+function createSearchRecordByStudent(student) {
+    return {
+        filterByFormula: `{${AIRTABLE_CONFIG.FIELDS.NOMBRE}} = '${student}'`
+    };
+}
+
 // Exportar configuración
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -68,6 +75,7 @@ if (typeof module !== 'undefined' && module.exports) {
         getAirtableURL,
         getHeaders,
         createAttendanceRecord,
-        createSearchRecord
+        createSearchRecord,
+        createSearchRecordByStudent
     };
 } 
