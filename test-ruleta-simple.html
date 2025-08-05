@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Ruleta Simple</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .test-section { background: rgba(255,255,255,0.1); padding: 20px; margin: 20px 0; border-radius: 10px; }
+        .btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #218838; }
+        .result { background: rgba(0,0,0,0.3); padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: rgba(220,53,69,0.3); }
+        .success { background: rgba(40,167,69,0.3); }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Ruleta Simple</h1>
+    
+    <div class="test-section">
+        <h3>1. Test de Carga de Scripts</h3>
+        <button class="btn" onclick="testScripts()">Probar Carga de Scripts</button>
+        <div id="script-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test de Login</h3>
+        <input type="text" id="test-username" placeholder="Usuario" value="prof.arturo.gomez">
+        <input type="password" id="test-password" placeholder="Contraseña" value="Arturo2025#Uniandes$Profesor!">
+        <button class="btn" onclick="testLogin()">Probar Login</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test de STRAICO Service</h3>
+        <button class="btn" onclick="testStraicoService()">Probar STRAICO Service</button>
+        <div id="straico-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Test de Preguntas por Categoría</h3>
+        <button class="btn" onclick="testGeneralQuestions()">Preguntas Generales</button>
+        <button class="btn" onclick="testClassQuestions()">Preguntas de Clase</button>
+        <button class="btn" onclick="testSpecificQuestions()">Preguntas Específicas</button>
+        <div id="questions-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Test Completo de Ruleta</h3>
+        <button class="btn" onclick="testFullRoulette()">Test Completo</button>
+        <div id="roulette-result" class="result"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="straico-service.js"></script>
+    
+    <script>
+        function addResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
+            element.className = `result ${type}`;
+        }
+
+        function testScripts() {
+            try {
+                const configLoaded = typeof window.CONFIG !== 'undefined';
+                const straicoLoaded = typeof window.straicoService !== 'undefined';
+                
+                let result = '';
+                result += `CONFIG cargado: ${configLoaded ? '✅' : '❌'}\n`;
+                result += `STRAICO Service cargado: ${straicoLoaded ? '✅' : '❌'}\n`;
+                
+                if (configLoaded) {
+                    result += `Usuarios disponibles: ${Object.keys(window.CONFIG.USERS).join(', ')}\n`;
+                }
+                
+                if (straicoLoaded) {
+                    result += `Semana actual: ${window.straicoService.getCurrentWeek()}\n`;
+                }
+                
+                addResult('script-result', result, configLoaded && straicoLoaded ? 'success' : 'error');
+            } catch (error) {
+                addResult('script-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testLogin() {
+            try {
+                const username = document.getElementById('test-username').value;
+                const password = document.getElementById('test-password').value;
+                
+                if (!window.CONFIG || !window.CONFIG.USERS) {
+                    addResult('login-result', 'CONFIG no cargado', 'error');
+                    return;
+                }
+                
+                const user = window.CONFIG.USERS[username];
+                const isValid = user && user.password === password;
+                
+                if (isValid) {
+                    addResult('login-result', `✅ Login exitoso para ${username} (${user.role})`, 'success');
+                } else {
+                    addResult('login-result', `❌ Login fallido para ${username}`, 'error');
+                }
+            } catch (error) {
+                addResult('login-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testStraicoService() {
+            try {
+                if (!window.straicoService) {
+                    addResult('straico-result', 'STRAICO Service no cargado', 'error');
+                    return;
+                }
+                
+                const currentWeek = window.straicoService.getCurrentWeek();
+                const weekData = window.straicoService.COURSE_SCHEDULE[currentWeek];
+                
+                let result = '';
+                result += `✅ STRAICO Service cargado\n`;
+                result += `Semana actual: ${currentWeek}\n`;
+                result += `Tema de la semana: ${weekData.topic}\n`;
+                result += `Conceptos clave: ${weekData.key_concepts.join(', ')}\n`;
+                
+                addResult('straico-result', result, 'success');
+            } catch (error) {
+                addResult('straico-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGeneralQuestions() {
+            try {
+                if (!window.straicoService) {
+                    addResult('questions-result', 'STRAICO Service no cargado', 'error');
+                    return;
+                }
+                
+                addResult('questions-result', '🔄 Generando preguntas generales...', 'info');
+                
+                const result = await window.straicoService.generateGeneralKnowledgeQuestions('Test Student');
+                
+                if (result.success && result.questions) {
+                    let output = `✅ ${result.questions.length} preguntas generadas:\n\n`;
+                    result.questions.forEach((q, i) => {
+                        output += `${i+1}. ${q.pregunta}\n`;
+                        output += `   Respuesta: ${q.respuesta_correcta.substring(0, 100)}...\n\n`;
+                    });
+                    addResult('questions-result', output, 'success');
+                } else {
+                    addResult('questions-result', '❌ Error generando preguntas', 'error');
+                }
+            } catch (error) {
+                addResult('questions-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testClassQuestions() {
+            try {
+                if (!window.straicoService) {
+                    addResult('questions-result', 'STRAICO Service no cargado', 'error');
+                    return;
+                }
+                
+                addResult('questions-result', '🔄 Generando preguntas de clase...', 'info');
+                
+                const result = await window.straicoService.generateClassTopicQuestions('Test Student');
+                
+                if (result.success && result.questions) {
+                    let output = `✅ ${result.questions.length} preguntas de clase generadas:\n\n`;
+                    result.questions.forEach((q, i) => {
+                        output += `${i+1}. ${q.pregunta}\n`;
+                        output += `   Respuesta: ${q.respuesta_correcta.substring(0, 100)}...\n\n`;
+                    });
+                    addResult('questions-result', output, 'success');
+                } else {
+                    addResult('questions-result', '❌ Error generando preguntas de clase', 'error');
+                }
+            } catch (error) {
+                addResult('questions-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSpecificQuestions() {
+            try {
+                if (!window.straicoService) {
+                    addResult('questions-result', 'STRAICO Service no cargado', 'error');
+                    return;
+                }
+                
+                addResult('questions-result', '🔄 Generando preguntas específicas...', 'info');
+                
+                const result = await window.straicoService.generateSpecificTopicQuestions('Test Student', 'Inteligencia Artificial');
+                
+                if (result.success && result.questions) {
+                    let output = `✅ ${result.questions.length} preguntas específicas generadas:\n\n`;
+                    result.questions.forEach((q, i) => {
+                        output += `${i+1}. ${q.pregunta}\n`;
+                        output += `   Respuesta: ${q.respuesta_correcta.substring(0, 100)}...\n\n`;
+                    });
+                    addResult('questions-result', output, 'success');
+                } else {
+                    addResult('questions-result', '❌ Error generando preguntas específicas', 'error');
+                }
+            } catch (error) {
+                addResult('questions-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFullRoulette() {
+            try {
+                addResult('roulette-result', '🔄 Iniciando test completo...', 'info');
+                
+                // Test 1: Scripts
+                const configLoaded = typeof window.CONFIG !== 'undefined';
+                const straicoLoaded = typeof window.straicoService !== 'undefined';
+                
+                if (!configLoaded || !straicoLoaded) {
+                    addResult('roulette-result', '❌ Scripts no cargados correctamente', 'error');
+                    return;
+                }
+                
+                // Test 2: Login
+                const testUser = 'prof.arturo.gomez';
+                const testPass = 'Arturo2025#Uniandes$Profesor!';
+                const user = window.CONFIG.USERS[testUser];
+                const loginOk = user && user.password === testPass;
+                
+                if (!loginOk) {
+                    addResult('roulette-result', '❌ Login fallido', 'error');
+                    return;
+                }
+                
+                // Test 3: Preguntas
+                const generalResult = await window.straicoService.generateGeneralKnowledgeQuestions('Test Student');
+                const classResult = await window.straicoService.generateClassTopicQuestions('Test Student');
+                const specificResult = await window.straicoService.generateSpecificTopicQuestions('Test Student', 'IA');
+                
+                let output = '✅ Test completo exitoso:\n\n';
+                output += `- Scripts: ✅\n`;
+                output += `- Login: ✅\n`;
+                output += `- Preguntas generales: ${generalResult.success ? '✅' : '❌'}\n`;
+                output += `- Preguntas de clase: ${classResult.success ? '✅' : '❌'}\n`;
+                output += `- Preguntas específicas: ${specificResult.success ? '✅' : '❌'}\n\n`;
+                output += `Total preguntas generadas: ${(generalResult.questions?.length || 0) + (classResult.questions?.length || 0) + (specificResult.questions?.length || 0)}`;
+                
+                addResult('roulette-result', output, 'success');
+                
+            } catch (error) {
+                addResult('roulette-result', `Error en test completo: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html> 
