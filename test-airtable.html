@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Airtable Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .test-section { background: rgba(255,255,255,0.1); padding: 20px; margin: 20px 0; border-radius: 10px; }
+        .btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #218838; }
+        .btn.danger { background: #dc3545; }
+        .btn.danger:hover { background: #c82333; }
+        .result { background: rgba(0,0,0,0.3); padding: 15px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 12px; }
+        .error { background: rgba(220,53,69,0.3); }
+        .success { background: rgba(40,167,69,0.3); }
+        .info { background: rgba(23,162,184,0.3); }
+        .config-info { background: rgba(255,193,7,0.3); }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Airtable Integration</h1>
+    
+    <div class="test-section">
+        <h3>1. Configuración de Airtable</h3>
+        <button class="btn" onclick="showConfig()">Mostrar Configuración</button>
+        <div id="config-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test de Conexión</h3>
+        <button class="btn" onclick="testConnection()">Probar Conexión</button>
+        <div id="connection-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test de Envío de Datos</h3>
+        <button class="btn" onclick="testSendData()">Enviar Datos de Prueba</button>
+        <button class="btn danger" onclick="clearTestData()">Limpiar Datos de Prueba</button>
+        <div id="send-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Test de Lectura de Datos</h3>
+        <button class="btn" onclick="testReadData()">Leer Datos de Airtable</button>
+        <div id="read-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Test Completo de Sincronización</h3>
+        <button class="btn" onclick="testFullSync()">Test Completo</button>
+        <div id="sync-result" class="result"></div>
+    </div>
+
+    <script src="airtable-config.js"></script>
+    <script src="airtable-service.js"></script>
+    
+    <script>
+        function addResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
+            element.className = `result ${type}`;
+        }
+
+        function showConfig() {
+            try {
+                let config = '';
+                config += `API Key: ${AIRTABLE_CONFIG.API_KEY.substring(0, 10)}...\n`;
+                config += `Base ID: ${AIRTABLE_CONFIG.BASE_ID}\n`;
+                config += `Table Name: ${AIRTABLE_CONFIG.TABLE_NAME}\n`;
+                config += `Base URL: ${AIRTABLE_CONFIG.BASE_URL}\n`;
+                config += `Fields: ${JSON.stringify(AIRTABLE_CONFIG.FIELDS, null, 2)}\n`;
+                
+                addResult('config-result', config, 'config-info');
+            } catch (error) {
+                addResult('config-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testConnection() {
+            try {
+                addResult('connection-result', '🔄 Probando conexión...', 'info');
+                
+                const isConnected = await airtableService.testConnection();
+                
+                if (isConnected) {
+                    addResult('connection-result', '✅ Conexión exitosa con Airtable', 'success');
+                } else {
+                    addResult('connection-result', '❌ Error de conexión con Airtable', 'error');
+                }
+            } catch (error) {
+                addResult('connection-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSendData() {
+            try {
+                addResult('send-result', '🔄 Enviando datos de prueba...', 'info');
+                
+                const testData = {
+                    student: 'Test Student',
+                    status: 'present',
+                    date: new Date().toISOString().split('T')[0],
+                    user: 'test-user',
+                    role: 'test-role'
+                };
+                
+                const result = await airtableService.saveAttendance(
+                    testData.student,
+                    testData.status,
+                    testData.date,
+                    testData.user,
+                    testData.role
+                );
+                
+                if (result) {
+                    addResult('send-result', `✅ Datos enviados exitosamente:\n${JSON.stringify(testData, null, 2)}`, 'success');
+                } else {
+                    addResult('send-result', '❌ Error al enviar datos', 'error');
+                }
+            } catch (error) {
+                addResult('send-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testReadData() {
+            try {
+                addResult('read-result', '🔄 Leyendo datos de Airtable...', 'info');
+                
+                const records = await airtableService.loadFromAirtable();
+                
+                if (records && Object.keys(records).length > 0) {
+                    addResult('read-result', `✅ Datos leídos exitosamente:\n${JSON.stringify(records, null, 2)}`, 'success');
+                } else {
+                    addResult('read-result', 'ℹ️ No hay datos en Airtable o error al leer', 'info');
+                }
+            } catch (error) {
+                addResult('read-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFullSync() {
+            try {
+                addResult('sync-result', '🔄 Iniciando test completo de sincronización...', 'info');
+                
+                // Crear datos de prueba locales
+                const testLocalData = {
+                    '2025-01-15': {
+                        _session: {
+                            user: 'test-user',
+                            role: 'test-role',
+                            timestamp: new Date().toISOString()
+                        },
+                        students: {
+                            'Test Student 1': 'present',
+                            'Test Student 2': 'absent',
+                            'Test Student 3': 'present'
+                        }
+                    }
+                };
+                
+                const syncResults = await airtableService.syncWithAirtable(testLocalData);
+                
+                let result = `✅ Sincronización completada:\n`;
+                result += `- Éxitos: ${syncResults.success}\n`;
+                result += `- Errores: ${syncResults.errors}\n`;
+                result += `- Detalles:\n`;
+                syncResults.details.forEach(detail => {
+                    result += `  ${detail}\n`;
+                });
+                
+                addResult('sync-result', result, syncResults.errors === 0 ? 'success' : 'error');
+            } catch (error) {
+                addResult('sync-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearTestData() {
+            try {
+                addResult('send-result', '🔄 Limpiando datos de prueba...', 'info');
+                
+                // Buscar y eliminar registros de prueba
+                const records = await airtableService.loadFromAirtable();
+                let deletedCount = 0;
+                
+                for (const [date, students] of Object.entries(records)) {
+                    for (const [student, status] of Object.entries(students)) {
+                        if (student.includes('Test Student')) {
+                            // Aquí necesitarías implementar una función de eliminación
+                            // Por ahora solo contamos
+                            deletedCount++;
+                        }
+                    }
+                }
+                
+                addResult('send-result', `ℹ️ Encontrados ${deletedCount} registros de prueba para limpiar (función de eliminación no implementada)`, 'info');
+            } catch (error) {
+                addResult('send-result', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-ejecutar configuración al cargar
+        window.onload = function() {
+            showConfig();
+        };
+    </script>
+</body>
+</html> 
