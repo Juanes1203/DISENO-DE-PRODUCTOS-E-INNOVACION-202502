@@ -38,5 +38,8 @@ build/
 # PDF files (optional - remove if you want to include them)
 *.pdf
 
+# Allow PDFs in Archivos_de_Curso folder
+!Archivos_de_Curso/*.pdf
+
 # Excel files with temporary names
 ~$*.xlsx 
