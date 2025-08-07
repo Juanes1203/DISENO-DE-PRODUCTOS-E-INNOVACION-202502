@@ -556,11 +556,10 @@
 
         // Función para ver recursos en la página
         function viewResource(filename) {
-            // URL base de GitHub Pages
-            const baseUrl = 'https://juanes1203.github.io/DISENO-DE-PRODUCTOS-E-INNOVACION-202502';
-            const pdfUrl = `${baseUrl}/Archivos_de_Curso/${filename}`;
+            // Ruta relativa sin "/" inicial (solución de GitHub Pages)
+            const pdfUrl = `Archivos_de_Curso/${filename}`;
             
-            // Abrir PDF en nueva pestaña
+            // Abrir PDF directamente en nueva pestaña
             window.open(pdfUrl, '_blank');
         }
 
