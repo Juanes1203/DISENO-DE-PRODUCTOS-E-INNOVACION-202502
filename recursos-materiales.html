@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos y Materiales - Diseño de Productos e Innovación en TI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .resource-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .resource-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .resource-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .resource-type {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .resource-size {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .categories {
+                gap: 10px;
+            }
+            
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Recursos y Materiales</h1>
+            <p>Diseño de Productos e Innovación en TI</p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="🔍 Buscar recursos..." id="searchInput">
+        </div>
+
+        <div class="categories">
+            <button class="category-btn active" data-category="all">Todos</button>
+            <button class="category-btn" data-category="pitch">Pitch Decks</button>
+            <button class="category-btn" data-category="business">Modelo de Negocio</button>
+            <button class="category-btn" data-category="design">UI/UX Design</button>
+            <button class="category-btn" data-category="funding">Financiamiento</button>
+            <button class="category-btn" data-category="monetization">Monetización</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number" id="totalResources">0</span>
+                <span class="stat-label">Recursos</span>
+            </div>
+        </div>
+
+        <div class="resources-grid" id="resourcesGrid">
+            <!-- Los recursos se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <div class="floating-action" onclick="scrollToTop()">
+        ↑
+    </div>
+
+    <script>
+        // Datos de los recursos
+        const resources = [
+            {
+                id: 1,
+                title: "Canvas + Modelo de Negocio",
+                description: "Guía completa sobre cómo crear y desarrollar un modelo de negocio utilizando el Business Model Canvas. Incluye ejemplos prácticos y metodologías de validación.",
+                filename: "1.Canvas + business model.pdf",
+                size: "942KB",
+                category: "business",
+                type: "PDF",
+                tags: ["canvas", "modelo-negocio", "estrategia"]
+            },
+            {
+                id: 2,
+                title: "Tips para Ideas",
+                description: "Consejos y técnicas para generar, evaluar y desarrollar ideas de negocio innovadoras. Metodologías de ideación y validación temprana.",
+                filename: "2.Tips for Ideas.pdf",
+                size: "110KB",
+                category: "pitch",
+                type: "PDF",
+                tags: ["ideacion", "creatividad", "validacion"]
+            },
+            {
+                id: 3,
+                title: "Cómo Hacer Pitch de tu Empresa - Y Combinator",
+                description: "Guía oficial de Y Combinator sobre cómo crear presentaciones efectivas para inversores. Incluye estructura, storytelling y mejores prácticas.",
+                filename: "3.How to pitch your company - Y Combinator.pdf",
+                size: "236KB",
+                category: "pitch",
+                type: "PDF",
+                tags: ["pitch", "presentacion", "inversores"]
+            },
+            {
+                id: 4,
+                title: "Cómo Diseñar un Mejor Pitch Deck - Y Combinator",
+                description: "Técnicas avanzadas para diseñar pitch decks que capten la atención de inversores. Diseño visual y narrativa persuasiva.",
+                filename: "4.How to design a better pitch deck - Y Combinator.pdf",
+                size: "3.4MB",
+                category: "pitch",
+                type: "PDF",
+                tags: ["pitch-deck", "diseño", "presentacion"]
+            },
+            {
+                id: 5,
+                title: "Monetización",
+                description: "Estrategias y modelos de monetización para startups y productos digitales. Análisis de diferentes fuentes de ingresos y optimización.",
+                filename: "5.Monetization.pdf",
+                size: "242KB",
+                category: "monetization",
+                type: "PDF",
+                tags: ["monetizacion", "ingresos", "estrategia"]
+            },
+            {
+                id: 6,
+                title: "VC Funding vs Bootstrapping",
+                description: "Comparación detallada entre financiamiento de capital de riesgo y bootstrapping. Ventajas, desventajas y casos de estudio.",
+                filename: "6.VC funding vs Bootstrapping.pdf",
+                size: "422KB",
+                category: "funding",
+                type: "PDF",
+                tags: ["financiamiento", "vc", "bootstrapping"]
+            },
+            {
+                id: 7,
+                title: "Charla UI/UX v2.0",
+                description: "Presentación completa sobre principios de diseño de experiencia de usuario. Metodologías, herramientas y mejores prácticas.",
+                filename: "7.Charla UIUX v2.0.pdf",
+                size: "6.6MB",
+                category: "design",
+                type: "PDF",
+                tags: ["ui-ux", "diseño", "experiencia-usuario"]
+            },
+            {
+                id: 8,
+                title: "Propiedad Intelectual en PMC",
+                description: "Guía sobre protección de propiedad intelectual en proyectos de mínimo producto viable. Patentes, marcas y secretos comerciales.",
+                filename: "8.Propiedad intelectual en PMC.pdf",
+                size: "1.3MB",
+                category: "business",
+                type: "PDF",
+                tags: ["propiedad-intelectual", "patentes", "proteccion"]
+            },
+            {
+                id: 9,
+                title: "Running Lean",
+                description: "Metodología Lean Startup aplicada al desarrollo de productos. Validación de hipótesis y iteración rápida.",
+                filename: "9.RunningLean.pdf",
+                size: "1.6MB",
+                category: "business",
+                type: "PDF",
+                tags: ["lean-startup", "validacion", "iteracion"]
+            },
+            {
+                id: 10,
+                title: "Consejos para Landing Pages",
+                description: "Mejores prácticas para diseñar landing pages efectivas. Optimización de conversión y experiencia de usuario.",
+                filename: "10.Landing page advices.pdf",
+                size: "7.7MB",
+                category: "design",
+                type: "PDF",
+                tags: ["landing-page", "conversion", "diseño"]
+            },
+            {
+                id: 11,
+                title: "Ejemplos de Landing Pages",
+                description: "Colección de ejemplos reales de landing pages exitosas. Análisis de casos de estudio y patrones de diseño.",
+                filename: "11.Landing page examples.pdf",
+                size: "10.0MB",
+                category: "design",
+                type: "PDF",
+                tags: ["ejemplos", "landing-page", "casos-estudio"]
+            }
+        ];
+
+        let filteredResources = [...resources];
+        let currentCategory = 'all';
+
+        // Función para renderizar recursos
+        function renderResources(resourcesToRender) {
+            const grid = document.getElementById('resourcesGrid');
+            grid.innerHTML = '';
+
+            if (resourcesToRender.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: white; padding: 40px;">
+                        <h3>No se encontraron recursos</h3>
+                        <p>Intenta con otros términos de búsqueda o categorías</p>
+                    </div>
+                `;
+                return;
+            }
+
+            resourcesToRender.forEach(resource => {
+                const card = document.createElement('div');
+                card.className = 'resource-card';
+                card.innerHTML = `
+                    <div class="resource-number">${resource.id}</div>
+                    <h3 class="resource-title">${resource.title}</h3>
+                    <p class="resource-description">${resource.description}</p>
+                    <div class="resource-meta">
+                        <span class="resource-type">${resource.type}</span>
+                        <span class="resource-size">${resource.size}</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="download-btn" onclick="downloadResource('${resource.filename}')" style="flex: 1;">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            </svg>
+                            Descargar
+                        </button>
+                        <button class="download-btn" onclick="viewResource('${resource.filename}')" style="flex: 1; background: linear-gradient(135deg, #28a745, #20c997);">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                            Ver
+                        </button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            updateStats(resourcesToRender);
+        }
+
+        // Función para actualizar estadísticas
+        function updateStats(resourcesToRender) {
+            const totalResources = resourcesToRender.length;
+            document.getElementById('totalResources').textContent = totalResources;
+        }
+
+        // Función de búsqueda
+        function filterResources() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredResources = resources.filter(resource => {
+                const matchesSearch = resource.title.toLowerCase().includes(searchTerm) ||
+                                    resource.description.toLowerCase().includes(searchTerm) ||
+                                    resource.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = currentCategory === 'all' || resource.category === currentCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+
+            renderResources(filteredResources);
+        }
+
+        // Función para filtrar por categoría
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            filterResources();
+        }
+
+        // Función para descargar recursos
+        function downloadResource(filename) {
+            const link = document.createElement('a');
+            link.href = `Archivos_de_Curso/${filename}`;
+            link.download = filename;
+            link.click();
+        }
+
+        // Función para ver recursos en la página
+        function viewResource(filename) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                width: 90%;
+                height: 90%;
+                background: white;
+                border-radius: 15px;
+                position: relative;
+                overflow: hidden;
+            `;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '×';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: rgba(0,0,0,0.7);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 1001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            
+            const iframe = document.createElement('iframe');
+            iframe.src = `Archivos_de_Curso/${filename}`;
+            iframe.style.cssText = `
+                width: 100%;
+                height: 100%;
+                border: none;
+                border-radius: 15px;
+            `;
+            
+            closeBtn.onclick = () => {
+                document.body.removeChild(modal);
+            };
+            
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+            
+            modalContent.appendChild(closeBtn);
+            modalContent.appendChild(iframe);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+
+        // Función para scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterResources);
+        
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => filterByCategory(e.target.dataset.category));
+        });
+
+        // Animación de carga de progreso
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.width = Math.random() * 100 + '%';
+                }, index * 100);
+            });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderResources(resources);
+            setTimeout(animateProgressBars, 500);
+        });
+
+        // Mostrar/ocultar botón flotante
+        window.addEventListener('scroll', () => {
+            const floatingAction = document.querySelector('.floating-action');
+            if (window.scrollY > 300) {
+                floatingAction.style.opacity = '1';
+            } else {
+                floatingAction.style.opacity = '0';
+            }
+        });
+    </script>
+</body>
+</html> 
