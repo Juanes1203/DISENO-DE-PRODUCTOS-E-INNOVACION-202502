@@ -311,6 +311,12 @@
             <input type="text" class="search-box" placeholder="🔍 Buscar recursos..." id="searchInput">
         </div>
 
+        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; color: white; text-align: center; backdrop-filter: blur(10px);">
+            <p style="margin: 0; font-size: 0.9rem;">
+                💡 <strong>Nota:</strong> Para ver los documentos, usa el botón "Ver" que te dará opciones para descargar o abrir en nueva pestaña
+            </p>
+        </div>
+
         <div class="categories">
             <button class="category-btn active" data-category="all">Todos</button>
             <button class="category-btn" data-category="pitch">Pitch Decks</button>
@@ -550,6 +556,7 @@
 
         // Función para ver recursos en la página
         function viewResource(filename) {
+            // Crear modal informativo
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -567,11 +574,12 @@
             const modalContent = document.createElement('div');
             modalContent.style.cssText = `
                 width: 90%;
-                height: 90%;
+                max-width: 500px;
                 background: white;
                 border-radius: 15px;
                 position: relative;
-                overflow: hidden;
+                padding: 30px;
+                text-align: center;
             `;
             
             const closeBtn = document.createElement('button');
@@ -594,13 +602,43 @@
                 justify-content: center;
             `;
             
-            const iframe = document.createElement('iframe');
-            iframe.src = `Archivos_de_Curso/${filename}`;
-            iframe.style.cssText = `
-                width: 100%;
-                height: 100%;
-                border: none;
-                border-radius: 15px;
+            const content = document.createElement('div');
+            content.innerHTML = `
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">📄 ${filename}</h3>
+                <p style="color: #555; margin-bottom: 25px; line-height: 1.6;">
+                    Para ver este documento, tienes dos opciones:
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="downloadResource('${filename}')" style="
+                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.3s ease;
+                    ">
+                        📥 Descargar PDF
+                    </button>
+                    <a href="Archivos_de_Curso/${filename}" target="_blank" style="
+                        background: linear-gradient(135deg, #28a745, #20c997);
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                        display: inline-block;
+                    ">
+                        🔗 Abrir en Nueva Pestaña
+                    </a>
+                </div>
+                <p style="color: #999; font-size: 0.9rem; margin-top: 20px;">
+                    💡 Recomendación: Descarga el archivo para mejor experiencia de lectura
+                </p>
             `;
             
             closeBtn.onclick = () => {
@@ -614,7 +652,7 @@
             };
             
             modalContent.appendChild(closeBtn);
-            modalContent.appendChild(iframe);
+            modalContent.appendChild(content);
             modal.appendChild(modalContent);
             document.body.appendChild(modal);
         }
