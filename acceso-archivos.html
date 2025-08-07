@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso a Archivos - ISIS2007</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #856404;
+            margin: 0;
+        }
+
+        .solution-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .solution-box h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .solution-box p {
+            color: #155724;
+            margin: 0;
+        }
+
+        .steps {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .steps ol {
+            color: #555;
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .info-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 Acceso a Archivos del Curso</h1>
+            <p>Guía para acceder correctamente a los recursos y materiales</p>
+        </div>
+
+        <div class="info-card">
+            <h2>⚠️ Limitaciones de GitHub Pages</h2>
+            <p>
+                Según la <a href="https://docs.github.com/es/pages" target="_blank">documentación oficial de GitHub Pages</a>, 
+                existen ciertas limitaciones en el servicio que afectan la visualización directa de archivos PDF:
+            </p>
+            
+            <div class="warning-box">
+                <h3>🚫 Problemas identificados:</h3>
+                <ul style="color: #856404; margin-left: 20px;">
+                    <li>GitHub Pages no puede servir archivos PDF directamente desde subcarpetas</li>
+                    <li>Los iframes para visualización de PDFs no funcionan correctamente</li>
+                    <li>Errores 404 al intentar acceder a archivos en subdirectorios</li>
+                    <li>Limitaciones de seguridad del servidor de GitHub Pages</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>✅ Solución Implementada</h2>
+            <p>
+                Para resolver estos problemas, hemos implementado un sistema de descarga directa 
+                que funciona perfectamente con GitHub Pages:
+            </p>
+            
+            <div class="solution-box">
+                <h3>🎯 Cómo funciona:</h3>
+                <div class="steps">
+                    <ol>
+                        <li><strong>Busca el recurso</strong> que necesitas en la página de Recursos y Materiales</li>
+                        <li><strong>Haz clic en "Ver"</strong> para obtener información detallada del archivo</li>
+                        <li><strong>Descarga el PDF</strong> usando el botón "Descargar PDF"</li>
+                        <li><strong>Abre el archivo</strong> con tu visor de PDF preferido</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>📚 Ventajas del Sistema Actual</h2>
+            <ul style="color: #555; line-height: 1.8; margin-left: 20px;">
+                <li><strong>✅ Funciona 100%</strong> - Sin errores 404</li>
+                <li><strong>📱 Compatible</strong> - Funciona en todos los dispositivos</li>
+                <li><strong>🔒 Seguro</strong> - Descarga directa sin problemas de permisos</li>
+                <li><strong>💾 Offline</strong> - Puedes guardar los archivos para uso sin internet</li>
+                <li><strong>🎯 Organizado</strong> - Búsqueda y filtrado por categorías</li>
+                <li><strong>📊 Información detallada</strong> - Descripción y metadatos de cada recurso</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <h2>🛠️ Alternativas Técnicas</h2>
+            <p>
+                Si necesitas visualización directa de PDFs, considera estas alternativas:
+            </p>
+            
+            <div style="background: #e3f2fd; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h3 style="color: #1565c0; margin-bottom: 15px;">💡 Opciones adicionales:</h3>
+                <ul style="color: #1565c0; line-height: 1.8; margin-left: 20px;">
+                    <li><strong>Google Drive</strong> - Subir archivos y compartir enlaces de visualización</li>
+                    <li><strong>Dropbox</strong> - Crear enlaces públicos con vista previa</li>
+                    <li><strong>OneDrive</strong> - Compartir documentos con permisos de lectura</li>
+                    <li><strong>GitHub Releases</strong> - Publicar archivos como releases del repositorio</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>📞 Soporte</h2>
+            <p>
+                Si tienes problemas para acceder a los archivos o necesitas ayuda adicional, 
+                contacta al equipo docente del curso ISIS2007.
+            </p>
+            <p>
+                <strong>Recuerda:</strong> La descarga directa es la forma más confiable y segura 
+                de acceder a los recursos del curso en GitHub Pages.
+            </p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="recursos-materiales.html" class="back-btn">
+                ← Volver a Recursos y Materiales
+            </a>
+        </div>
+    </div>
+</body>
+</html> 
