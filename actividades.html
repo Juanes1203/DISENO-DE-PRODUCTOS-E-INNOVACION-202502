@@ -138,7 +138,8 @@
         }
 
         .activity-card.expanded .activity-content {
-            max-height: 2000px;
+            max-height: none;
+            overflow: visible;
             opacity: 1;
             transform: translateY(0);
         }
@@ -300,6 +301,17 @@
                 padding: 0 15px 15px 15px;
                 font-size: 0.9rem;
             }
+            
+            /* Mejorar scroll en móviles */
+            .activity-content {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+            
+            .activity-card.expanded .activity-content {
+                overflow-y: auto;
+                max-height: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -377,6 +389,25 @@
             .back-button {
                 padding: 10px 20px;
                 font-size: 0.8rem;
+            }
+            
+            /* Scroll optimizado para móviles pequeños */
+            .activity-content {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+            
+            .activity-card.expanded .activity-content {
+                overflow-y: auto;
+                max-height: none;
+            }
+            
+            /* Mejorar la experiencia de scroll */
+            .activity-details,
+            .evaluation-criteria,
+            .tips-section,
+            .deadline {
+                scroll-margin-top: 10px;
             }
         }
     </style>
@@ -577,6 +608,21 @@
                     this.style.transform = 'scale(1)';
                 });
             });
+            
+            // Mejorar scroll en móviles
+            if ('ontouchstart' in window) {
+                const activityCards = document.querySelectorAll('.activity-card');
+                
+                activityCards.forEach(card => {
+                    const content = card.querySelector('.activity-content');
+                    if (content) {
+                        content.addEventListener('touchmove', function(e) {
+                            // Permitir scroll natural en el contenido
+                            e.stopPropagation();
+                        }, { passive: true });
+                    }
+                });
+            }
         });
     </script>
 </body>
