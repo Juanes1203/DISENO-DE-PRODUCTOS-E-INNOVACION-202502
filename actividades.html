@@ -133,10 +133,14 @@
             overflow: hidden;
             transition: max-height 0.5s ease;
             background: #f8f9fa;
+            opacity: 0;
+            transform: translateY(-10px);
         }
 
         .activity-card.expanded .activity-content {
             max-height: 2000px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .activity-description {
@@ -255,20 +259,26 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
+                min-height: 60px;
             }
             
             .activity-title {
                 width: 100%;
                 text-align: left;
+                font-size: 1rem;
+                line-height: 1.3;
             }
             
             .activity-percentage {
                 align-self: flex-end;
+                font-size: 0.8rem;
+                padding: 6px 12px;
             }
             
             .expand-icon {
                 align-self: flex-end;
                 margin-left: 0;
+                font-size: 1.2rem;
             }
             
             .activity-details {
@@ -279,10 +289,16 @@
             .tips-section,
             .deadline {
                 margin: 15px;
+                padding: 12px;
             }
             
             .activities-grid {
                 gap: 20px;
+            }
+            
+            .activity-description {
+                padding: 0 15px 15px 15px;
+                font-size: 0.9rem;
             }
         }
 
@@ -296,20 +312,53 @@
                 border-radius: 15px;
             }
             
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header h2 {
+                font-size: 1rem;
+            }
+            
             .activity-card {
                 border-radius: 15px;
+                margin-bottom: 15px;
             }
             
             .activity-header {
                 padding: 12px;
+                min-height: 50px;
+            }
+            
+            .activity-title {
+                font-size: 0.9rem;
+                line-height: 1.2;
+            }
+            
+            .activity-percentage {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+            
+            .expand-icon {
+                font-size: 1rem;
             }
             
             .activity-description {
-                padding: 0 15px 15px 15px;
+                padding: 0 12px 12px 12px;
+                font-size: 0.85rem;
             }
             
             .activity-details {
                 padding: 12px;
+            }
+            
+            .activity-details h4 {
+                font-size: 0.9rem;
+            }
+            
+            .activity-details li {
+                font-size: 0.8rem;
             }
             
             .evaluation-criteria,
@@ -317,6 +366,17 @@
             .deadline {
                 margin: 12px;
                 padding: 12px;
+            }
+            
+            .evaluation-criteria h5,
+            .tips-section h5,
+            .deadline h5 {
+                font-size: 0.85rem;
+            }
+            
+            .back-button {
+                padding: 10px 20px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -490,13 +550,33 @@
             // Si la actividad clickeada no estaba expandida, expandirla
             if (!isExpanded) {
                 activityCard.classList.add('expanded');
+                
+                // Scroll suave hacia la actividad expandida en móviles
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        activityCard.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 300);
+                }
             }
         }
 
-        // Todas las actividades comienzan colapsadas por defecto
+        // Mejorar la experiencia táctil en móviles
         document.addEventListener('DOMContentLoaded', function() {
-            // No expandir ninguna actividad por defecto
-            // Todas deben estar colapsadas inicialmente
+            // Agregar indicador visual de que las actividades son clickeables
+            const headers = document.querySelectorAll('.activity-header');
+            
+            headers.forEach(header => {
+                header.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                header.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
         });
     </script>
 </body>
