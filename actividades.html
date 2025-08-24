@@ -73,26 +73,34 @@
 
         .activity-card {
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             border-left: 5px solid #667eea;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .activity-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             flex-wrap: wrap;
             gap: 15px;
+        }
+
+        .activity-header:hover {
+            background: rgba(102, 126, 234, 0.05);
         }
 
         .activity-title {
             color: #2c3e50;
             font-size: 1.5rem;
             font-weight: 600;
+            flex: 1;
         }
 
         .activity-percentage {
@@ -102,6 +110,29 @@
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            transition: transform 0.3s ease;
+            margin-left: 15px;
+        }
+
+        .activity-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .activity-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background: #f8f9fa;
+        }
+
+        .activity-card.expanded .activity-content {
+            max-height: 2000px;
         }
 
         .activity-description {
@@ -109,13 +140,13 @@
             font-size: 1rem;
             line-height: 1.6;
             margin-bottom: 20px;
+            padding: 0 30px 20px 30px;
         }
 
         .activity-details {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 20px 30px;
+            margin: 0;
         }
 
         .activity-details h4 {
@@ -147,7 +178,7 @@
             background: #e8f4fd;
             border-left: 4px solid #3498db;
             padding: 15px;
-            margin-top: 15px;
+            margin: 15px 30px;
             border-radius: 5px;
         }
 
@@ -161,7 +192,7 @@
             background: #fff3cd;
             border-left: 4px solid #ffc107;
             padding: 15px;
-            margin-top: 15px;
+            margin: 15px 30px;
             border-radius: 5px;
         }
 
@@ -175,7 +206,7 @@
             background: #f8d7da;
             border-left: 4px solid #dc3545;
             padding: 15px;
-            margin-top: 15px;
+            margin: 15px 30px;
             border-radius: 5px;
         }
 
@@ -215,10 +246,17 @@
             .activity-header {
                 flex-direction: column;
                 align-items: flex-start;
+                padding: 20px;
             }
             
-            .activity-card {
-                padding: 20px;
+            .activity-details {
+                padding: 15px 20px;
+            }
+            
+            .evaluation-criteria,
+            .tips-section,
+            .deadline {
+                margin: 15px 20px;
             }
         }
     </style>
@@ -236,120 +274,138 @@
         <div class="activities-grid">
             <!-- Primera Entrega del Proyecto -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">🚀 Primera Entrega del Proyecto + Calificación Jurados</div>
                     <div class="activity-percentage">30%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Primera entrega completa del proyecto con evaluación de jurados
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Primera entrega completa del proyecto con evaluación de jurados
+                    </div>
                 </div>
             </div>
 
             <!-- Segunda Entrega del Proyecto -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">🎯 Segunda Entrega del Proyecto + Calificación Jurados</div>
                     <div class="activity-percentage">30%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Entrega final del proyecto con evaluación de jurados
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Entrega final del proyecto con evaluación de jurados
+                    </div>
                 </div>
             </div>
 
             <!-- Presentación de Pitch -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">💡 Presentación de Pitch de Problema a Solucionar</div>
                     <div class="activity-percentage">10%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Presentación del pitch del problema a solucionar
-                </div>
-                
-                <div class="activity-details">
-                    <h4>🎯 Objetivo de la Tarea</h4>
-                    <p>El propósito de esta actividad es que los estudiantes desarrollen su capacidad para identificar oportunidades de negocio innovadoras y digitales, enfocadas en soluciones basadas en inteligencia artificial (AI). Se busca que aprendan a presentar sus ideas de forma clara, atractiva y convincente mediante una presentación breve.</p>
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Presentación del pitch del problema a solucionar
+                    </div>
                     
-                    <p>Al completar la tarea, cada grupo habrá practicado:</p>
-                    <ul>
-                        <li>La identificación y análisis en profundidad del problema a solucionar.</li>
-                        <li>La comprensión del mercado y de los potenciales beneficiados, evaluando a quién "le duele" la situación.</li>
-                        <li>La formulación de una solución digital innovadora en la que AI sea un componente fundamental.</li>
-                        <li>El estudio comparativo de soluciones disponibles en el mercado y la definición de ventajas competitivas.</li>
-                        <li>La capacidad para comunicar una idea de negocio utilizando herramientas digitales y un diseño coherente.</li>
-                    </ul>
-                </div>
+                    <div class="activity-details">
+                        <h4>🎯 Objetivo de la Tarea</h4>
+                        <p>El propósito de esta actividad es que los estudiantes desarrollen su capacidad para identificar oportunidades de negocio innovadoras y digitales, enfocadas en soluciones basadas en inteligencia artificial (AI). Se busca que aprendan a presentar sus ideas de forma clara, atractiva y convincente mediante una presentación breve.</p>
+                        
+                        <p>Al completar la tarea, cada grupo habrá practicado:</p>
+                        <ul>
+                            <li>La identificación y análisis en profundidad del problema a solucionar.</li>
+                            <li>La comprensión del mercado y de los potenciales beneficiados, evaluando a quién "le duele" la situación.</li>
+                            <li>La formulación de una solución digital innovadora en la que AI sea un componente fundamental.</li>
+                            <li>El estudio comparativo de soluciones disponibles en el mercado y la definición de ventajas competitivas.</li>
+                            <li>La capacidad para comunicar una idea de negocio utilizando herramientas digitales y un diseño coherente.</li>
+                        </ul>
+                    </div>
 
-                <div class="activity-details">
-                    <h4>📋 Descripción General de la Actividad</h4>
-                    <p>Cada grupo debe desarrollar una presentación sencilla que articule de forma precisa y visual una idea de negocio innovadora y digital. La solución propuesta <strong>debe integrar la AI como uno de los componentes principales</strong>. No se aceptarán ideas donde la AI no tenga un rol central.</p>
-                    
-                    <p>Se deben abordar los siguientes puntos:</p>
-                    <ul>
-                        <li><strong>Problema a Solucionar:</strong> Identificar y describir de manera clara cuál es el problema que afecta al mercado.</li>
-                        <li><strong>A Quién le Duele:</strong> Definir el público objetivo o los potenciales beneficiados de la solución.</li>
-                        <li><strong>La Solución Propuesta:</strong> Describir el producto o servicio que se ofrece como respuesta al problema identificado.</li>
-                        <li><strong>Estado del Arte:</strong> Presentar otras soluciones existentes en el mercado y describir su funcionamiento.</li>
-                        <li><strong>Propuesta de Valor Diferencial:</strong> Explicar qué hará su propuesta mejor, más rápida o más sencilla.</li>
-                    </ul>
-                </div>
+                    <div class="activity-details">
+                        <h4>📋 Descripción General de la Actividad</h4>
+                        <p>Cada grupo debe desarrollar una presentación sencilla que articule de forma precisa y visual una idea de negocio innovadora y digital. La solución propuesta <strong>debe integrar la AI como uno de los componentes principales</strong>. No se aceptarán ideas donde la AI no tenga un rol central.</p>
+                        
+                        <p>Se deben abordar los siguientes puntos:</p>
+                        <ul>
+                            <li><strong>Problema a Solucionar:</strong> Identificar y describir de manera clara cuál es el problema que afecta al mercado.</li>
+                            <li><strong>A Quién le Duele:</strong> Definir el público objetivo o los potenciales beneficiados de la solución.</li>
+                            <li><strong>La Solución Propuesta:</strong> Describir el producto o servicio que se ofrece como respuesta al problema identificado.</li>
+                            <li><strong>Estado del Arte:</strong> Presentar otras soluciones existentes en el mercado y describir su funcionamiento.</li>
+                            <li><strong>Propuesta de Valor Diferencial:</strong> Explicar qué hará su propuesta mejor, más rápida o más sencilla.</li>
+                        </ul>
+                    </div>
 
-                <div class="evaluation-criteria">
-                    <h5>📊 Criterios de Evaluación</h5>
-                    <ul>
-                        <li><strong>Presentación del Problema y Análisis de Impacto (35%):</strong> Claridad y profundidad en la identificación del problema.</li>
-                        <li><strong>Propuesta de Solución y Valor Diferencial (35%):</strong> Descripción detallada de la solución y comparación con alternativas existentes.</li>
-                        <li><strong>Diseño y Uso de Herramientas Digitales (15%):</strong> Calidad estética y coherencia visual.</li>
-                        <li><strong>Expresión Oral y Capacidad de Sustentación (15%):</strong> Claridad y fluidez en la exposición.</li>
-                    </ul>
-                </div>
+                    <div class="evaluation-criteria">
+                        <h5>📊 Criterios de Evaluación</h5>
+                        <ul>
+                            <li><strong>Presentación del Problema y Análisis de Impacto (35%):</strong> Claridad y profundidad en la identificación del problema.</li>
+                            <li><strong>Propuesta de Solución y Valor Diferencial (35%):</strong> Descripción detallada de la solución y comparación con alternativas existentes.</li>
+                            <li><strong>Diseño y Uso de Herramientas Digitales (15%):</strong> Calidad estética y coherencia visual.</li>
+                            <li><strong>Expresión Oral y Capacidad de Sustentación (15%):</strong> Claridad y fluidez en la exposición.</li>
+                        </ul>
+                    </div>
 
-                <div class="tips-section">
-                    <h5>💡 Consejos para la Realización</h5>
-                    <ul>
-                        <li>Utilizar imágenes, gráficos y otros recursos visuales para reforzar el mensaje.</li>
-                        <li>Mantener una estética visual coherente y profesional.</li>
-                        <li>Ser conciso y directo, reservando detalles adicionales para la exposición oral.</li>
-                        <li>Buscar retroalimentación de compañeros o asesores antes de la entrega final.</li>
-                    </ul>
-                </div>
+                    <div class="tips-section">
+                        <h5>💡 Consejos para la Realización</h5>
+                        <ul>
+                            <li>Utilizar imágenes, gráficos y otros recursos visuales para reforzar el mensaje.</li>
+                            <li>Mantener una estética visual coherente y profesional.</li>
+                            <li>Ser conciso y directo, reservando detalles adicionales para la exposición oral.</li>
+                            <li>Buscar retroalimentación de compañeros o asesores antes de la entrega final.</li>
+                        </ul>
+                    </div>
 
-                <div class="deadline">
-                    <h5>⏰ Fecha de Entrega</h5>
-                    <p><strong>Entrega:</strong> Viernes 14 de febrero a las 9:20 a.m. (por Bloque Neón)</p>
+                    <div class="deadline">
+                        <h5>⏰ Fecha de Entrega</h5>
+                        <p><strong>Entrega:</strong> Miércoles 23 de agosto a las 11:00 a.m. (por Bloque Neón)</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Lean Canvas -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">📊 Lean Canvas - Análisis de Ejemplos</div>
                     <div class="activity-percentage">10%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Análisis de ejemplos en empresas de tecnología, Running Lean Part 1
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Análisis de ejemplos en empresas de tecnología, Running Lean Part 1
+                    </div>
                 </div>
             </div>
 
             <!-- Trabajo Grupal -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">👥 Trabajo Grupal en Proyectos</div>
                     <div class="activity-percentage">10%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Trabajo grupal en proyectos y entrega landing page
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Trabajo grupal en proyectos y entrega landing page
+                    </div>
                 </div>
             </div>
 
             <!-- Semana de Innovación -->
             <div class="activity-card">
-                <div class="activity-header">
+                <div class="activity-header" onclick="toggleActivity(this)">
                     <div class="activity-title">🌟 Semana de Innovación</div>
                     <div class="activity-percentage">10%</div>
+                    <div class="expand-icon">▼</div>
                 </div>
-                <div class="activity-description">
-                    Actividades especiales durante la semana de innovación
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Actividades especiales durante la semana de innovación
+                    </div>
                 </div>
             </div>
         </div>
@@ -360,5 +416,30 @@
             <p>Semestre 2025-2</p>
         </div>
     </div>
+
+    <script>
+        function toggleActivity(headerElement) {
+            const activityCard = headerElement.closest('.activity-card');
+            const isExpanded = activityCard.classList.contains('expanded');
+            
+            // Cerrar todas las actividades
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+            
+            // Si la actividad clickeada no estaba expandida, expandirla
+            if (!isExpanded) {
+                activityCard.classList.add('expanded');
+            }
+        }
+
+        // Opcional: Expandir la primera actividad por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstActivity = document.querySelector('.activity-card');
+            if (firstActivity) {
+                firstActivity.classList.add('expanded');
+            }
+        });
+    </script>
 </body>
 </html>
