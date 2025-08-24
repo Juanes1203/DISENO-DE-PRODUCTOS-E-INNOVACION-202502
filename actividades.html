@@ -77,24 +77,72 @@
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            border-left: 5px solid #667eea;
+            border: 3px solid transparent;
+            background-clip: padding-box;
             overflow: hidden;
             transition: all 0.3s ease;
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-card:hover::before {
+            opacity: 1;
+        }
+
+        .activity-card.expanded::before {
+            opacity: 1;
         }
 
         .activity-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 25px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             flex-wrap: wrap;
             gap: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            position: relative;
         }
 
         .activity-header:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .activity-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .activity-header:hover::after {
+            transform: scaleX(1);
         }
 
         .activity-title {
@@ -131,10 +179,11 @@
         .activity-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease;
-            background: #f8f9fa;
+            transition: all 0.5s ease;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             opacity: 0;
             transform: translateY(-10px);
+            position: relative;
         }
 
         .activity-card.expanded .activity-content {
@@ -142,6 +191,16 @@
             overflow: visible;
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .activity-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
         }
 
         .activity-description {
@@ -153,9 +212,25 @@
         }
 
         .activity-details {
-            background: #f8f9fa;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
             margin: 0;
+            border-radius: 15px;
+            margin: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea, #764ba2);
         }
 
         .activity-details h4 {
@@ -185,45 +260,87 @@
         }
 
         .evaluation-criteria {
-            background: #e8f4fd;
+            background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
             border-left: 4px solid #3498db;
-            padding: 15px;
-            margin: 15px 20px;
-            border-radius: 5px;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evaluation-criteria::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #3498db, #2980b9);
         }
 
         .evaluation-criteria h5 {
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 600;
         }
 
         .tips-section {
-            background: #fff3cd;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 15px 20px;
-            border-radius: 5px;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tips-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #ffc107, #f39c12);
         }
 
         .tips-section h5 {
             color: #856404;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 600;
         }
 
         .deadline {
-            background: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             border-left: 4px solid #dc3545;
-            padding: 15px;
-            margin: 15px 20px;
-            border-radius: 5px;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deadline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #dc3545, #c82333);
         }
 
         .deadline h5 {
             color: #721c24;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 600;
         }
 
         .deadline strong {
@@ -609,20 +726,50 @@
                 });
             });
             
-            // Mejorar scroll en móviles
-            if ('ontouchstart' in window) {
-                const activityCards = document.querySelectorAll('.activity-card');
-                
-                activityCards.forEach(card => {
-                    const content = card.querySelector('.activity-content');
-                    if (content) {
-                        content.addEventListener('touchmove', function(e) {
-                            // Permitir scroll natural en el contenido
-                            e.stopPropagation();
-                        }, { passive: true });
+                    // Mejorar scroll en móviles
+        if ('ontouchstart' in window) {
+            const activityCards = document.querySelectorAll('.activity-card');
+            
+            activityCards.forEach(card => {
+                const content = card.querySelector('.activity-content');
+                if (content) {
+                    content.addEventListener('touchmove', function(e) {
+                        // Permitir scroll natural en el contenido
+                        e.stopPropagation();
+                    }, { passive: true });
+                }
+            });
+        }
+
+        // Agregar efectos de scroll suaves
+        function addScrollEffects() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
                     }
                 });
-            }
+            }, observerOptions);
+
+            // Observar todas las tarjetas de actividad
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }
+
+        // Ejecutar efectos de scroll cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            addScrollEffects();
+        });
         });
     </script>
 </body>
