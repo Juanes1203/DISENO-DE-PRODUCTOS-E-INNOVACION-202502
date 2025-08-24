@@ -28,7 +28,7 @@
         .header {
             text-align: center;
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
+            padding: 40px 20px;
             border-radius: 20px;
             margin-bottom: 40px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -37,14 +37,14 @@
 
         .header h1 {
             color: #2c3e50;
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 15px;
             font-weight: 700;
         }
 
         .header h2 {
             color: #7f8c8d;
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 400;
             margin-bottom: 20px;
         }
@@ -58,6 +58,7 @@
             border-radius: 25px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .back-button:hover {
@@ -85,7 +86,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 30px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             flex-wrap: wrap;
@@ -98,9 +99,10 @@
 
         .activity-title {
             color: #2c3e50;
-            font-size: 1.5rem;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
             font-weight: 600;
             flex: 1;
+            min-width: 0;
         }
 
         .activity-percentage {
@@ -109,15 +111,17 @@
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
             white-space: nowrap;
+            text-align: center;
         }
 
         .expand-icon {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             color: #667eea;
             transition: transform 0.3s ease;
             margin-left: 15px;
+            flex-shrink: 0;
         }
 
         .activity-card.expanded .expand-icon {
@@ -137,22 +141,22 @@
 
         .activity-description {
             color: #555;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             line-height: 1.6;
             margin-bottom: 20px;
-            padding: 0 30px 20px 30px;
+            padding: 0 20px 20px 20px;
         }
 
         .activity-details {
             background: #f8f9fa;
-            padding: 20px 30px;
+            padding: 20px;
             margin: 0;
         }
 
         .activity-details h4 {
             color: #2c3e50;
             margin-bottom: 15px;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
         }
 
         .activity-details ul {
@@ -164,6 +168,7 @@
             margin-bottom: 8px;
             padding-left: 20px;
             position: relative;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
         }
 
         .activity-details li::before {
@@ -178,42 +183,42 @@
             background: #e8f4fd;
             border-left: 4px solid #3498db;
             padding: 15px;
-            margin: 15px 30px;
+            margin: 15px 20px;
             border-radius: 5px;
         }
 
         .evaluation-criteria h5 {
             color: #2c3e50;
             margin-bottom: 10px;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .tips-section {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
             padding: 15px;
-            margin: 15px 30px;
+            margin: 15px 20px;
             border-radius: 5px;
         }
 
         .tips-section h5 {
             color: #856404;
             margin-bottom: 10px;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .deadline {
             background: #f8d7da;
             border-left: 4px solid #dc3545;
             padding: 15px;
-            margin: 15px 30px;
+            margin: 15px 20px;
             border-radius: 5px;
         }
 
         .deadline h5 {
             color: #721c24;
             margin-bottom: 10px;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .deadline strong {
@@ -231,32 +236,87 @@
         .footer p {
             color: #7f8c8d;
             margin-bottom: 5px;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
             
-            .header h1 {
-                font-size: 2.2rem;
+            .header {
+                padding: 30px 15px;
+                margin-bottom: 30px;
             }
             
             .activity-header {
+                padding: 15px;
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 20px;
+                gap: 10px;
+            }
+            
+            .activity-title {
+                width: 100%;
+                text-align: left;
+            }
+            
+            .activity-percentage {
+                align-self: flex-end;
+            }
+            
+            .expand-icon {
+                align-self: flex-end;
+                margin-left: 0;
             }
             
             .activity-details {
-                padding: 15px 20px;
+                padding: 15px;
             }
             
             .evaluation-criteria,
             .tips-section,
             .deadline {
-                margin: 15px 20px;
+                margin: 15px;
+            }
+            
+            .activities-grid {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 25px 15px;
+                border-radius: 15px;
+            }
+            
+            .activity-card {
+                border-radius: 15px;
+            }
+            
+            .activity-header {
+                padding: 12px;
+            }
+            
+            .activity-description {
+                padding: 0 15px 15px 15px;
+            }
+            
+            .activity-details {
+                padding: 12px;
+            }
+            
+            .evaluation-criteria,
+            .tips-section,
+            .deadline {
+                margin: 12px;
+                padding: 12px;
             }
         }
     </style>
@@ -268,42 +328,14 @@
         <div class="header">
             <h1>📋 Actividades del Curso</h1>
             <h2>ISIS2007 - Diseño de Productos e Innovación en TI</h2>
-            <p style="color: #7f8c8d; font-size: 1.1rem;">Cronograma Detallado de Actividades y Evaluación</p>
+            <p style="color: #7f8c8d; font-size: clamp(0.9rem, 2.5vw, 1.1rem);">Cronograma Detallado de Actividades y Evaluación</p>
         </div>
 
         <div class="activities-grid">
-            <!-- Primera Entrega del Proyecto -->
+            <!-- Semana 4: 27 de agosto - Presentación de Pitch -->
             <div class="activity-card">
                 <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">🚀 Primera Entrega del Proyecto + Calificación Jurados</div>
-                    <div class="activity-percentage">30%</div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-description">
-                        Primera entrega completa del proyecto con evaluación de jurados
-                    </div>
-                </div>
-            </div>
-
-            <!-- Segunda Entrega del Proyecto -->
-            <div class="activity-card">
-                <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">🎯 Segunda Entrega del Proyecto + Calificación Jurados</div>
-                    <div class="activity-percentage">30%</div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-description">
-                        Entrega final del proyecto con evaluación de jurados
-                    </div>
-                </div>
-            </div>
-
-            <!-- Presentación de Pitch -->
-            <div class="activity-card">
-                <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">💡 Presentación de Pitch de Problema a Solucionar</div>
+                    <div class="activity-title">💡 Semana 4: Presentación de Pitch de Problema a Solucionar</div>
                     <div class="activity-percentage">10%</div>
                     <div class="expand-icon">▼</div>
                 </div>
@@ -367,10 +399,10 @@
                 </div>
             </div>
 
-            <!-- Lean Canvas -->
+            <!-- Semana 5: 3 de septiembre - Lean Canvas -->
             <div class="activity-card">
                 <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">📊 Lean Canvas - Análisis de Ejemplos</div>
+                    <div class="activity-title">📊 Semana 5: Lean Canvas - Análisis de Ejemplos</div>
                     <div class="activity-percentage">10%</div>
                     <div class="expand-icon">▼</div>
                 </div>
@@ -381,10 +413,24 @@
                 </div>
             </div>
 
-            <!-- Trabajo Grupal -->
+            <!-- Semana 8: 24 de septiembre - Primera Entrega -->
             <div class="activity-card">
                 <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">👥 Trabajo Grupal en Proyectos</div>
+                    <div class="activity-title">🚀 Semana 8: Primera Entrega del Proyecto + Calificación Jurados</div>
+                    <div class="activity-percentage">30%</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Primera entrega completa del proyecto con evaluación de jurados
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semana 13: 5 de noviembre - Trabajo Grupal -->
+            <div class="activity-card">
+                <div class="activity-header" onclick="toggleActivity(this)">
+                    <div class="activity-title">👥 Semana 13: Trabajo Grupal en Proyectos</div>
                     <div class="activity-percentage">10%</div>
                     <div class="expand-icon">▼</div>
                 </div>
@@ -395,16 +441,30 @@
                 </div>
             </div>
 
-            <!-- Semana de Innovación -->
+            <!-- Semana 15: 19 de noviembre - Semana de Innovación -->
             <div class="activity-card">
                 <div class="activity-header" onclick="toggleActivity(this)">
-                    <div class="activity-title">🌟 Semana de Innovación</div>
+                    <div class="activity-title">🌟 Semana 15: Semana de Innovación</div>
                     <div class="activity-percentage">10%</div>
                     <div class="expand-icon">▼</div>
                 </div>
                 <div class="activity-content">
                     <div class="activity-description">
                         Actividades especiales durante la semana de innovación
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semana 16: 26 de noviembre - Segunda Entrega -->
+            <div class="activity-card">
+                <div class="activity-header" onclick="toggleActivity(this)">
+                    <div class="activity-title">🎯 Semana 16: Segunda Entrega del Proyecto + Calificación Jurados</div>
+                    <div class="activity-percentage">30%</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-description">
+                        Entrega final del proyecto con evaluación de jurados
                     </div>
                 </div>
             </div>
